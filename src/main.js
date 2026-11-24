@@ -49,8 +49,12 @@ window.__equinox = {
 
 // Mode hors-ligne (PWA) : seulement sur le site publié, pas en développement
 // ni dans l'application Android.
-if (import.meta.env.PROD && 'serviceWorker' in navigator && !window.Capacitor) {
+if (import.meta.env.PROD && !window.Capacitor) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    try {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    } catch {
+      // Certains contextes (aperçus intégrés) interdisent le service worker : tant pis.
+    }
   });
 }

@@ -1,6 +1,7 @@
 /* Mise en page et interface. Le jeu lui-même est dessiné dans le <canvas>. */
 
 :root {
+  color-scheme: dark;
   --night: #0f1733;
   --gold: #ffe2a0;
   --ink: #f4f1e6;
@@ -27,7 +28,7 @@ body {
 /* La « scène » : plein écran sur téléphone, cadre vertical sur ordinateur. */
 #stage {
   position: relative;
-  height: 100dvh;
+  height: 100%;
   width: min(100vw, calc(100dvh * 9 / 16));
   margin: 0 auto;
   overflow: hidden;
