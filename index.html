@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f1733" />
+    <meta name="description" content="Equinox — un jeu d'énigmes d'ombre et de lumière." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <title>Equinox</title>
+  </head>
+  <body>
+    <div id="stage">
+      <!-- Le jeu est dessiné ici -->
+      <canvas id="game"></canvas>
+
+      <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
+      <div id="hud" class="hidden">
+        <div id="level-name"></div>
+        <button id="restart" aria-label="Recommencer le niveau">↺</button>
+        <div id="hint"></div>
+      </div>
+
+      <!-- Écran titre -->
+      <div id="title" class="overlay">
+        <div class="sigil"></div>
+        <h1>EQUINOX</h1>
+        <p class="tagline">Rallume les temples du soleil</p>
+        <button id="start">Toucher pour commencer</button>
+      </div>
+
+      <!-- Souvenir retrouvé à la fin d'un niveau -->
+      <div id="memory" class="overlay hidden">
+        <div class="card">
+          <div id="memory-number" class="eyebrow"></div>
+          <h2 id="memory-title"></h2>
+          <p id="memory-text"></p>
+          <p id="memory-tech" class="tech"></p>
+          <div class="actions">
+            <button id="contemplate">Contempler</button>
+            <button id="replay" class="ghost">Rejouer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

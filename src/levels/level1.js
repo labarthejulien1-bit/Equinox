@@ -1,0 +1,185 @@
+// Niveau 1 — « Le glacier suspendu »
+//
+// Un niveau n'est (presque) que des DONNÉES : formes, positions, textes.
+// Les règles du jeu, elles, sont dans src/game/game.js.
+// Les coordonnées sont en « unités monde ». La scène de référence fait
+// 360 de large sur 720 de haut ; x va vers la droite, y vers le BAS.
+//
+// Solution prévue :
+//  1. sortir le soleil de derrière la montagne (et écarter le nuage) pour
+//     éclairer le miroir du village ;
+//  2. tourner ce miroir pour envoyer la lumière sous le surplomb : le glacier
+//     fond, l'eau tombe en cascade, la roue tourne, la porte du temple s'ouvre ;
+//  3. le glacier a libéré un second miroir : village → glacier → temple.
+
+import { toPoints } from '../engine/vec.js';
+
+export default {
+  id: 1,
+  title: 'Le glacier suspendu',
+  size: { w: 360, h: 720 },
+
+  // Le soleil glisse sur une demi-ellipse. Angles en degrés :
+  // 0° = horizon à droite, 90° = zénith, 180° = horizon à gauche.
+  sun: { cx: 180, cy: 330, rx: 172, ry: 268, min: 22, max: 150, start: 146, radius: 13 },
+
+  // Le nuage glisse sur un rail horizontal.
+  cloud: { y: 172, minX: 44, maxX: 316, startX: 204, w: 88, h: 30 },
+
+  // Le sol : un seul grand polygone (montagne + vallée + plateau + grotte).
+  // Les numéros servent à repérer les tronçons enneigés ci-dessous.
+  ground: toPoints([
+    [-3000, 3000], //  0
+    [-3000, 300], //   1
+    [-60, 262], //     2
+    [-8, 205], //      3
+    [30, 150], //      4  sommet
+    [50, 188], //      5
+    [70, 212], //      6
+    [96, 262], //      7
+    [140, 282], //     8
+    [178, 318], //     9
+    [182, 340], //    10  pointe du surplomb
+    [166, 326], //    11  plafond de la niche
+    [140, 312], //    12
+    [116, 316], //    13
+    [106, 340], //    14  fond de la niche
+    [108, 372], //    15
+    [128, 384], //    16
+    [150, 398], //    17  bord d'où tombe la cascade
+    [146, 450], //    18
+    [136, 530], //    19
+    [124, 600], //    20
+    [112, 646], //    21  vallée
+    [150, 651], //    22
+    [190, 652], //    23
+    [218, 650], //    24  pied de la falaise
+    [218, 540], //    25  bas de l'entrée de la grotte
+    [240, 580], //    26
+    [262, 618], //    27
+    [334, 622], //    28
+    [334, 572], //    29
+    [310, 540], //    30
+    [262, 492], //    31
+    [218, 452], //    32  haut de l'entrée de la grotte
+    [218, 412], //    33  bord du plateau
+    [252, 409], //    34
+    [300, 413], //    35
+    [350, 407], //    36
+    [3000, 404], //   37
+    [3000, 3000], //  38
+  ]),
+  // Tronçons du sol couverts de neige : [numéro de départ, numéro d'arrivée].
+  snow: [
+    [1, 9],
+    [21, 24],
+    [33, 37],
+  ],
+  // Intérieur de la grotte (dessiné derrière le sol) : numéros du polygone.
+  cave: [25, 32],
+
+  // Le glacier suspendu, coincé sous le surplomb.
+  ice: {
+    points: toPoints([
+      [172, 332],
+      [166, 326],
+      [140, 312],
+      [116, 316],
+      [106, 340],
+      [107, 356],
+      [146, 356],
+      [166, 343],
+    ]),
+    meltTime: 3.2, // secondes de pleine lumière pour fondre
+  },
+
+  // Miroirs : angle en degrés, len = longueur.
+  mirrors: [
+    { id: 'village', x: 262, y: 390, angle: 8, len: 26, mount: { type: 'pole', baseY: 411 } },
+    {
+      id: 'glacier',
+      x: 136,
+      y: 336,
+      angle: 18,
+      len: 24,
+      frozen: true, // prisonnier de la glace au départ
+      mount: { type: 'arm', fromX: 107, fromY: 349 },
+    },
+  ],
+
+  // Le temple au fond de la grotte, et son cristal à éclairer.
+  temple: { x: 300, baseY: 621, crystal: { x: 298, y: 596, r: 10 } },
+
+  // Porte de pierre qui ferme la grotte ; la roue à eau l'ouvre.
+  door: { x: 216, top: 452, bottom: 541, w: 7 },
+  wheel: { x: 199, y: 635, r: 15 },
+
+  // Eau : la cascade tombe du bord de la niche puis suit la vallée.
+  water: {
+    source: [
+      [112, 374],
+      [129, 385.5],
+      [151, 399.5],
+    ],
+    fall: { x: 151.5, top: 399, bottom: 650 },
+    river: { fromX: 118, toX: 218, y: 650 },
+  },
+
+  // Village.
+  houses: [
+    { x: 300, baseY: 413, w: 24, h: 15, roof: 13 },
+    { x: 330, baseY: 410, w: 28, h: 19, roof: 15 },
+  ],
+  lanterns: [
+    { x: 281, y: 396, baseY: 411 },
+    { x: 349, y: 392, baseY: 407 },
+  ],
+  villagers: [
+    { x: 236, y: 410.5, s: 1.0, dir: 1 },
+    { x: 247, y: 409.5, s: 0.8, dir: 1 },
+    { x: 315, y: 412, s: 1.05, dir: -1 },
+    { x: 176, y: 651.5, s: 0.95, dir: 1 },
+  ],
+  pines: [
+    { x: 357, y: 407, h: 40 },
+    { x: 132, y: 648.5, h: 30 },
+    { x: -22, y: 220, h: 26 },
+  ],
+
+  // Lignes gravées qui s'illuminent du temple jusqu'au village à la victoire.
+  conduits: [
+    [
+      [304, 536],
+      [304, 470],
+      [281, 440],
+      [281, 411],
+    ],
+    [
+      [304, 470],
+      [349, 440],
+      [349, 407],
+    ],
+  ],
+
+  // Indice affiché en bas de l'écran, selon l'avancement du joueur.
+  hint(g) {
+    if (g.temple.lit) return '';
+    if (!g.touched.sun) return 'Fais glisser le soleil dans le ciel';
+    if (!g.ice.gone) {
+      if (g.ice.heating) return 'La glace fond…';
+      if (!g.mirrors[0].lit) return 'Le miroir du village attend la lumière';
+      return 'Tourne le miroir : la lumière réchauffe ce qu’elle touche';
+    }
+    if (g.door.open < 1) return 'L’eau réveille une vieille mécanique…';
+    return 'Un miroir ancien dormait dans la glace. Guide la lumière jusqu’au temple.';
+  },
+
+  memory: {
+    number: 'I',
+    title: 'Le Miroir',
+    text:
+      '« Avant le long hiver, nos ancêtres ne priaient pas le soleil : ils le guidaient. ' +
+      'De miroir en miroir, sa chaleur voyageait jusqu’au cœur des montagnes. »',
+    tech: 'Technologie retrouvée : l’héliostat',
+  },
+};

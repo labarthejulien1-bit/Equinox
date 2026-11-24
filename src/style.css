@@ -1,0 +1,261 @@
+/* Mise en page et interface. Le jeu lui-même est dessiné dans le <canvas>. */
+
+:root {
+  --night: #0f1733;
+  --gold: #ffe2a0;
+  --ink: #f4f1e6;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #070b1a;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* La « scène » : plein écran sur téléphone, cadre vertical sur ordinateur. */
+#stage {
+  position: relative;
+  height: 100dvh;
+  width: min(100vw, calc(100dvh * 9 / 16));
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--night);
+}
+
+#game {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none; /* le navigateur ne doit ni défiler ni zoomer */
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none !important;
+}
+
+/* ───── Pendant la partie ───── */
+
+#hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+#level-name {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  left: 18px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  text-shadow: 0 1px 6px rgba(7, 11, 26, 0.6);
+}
+
+#restart {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 6px);
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(15, 23, 51, 0.35);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+#hint {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  text-wrap: balance;
+  text-shadow: 0 1px 8px rgba(7, 11, 26, 0.9);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+#hint.visible {
+  opacity: 0.92;
+  transform: none;
+}
+
+/* ───── Écrans par-dessus le jeu ───── */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  text-align: center;
+  transition: opacity 0.9s ease;
+}
+
+#title {
+  background: linear-gradient(rgba(15, 23, 51, 0.15), rgba(15, 23, 51, 0.55));
+  justify-content: flex-start;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 9dvh);
+}
+
+/* Petit emblème : un soleil coupé par l'horizon */
+.sigil {
+  width: 46px;
+  height: 23px;
+  border-radius: 46px 46px 0 0;
+  background: var(--gold);
+  box-shadow: 0 0 40px rgba(255, 226, 160, 0.55);
+  margin-bottom: 3px;
+}
+
+.sigil::after {
+  content: '';
+  display: block;
+  position: relative;
+  top: 26px;
+  left: -22px;
+  width: 90px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.7;
+}
+
+h1 {
+  margin: 26px 0 0;
+  font-size: clamp(34px, 11vw, 46px);
+  font-weight: 200;
+  letter-spacing: 0.34em;
+  margin-right: -0.34em; /* compense l'espacement après la dernière lettre */
+}
+
+.tagline {
+  margin: 12px 0 0;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+#start {
+  margin-top: auto;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 12dvh);
+  padding: 14px 26px;
+  border: 1px solid rgba(255, 226, 160, 0.55);
+  border-radius: 999px;
+  background: rgba(15, 23, 51, 0.35);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    border-color: rgba(255, 226, 160, 1);
+    box-shadow: 0 0 22px rgba(255, 226, 160, 0.3);
+  }
+}
+
+#memory {
+  background: rgba(10, 16, 36, 0.45);
+  transition: opacity 1.2s ease;
+}
+
+.card {
+  width: 100%;
+  max-width: 340px;
+  padding: 28px 24px 22px;
+  border-radius: 20px;
+  background: rgba(18, 27, 58, 0.88);
+  border: 1px solid rgba(255, 226, 160, 0.35);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.card h2 {
+  margin: 10px 0 14px;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+}
+
+.card p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.card .tech {
+  margin-top: 16px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.actions button {
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  background: var(--gold);
+  color: #1a2244;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.actions button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: rgba(244, 241, 230, 0.4);
+}
