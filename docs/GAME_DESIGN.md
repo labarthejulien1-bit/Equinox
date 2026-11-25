@@ -277,21 +277,46 @@ portes jumelles jour/nuit (V).
 
 ## 8. Le petit peuple et son village
 
-- **Silhouette** ✅ : une goutte encapuchonnée, sans bras ni jambes visibles ;
-  deux yeux ronds. La pointe de la capuche est leur seul « geste ».
-- **Couleur** ✅ : capes corail, la seule couleur chaude du monde gelé — on les
-  repère toujours, même dans l'ombre (où leurs yeux restent clairs).
-- **Comportement** : ils respirent ✅, clignent des yeux ✅, sautent de joie
-  quand le temple s'allume ✅. À venir : ils se tournent vers la lumière, se
-  blottissent dans l'ombre, s'approchent des objets libérés (indice discret).
-- **Évolution** : enfants plus petits ✅, capes de couleurs nouvelles à chaque
-  monde, objets retrouvés portés en bandoulière.
-- **Maisons** ✅ : bois sombre, toits pointus chargés de neige, une petite
-  fenêtre qui s'allume quand le temple revit. Elles s'appuient parfois sur des
-  ruines anciennes sans le savoir. Au fil des mondes : pilotis (III), moulins
-  (IV), premières maisons de pierre claire (V).
-- **Le rite** : au centre du village, un miroir sur un mât ✅. Ils le tournent
-  vers le soleil « parce qu'on a toujours fait ainsi ».
+![Le petit peuple](images/peuple.jpg)
+
+### Les personnages ✅
+
+- **Silhouette** : une goutte encapuchonnée, sans bras ni jambes visibles. La
+  pointe de la capuche est leur seul « geste ».
+- **Vêtement** : cape noire, frise de triangles blancs à l'ourlet. Le noir se
+  détache sur la neige et sur le ciel.
+- **Masque** : un petit disque noir cerclé de blanc, porté dans l'ouverture
+  de la capuche. Au-dessus, un soleil levant tracé en blanc. Il reprend les
+  formes des anciens (cercle, triangle, graduations), pas celles d'une
+  culture réelle.
+- **La barre de lumière** : à la place des yeux, un trait doré qui brille.
+  Dans l'ombre, la cape disparaît et il ne reste presque que lui : c'est ce
+  qu'ils ont gardé des anciens sans le savoir.
+- **Déclinaisons** : l'enfant est plus petit et sans frise ; l'ancien a la
+  pointe de capuche recourbée et un bâton ; le porteur a son miroir dans le
+  dos.
+- **Comportement** : ils respirent ✅, sautent de joie quand le temple
+  s'allume ✅. À venir : se tourner vers la lumière, se blottir dans l'ombre,
+  s'approcher des objets libérés (indice discret).
+
+État : choisi, **pas encore dans le jeu** (les niveaux actuels montrent
+encore les capuchons corail d'origine).
+
+Conséquence : le peuple n'apporte plus de couleur chaude. La chaleur du
+monde gelé vient désormais des feux et des fenêtres de leurs habitations.
+
+### Les habitations (en cours de choix)
+
+Le peuple d'aujourd'hui est primitif : il a perdu la technique des anciens.
+Six pistes dessinées — hutte de rondins, tente de peaux, dôme de pierres
+sèches, abri adossé à une ruine, hutte enterrée, nid sur pilotis. Le choix
+sera inscrit ici.
+
+### Le rite
+
+Au centre du village, un miroir sur un mât ✅. Ils le tournent vers le soleil
+« parce qu'on a toujours fait ainsi » : c'est le geste que les anciens leur
+ont laissé pour réveiller les temples (voir § 3).
 
 ## 9. Niveaux
 
