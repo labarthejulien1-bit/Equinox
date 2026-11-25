@@ -16,6 +16,7 @@ import { toPoints } from '../engine/vec.js';
 
 export default {
   id: 1,
+  number: 'I',
   title: 'Le glacier suspendu',
   size: { w: 360, h: 720 },
 
@@ -75,23 +76,26 @@ export default {
     [21, 24],
     [33, 37],
   ],
-  // Intérieur de la grotte (dessiné derrière le sol) : numéros du polygone.
-  cave: [25, 32],
+  // Intérieurs de grottes (dessinés derrière le sol) : numéros du polygone.
+  caves: [[25, 32]],
 
   // Le glacier suspendu, coincé sous le surplomb.
-  ice: {
-    points: toPoints([
-      [172, 332],
-      [166, 326],
-      [140, 312],
-      [116, 316],
-      [106, 340],
-      [107, 356],
-      [146, 356],
-      [166, 343],
-    ]),
-    meltTime: 3.2, // secondes de pleine lumière pour fondre
-  },
+  ices: [
+    {
+      id: 'glacier',
+      points: toPoints([
+        [172, 332],
+        [166, 326],
+        [140, 312],
+        [116, 316],
+        [106, 340],
+        [107, 356],
+        [146, 356],
+        [166, 343],
+      ]),
+      meltTime: 3.2, // secondes de pleine lumière pour fondre
+    },
+  ],
 
   // Miroirs : angle en degrés, len = longueur.
   mirrors: [
@@ -102,7 +106,7 @@ export default {
       y: 336,
       angle: 18,
       len: 24,
-      frozen: true, // prisonnier de la glace au départ
+      frozen: 'glacier', // prisonnier de ce glacier au départ
       mount: { type: 'arm', fromX: 107, fromY: 349 },
     },
   ],
@@ -110,20 +114,43 @@ export default {
   // Le temple au fond de la grotte, et son cristal à éclairer.
   temple: { x: 300, baseY: 621, crystal: { x: 298, y: 596, r: 10 } },
 
-  // Porte de pierre qui ferme la grotte ; la roue à eau l'ouvre.
-  door: { x: 216, top: 452, bottom: 541, w: 7 },
-  wheel: { x: 199, y: 635, r: 15 },
-
-  // Eau : la cascade tombe du bord de la niche puis suit la vallée.
-  water: {
-    source: [
-      [112, 374],
-      [129, 385.5],
-      [151, 399.5],
+  // Le torrent : libéré par la fonte du glacier, il tombe puis suit la vallée.
+  streams: [
+    {
+      id: 'torrent',
+      after: 'glacier',
+      parts: [
+        {
+          run: [
+            [112, 374],
+            [129, 385.5],
+            [151, 399.5],
+          ],
+        },
+        { fall: { x: 151.5, top: 399, bottom: 650 } },
+        {
+          run: [
+            [151.5, 653],
+            [190, 654],
+            [218, 652.5],
+          ],
+        },
+      ],
+    },
+  ],
+  // Lit gelé de la rivière (décor).
+  beds: [
+    [
+      [118, 649],
+      [150, 653],
+      [190, 654],
+      [218, 652.5],
     ],
-    fall: { x: 151.5, top: 399, bottom: 650 },
-    river: { fromX: 118, toX: 218, y: 650 },
-  },
+  ],
+
+  // La roue à eau ouvre la porte de pierre qui ferme la grotte.
+  wheels: [{ id: 'roue', x: 199, y: 635, r: 15, stream: 'torrent', door: 'porte' }],
+  doors: [{ id: 'porte', x: 216, top: 452, bottom: 541, w: 7 }],
 
   // Village.
   houses: [
@@ -163,14 +190,15 @@ export default {
 
   // Indice affiché en bas de l'écran, selon l'avancement du joueur.
   hint(g) {
+    const ice = g.ices[0];
     if (g.temple.lit) return '';
     if (!g.touched.sun) return 'Fais glisser le soleil dans le ciel';
-    if (!g.ice.gone) {
-      if (g.ice.heating) return 'La glace fond…';
+    if (!ice.gone) {
+      if (ice.heating) return 'La glace fond…';
       if (!g.mirrors[0].lit) return 'Le miroir du village attend la lumière';
       return 'Tourne le miroir : la lumière réchauffe ce qu’elle touche';
     }
-    if (g.door.open < 1) return 'L’eau réveille une vieille mécanique…';
+    if (g.doors[0].open < 1) return 'L’eau réveille une vieille mécanique…';
     return 'Un miroir ancien dormait dans la glace. Guide la lumière jusqu’au temple.';
   },
 

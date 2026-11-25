@@ -6,7 +6,7 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 ## Commandes
 
 - `npm run dev` — serveur de développement (Vite)
-- `npm run check` — vérifie le niveau 1 (résoluble, sans raccourci). À lancer
+- `npm run check` — vérifie chaque niveau (résoluble, sans raccourci). À lancer
   après toute modification de `src/engine/`, `src/game/game.js` ou d'un niveau.
 - `npm run build` — build de production dans `dist/`
 
@@ -28,6 +28,22 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 - Chemins relatifs partout (`base: './'`) : le même build sert GitHub Pages et
   Capacitor.
 
+## Ajouter un niveau
+
+1. Créer `src/levels/levelN.js` en copiant le niveau le plus proche ; il ne
+   contient que des listes d'éléments (voir le tableau « Les briques d'un
+   niveau » du README) et sa fonction `hint(g)`.
+2. L'ajouter à `src/levels/index.js`.
+3. Écrire sa fonction `checkLevelN` dans `scripts/check-level.mjs` : au moins
+   un raccourci impossible, et la solution prévue de bout en bout.
+4. Si le niveau demande une règle nouvelle, l'ajouter dans `game.js` comme un
+   type d'élément réutilisable, jamais comme un cas particulier du niveau.
+5. Vérifier le rendu par captures d'écran (voir plus bas).
+
+Piège connu : un miroir éclairé renvoie toujours un faisceau, même quand le
+joueur n'y a pas touché. Choisir son angle de départ pour que ce faisceau ne
+vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).
+
 ## Architecture en une phrase
 
 `main.js` fait tourner la boucle → `game.update()` calcule la lumière
@@ -43,6 +59,12 @@ palette d'ombre, puis en palette de lumière dans les zones éclairées.
 ## Vérifier un changement visuel
 
 Chromium et Playwright sont disponibles dans les sessions cloud. Lancer
-`npm run dev`, ouvrir la page en 412 × 892, cliquer `#start`, puis piloter
+`npm run dev`, ouvrir la page en 412 × 892, cliquer `#start`, choisir le
+niveau avec `window.__equinox.play(i)` (i compté à partir de 0), puis piloter
 l'état via `window.__equinox.game` (par ex. `sunAngle`, `cloudX`,
 `mirrors[0].angle`) et faire des captures d'écran.
+
+## Branches
+
+Le travail se fait sur la branche de la session. `main` est la branche
+publiée : chaque mise à jour de `main` redéploie la démo sur GitHub Pages.

@@ -9,9 +9,9 @@
 // La frontière entre 1 et 2 est le bord net ombre / lumière.
 
 import { TAU, smooth } from '../engine/vec.js';
-import { beamPolygons, mirrorGeometry } from '../engine/light.js';
+import { mirrorGeometry } from '../engine/light.js';
 import { getPalettes } from './palette.js';
-import { housePolygon, doorPolygon, crystalPolygon } from './game.js';
+import { housePolygon, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
 
 const SNOW = 7; // épaisseur de la couche de neige
 const ROCK_RIM = 6; // épaisseur du liseré de roche
@@ -34,6 +34,8 @@ function line(c, pts) {
   c.moveTo(pts[0].x, pts[0].y);
   for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y);
 }
+
+const P2 = ([x, y]) => ({ x, y });
 
 export function createRenderer(canvas) {
   const ctx = canvas.getContext('2d');
@@ -79,10 +81,8 @@ export function createRenderer(canvas) {
 
     // Zones éclairées par le soleil et les miroirs, sous forme de polygones.
     const shapes = [];
-    if (light.sunPoly) shapes.push({ pts: light.sunPoly });
-    const beamPolys = [];
-    for (const b of light.beams) for (const p of beamPolygons(b)) beamPolys.push(p);
-    for (const p of beamPolys) shapes.push({ pts: p });
+    if (light.sunPoly) shapes.push(light.sunPoly);
+    for (const p of light.beamPolys) shapes.push(p);
 
     // Étape 2 préparée à part : la scène « lumière », découpée par les zones.
     screen(lit);
@@ -91,7 +91,7 @@ export function createRenderer(canvas) {
     world(lit);
     lit.fillStyle = '#fff6dc';
     for (const s of shapes) {
-      poly(lit, s.pts);
+      poly(lit, s);
       lit.fill();
     }
     lit.globalCompositeOperation = 'source-atop'; // ne peint que là où il y a déjà de la lumière
@@ -119,7 +119,7 @@ export function createRenderer(canvas) {
     }
 
     // Étape 3 : effets et repères.
-    drawOverlay(ctx, g, pal, beamPolys);
+    drawOverlay(ctx, g);
   }
 
   // ───────────────────────────── La scène ─────────────────────────────
@@ -158,12 +158,13 @@ export function createRenderer(canvas) {
       c.globalAlpha = 1;
     }
 
-    // Montagnes lointaines (trois plans, du plus pâle au plus soutenu)
-    ridge(c, P.far1, 1.3, 392, 74, 0.0105, true);
-    ridge(c, P.far2, 4.1, 432, 52, 0.0165, true);
-    ridge(c, P.far3, 7.7, 474, 30, 0.012, false);
+    // Montagnes lointaines (trois plans). Chaque niveau a ses propres crêtes.
+    const seed = L.id * 3.7;
+    ridge(c, P.far1, 1.3 + seed, 392, 74, 0.0105, true);
+    ridge(c, P.far2, 4.1 + seed, 432, 52, 0.0165, true);
+    ridge(c, P.far3, 7.7 + seed, 474, 30, 0.012, false);
 
-    // Soleil (dessiné ici : il passe DERRIÈRE la montagne du premier plan)
+    // Soleil (dessiné ici : il passe DERRIÈRE le relief du premier plan)
     const sun = g.light.sun;
     const halo = c.createRadialGradient(sun.x, sun.y, 4, sun.x, sun.y, 78);
     halo.addColorStop(0, 'rgba(255,238,170,0.75)');
@@ -201,20 +202,24 @@ export function createRenderer(canvas) {
   function drawForeground(c, P, g, isLit) {
     const L = g.level;
 
-    // Intérieur de la grotte, puis le temple qui s'y trouve
-    poly(c, L.ground.slice(L.cave[0], L.cave[1] + 1));
+    // Intérieurs des grottes, puis le temple
     c.fillStyle = P.caveBack;
-    c.fill();
+    for (const [from, to] of L.caves || []) {
+      poly(c, L.ground.slice(from, to + 1));
+      c.fill();
+    }
     drawTemple(c, P, g);
 
-    // Cascade (dans l'air : elle brille au soleil, s'éteint dans l'ombre)
-    drawWaterfall(c, P, g, isLit);
+    // Eau des bassins (dessinée avant le sol, qui en cache les bords)
+    for (const b of g.basins) drawBasin(c, P, b, g, isLit);
 
-    // Supports des miroirs
+    // Cascades (dans l'air : elles brillent au soleil, s'éteignent dans l'ombre)
+    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'fall') drawFall(c, P, w, g, isLit);
+
+    // Supports des miroirs, socles, pins
     for (const m of g.mirrors) drawMount(c, P, m);
-
-    // Pins
-    for (const p of L.pines) drawPine(c, P, p);
+    for (const p of L.pedestals || []) drawPedestal(c, P, p);
+    for (const p of L.pines || []) drawPine(c, P, p);
 
     // Le sol : roche, liseré, neige
     poly(c, L.ground);
@@ -235,11 +240,24 @@ export function createRenderer(canvas) {
     }
     c.restore();
 
-    drawRiver(c, P, g, isLit);
-    drawWheel(c, P, g);
+    // Lits gelés, puis l'eau qui court sur le sol
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    for (const bed of L.beds || []) {
+      c.strokeStyle = P.riverIce;
+      c.lineWidth = 4.6;
+      line(c, bed.map(P2));
+      c.stroke();
+    }
+    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit);
+
+    // Eaux calmes qui gèlent : sources et ponts de givre
+    for (const f of g.frosts) if (f.def.role !== 'dam') drawFrost(c, P, f, g);
+
+    for (const w of g.wheels) drawWheel(c, P, w, g);
 
     // Lanternes du village
-    for (const l of L.lanterns) {
+    for (const l of L.lanterns || []) {
       c.strokeStyle = P.wood;
       c.lineWidth = 1.6;
       c.lineCap = 'round';
@@ -253,12 +271,13 @@ export function createRenderer(canvas) {
     }
 
     // Maisons
-    for (const h of L.houses) drawHouse(c, P, h, g);
+    for (const h of L.houses || []) drawHouse(c, P, h, g);
 
-    // Miroir prisonnier de la glace, puis la glace elle-même
-    if (!g.ice.gone) {
+    // Miroirs prisonniers de la glace, puis les glaciers eux-mêmes
+    for (const ice of g.ices) {
+      if (ice.gone) continue;
       for (const m of g.mirrors) {
-        if (m.free) continue;
+        if (m.frozen !== ice.def.id) continue;
         const geo = mirrorGeometry(m);
         c.lineCap = 'round';
         c.strokeStyle = P.bronze;
@@ -269,29 +288,36 @@ export function createRenderer(canvas) {
         c.lineWidth = 2;
         c.stroke();
       }
-      drawIce(c, P, g);
+      drawIce(c, P, ice);
     }
 
-    // Porte de la grotte
-    if (g.door.open < 0.99) {
-      const d = doorPolygon(g);
-      poly(c, d);
+    // Digues de glace
+    for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.01) drawDam(c, P, f);
+
+    // Portes de pierre
+    for (const d of g.doors) {
+      if (d.open >= 0.99) continue;
+      const pts = doorPolygon(d);
+      poly(c, pts);
       c.fillStyle = P.stone;
       c.fill();
       c.fillStyle = P.stoneDark;
-      const dy = d[0].y;
-      for (let y = dy + 9; y < L.door.bottom - 4; y += 14) {
+      for (let y = pts[0].y + 9; y < d.def.bottom - 4; y += 14) {
         c.beginPath();
-        c.arc(L.door.x, y, 1.5, 0, TAU);
+        c.arc(d.def.x, y, 1.5, 0, TAU);
         c.fill();
       }
     }
 
+    // Radeaux
+    for (const m of g.mirrors) if (m.raft) drawRaft(c, P, m, g);
+
     // Le petit peuple
-    L.villagers.forEach((p, i) => drawVillager(c, P, p, i, g));
+    (L.villagers || []).forEach((p, i) => drawVillager(c, P, p, i, g));
+    g.walkers.forEach((w, i) => drawWalker(c, P, w, i, g));
 
     // Nuage
-    drawCloud(c, P, g);
+    if (L.cloud) drawCloud(c, P, g);
   }
 
   /** Une ligne de crêtes lointaines. */
@@ -364,111 +390,159 @@ export function createRenderer(canvas) {
     }
   }
 
-  function drawWaterfall(c, P, g, isLit) {
-    const W = g.level.water;
-    if (g.water.fall <= 0) return;
+  // ── Eau ──
+
+  function drawBasin(c, P, b, g, isLit) {
+    const d = b.def;
     const t = g.time;
-    c.lineCap = 'round';
-    c.lineJoin = 'round';
-    // L'eau qui sort de la niche
-    c.strokeStyle = P.water;
-    c.lineWidth = 3;
-    line(
-      c,
-      W.source.map(([x, y]) => ({ x, y })),
-    );
-    c.stroke();
-    // La chute
-    const len = (W.fall.bottom - W.fall.top) * g.water.fall;
     c.fillStyle = P.water;
-    c.fillRect(W.fall.x - 3, W.fall.top, 6, len);
+    c.fillRect(d.x0 - 1, b.level, d.x1 - d.x0 + 2, d.floor - b.level + 2);
+    // Reflets en surface
+    c.fillStyle = isLit ? '#ffffff' : P.iceLine;
+    c.globalAlpha = 0.6;
+    const w = d.x1 - d.x0;
+    for (let i = 0; i < 6; i++) {
+      const drift = d.flow ? t * 24 : Math.sin(t * 0.8 + i) * 6;
+      const x = d.x0 + ((hash(i + 60) * w + drift + i * 13) % (w - 8));
+      c.fillRect(x, b.level + 2 + (i % 3) * 3.5, 5 + (i % 2) * 3, 0.9);
+    }
+    c.globalAlpha = 1;
+    // Filet d'eau qui alimente le bassin
+    if (d.spout && b.level > d.spout.y + 2) {
+      c.strokeStyle = P.water;
+      c.lineWidth = 3;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(d.spout.x, d.spout.y);
+      c.quadraticCurveTo(d.spout.x + 12, d.spout.y + 1, d.spout.x + 14, b.level + 1);
+      c.stroke();
+    }
+  }
+
+  function drawFall(c, P, w, g, isLit) {
+    const top = w.pts[0];
+    const bot = w.pts[w.pts.length - 1];
+    const t = g.time;
+    c.fillStyle = P.water;
+    c.fillRect(top.x - 3, top.y, 6, bot.y - top.y);
     // Filets clairs qui descendent
     c.strokeStyle = isLit ? '#ffffff' : P.iceLine;
     c.globalAlpha = 0.55;
     c.lineWidth = 0.9;
+    c.lineCap = 'round';
     c.setLineDash([16, 12]);
     for (let k = 0; k < 2; k++) {
       c.lineDashOffset = -(t * (90 + k * 30)) + k * 7;
       c.beginPath();
-      c.moveTo(W.fall.x - 1.2 + k * 2.4, W.fall.top + 2);
-      c.lineTo(W.fall.x - 1.2 + k * 2.4, W.fall.top + len);
+      c.moveTo(top.x - 1.2 + k * 2.4, top.y + 2);
+      c.lineTo(top.x - 1.2 + k * 2.4, bot.y);
       c.stroke();
     }
     c.setLineDash([]);
     c.globalAlpha = 1;
     // Écume au pied de la chute
-    if (g.water.fall >= 1) {
+    if (w.reachesEnd && bot.y < view.bottom) {
       c.fillStyle = isLit ? '#ffffff' : P.iceLine;
       for (let i = 0; i < 4; i++) {
         const r = 1.6 + 1.2 * Math.abs(Math.sin(t * 5 + i * 1.7));
         c.beginPath();
-        c.arc(W.fall.x - 5 + i * 3.4, W.fall.bottom - 1.5, r, 0, TAU);
+        c.arc(bot.x - 5 + i * 3.4, bot.y - 1.5, r, 0, TAU);
         c.fill();
       }
     }
   }
 
-  /** Hauteur du sol de la vallée à l'abscisse x (pour poser la rivière dessus). */
-  function valleyY(L, x) {
-    const pts = L.ground.slice(21, 25);
-    for (let i = 0; i < pts.length - 1; i++) {
-      const a = pts[i];
-      const b = pts[i + 1];
-      if (x >= a.x && x <= b.x) return a.y + ((b.y - a.y) * (x - a.x)) / (b.x - a.x);
-    }
-    return pts[pts.length - 1].y;
+  function drawRun(c, P, w, g, isLit) {
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    c.strokeStyle = P.water;
+    c.lineWidth = 4.6;
+    line(c, w.pts);
+    c.stroke();
+    // Reflets qui filent
+    c.strokeStyle = isLit ? '#ffffff' : P.iceLine;
+    c.globalAlpha = 0.7;
+    c.lineWidth = 0.9;
+    c.setLineDash([4, 9]);
+    c.lineDashOffset = -g.time * 26;
+    c.stroke();
+    c.setLineDash([]);
+    c.globalAlpha = 1;
   }
 
-  function drawRiver(c, P, g, isLit) {
-    const L = g.level;
-    const R = L.water.river;
-    const band = (x0, x1, color) => {
-      c.fillStyle = color;
-      c.beginPath();
-      c.moveTo(x0, valleyY(L, x0) - 0.3);
-      for (let x = x0; x <= x1; x += 4) c.lineTo(x, valleyY(L, x) - 0.3);
-      c.lineTo(x1, valleyY(L, x1) - 0.3);
-      c.lineTo(x1, valleyY(L, x1) + 4.2);
-      for (let x = x1; x >= x0; x -= 4) c.lineTo(x, valleyY(L, x) + 4.2);
-      c.closePath();
-      c.fill();
-    };
-    band(R.fromX, R.toX, P.riverIce); // lit gelé
-    if (g.water.river > 0) {
-      const fx = L.water.fall.x;
-      const x1 = fx + (R.toX - fx) * g.water.river;
-      const x0 = fx - (fx - R.fromX - 14) * Math.min(1, g.water.river * 2);
-      band(x0, x1, P.water);
-      // Reflets qui filent vers la roue
-      c.fillStyle = isLit ? '#ffffff' : P.iceLine;
-      c.globalAlpha = 0.75;
-      for (let i = 0; i < 7; i++) {
-        const x = fx + ((g.time * 26 + i * 11) % (R.toX - fx));
-        if (x > x1 - 3) continue;
-        c.fillRect(x, valleyY(L, x) + 1 + (i % 2) * 1.5, 3.5, 0.8);
+  /** Une eau calme : liquide quand amount = 0, prise par la glace quand amount = 1. */
+  function drawFrost(c, P, f, g) {
+    const r = f.def.rect;
+    const w = r.x1 - r.x0;
+    const h = r.y1 - r.y0;
+    c.fillStyle = P.water;
+    c.fillRect(r.x0, r.y0, w, h);
+    if (f.amount > 0.01) {
+      // La glace gagne depuis les bords vers le centre.
+      const k = smooth(f.amount);
+      c.fillStyle = P.ice;
+      c.fillRect(r.x0, r.y0 - 0.6, (w / 2) * k, h + 0.6);
+      c.fillRect(r.x1 - (w / 2) * k, r.y0 - 0.6, (w / 2) * k, h + 0.6);
+      // Petits cristaux de givre
+      c.strokeStyle = P.iceLine;
+      c.lineWidth = 0.8;
+      c.globalAlpha = k;
+      const n = Math.max(3, Math.floor(w / 9));
+      for (let i = 0; i < n; i++) {
+        const x = r.x0 + ((i + 0.5) / n) * w;
+        if (Math.abs(x - (r.x0 + w / 2)) > (w / 2) * (1 - k) - 0.01) {
+          c.beginPath();
+          c.moveTo(x - 2.2, r.y0 + 0.4);
+          c.lineTo(x, r.y0 - 2.2 - hash(i) * 1.5);
+          c.lineTo(x + 2.2, r.y0 + 0.4);
+          c.stroke();
+        }
       }
       c.globalAlpha = 1;
     }
   }
 
-  function drawWheel(c, P, g) {
-    const w = g.level.wheel;
-    const d = g.level.door;
+  function drawDam(c, P, f) {
+    const pts = frostPolygon(f);
+    poly(c, pts);
+    c.fillStyle = P.ice;
+    c.fill();
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 0.8;
+    c.globalAlpha = 0.7;
+    const r = f.def.rect;
+    for (let y = r.y1 - 10; y > pts[0].y + 3; y -= 14) {
+      line(c, [
+        { x: r.x0 + 1, y },
+        { x: (r.x0 + r.x1) / 2, y: y - 6 },
+        { x: r.x1 - 1, y: y + 1 },
+      ]);
+      c.stroke();
+    }
+    c.globalAlpha = 1;
+  }
+
+  function drawWheel(c, P, wheel, g) {
+    const w = wheel.def;
+    const door = w.door && g.doors.find((d) => d.def.id === w.door);
     // Chaîne qui relie la roue à la porte
-    c.strokeStyle = P.bronze;
-    c.lineWidth = 0.9;
-    c.setLineDash([2, 1.6]);
-    line(c, [
-      { x: w.x, y: w.y },
-      { x: d.x - 4.5, y: w.y - 26 },
-      { x: d.x - 4.5, y: d.bottom },
-    ]);
-    c.stroke();
-    c.setLineDash([]);
+    if (door) {
+      const d = door.def;
+      c.strokeStyle = P.bronze;
+      c.lineWidth = 0.9;
+      c.setLineDash([2, 1.6]);
+      line(c, [
+        { x: w.x, y: w.y },
+        { x: d.x - 4.5, y: w.y - 26 },
+        { x: d.x - 4.5, y: d.bottom },
+      ]);
+      c.stroke();
+      c.setLineDash([]);
+    }
     // Roue à aubes
     c.save();
     c.translate(w.x, w.y);
-    c.rotate(g.wheel.angle);
+    c.rotate(wheel.angle);
     c.strokeStyle = P.wood;
     c.lineCap = 'round';
     c.lineWidth = 2;
@@ -495,33 +569,71 @@ export function createRenderer(canvas) {
     c.restore();
   }
 
+  // ── Objets ──
+
   function drawMount(c, P, m) {
+    const mt = m.mount || { type: 'none' };
     c.lineCap = 'round';
-    if (m.mount.type === 'pole') {
+    c.lineJoin = 'round';
+    if (mt.type === 'pole') {
       c.strokeStyle = P.wood;
       c.lineWidth = 2.6;
       line(c, [
-        { x: m.x, y: m.mount.baseY + 1 },
+        { x: m.x, y: mt.baseY + 1 },
         { x: m.x, y: m.y },
       ]);
       c.stroke();
       c.lineWidth = 1.6;
       line(c, [
-        { x: m.x - 6, y: m.mount.baseY + 1 },
-        { x: m.x, y: m.mount.baseY - 9 },
-        { x: m.x + 6, y: m.mount.baseY + 1 },
+        { x: m.x - 6, y: mt.baseY + 1 },
+        { x: m.x, y: mt.baseY - 9 },
+        { x: m.x + 6, y: mt.baseY + 1 },
       ]);
       c.stroke();
-    } else {
+    } else if (mt.type === 'arm') {
       c.strokeStyle = P.bronze;
       c.lineWidth = 2;
       line(c, [
-        { x: m.mount.fromX, y: m.mount.fromY },
-        { x: m.x - 10, y: m.mount.fromY - 1 },
+        { x: mt.fromX, y: mt.fromY },
+        { x: m.x - 10, y: mt.fromY - 1 },
         { x: m.x, y: m.y },
       ]);
       c.stroke();
     }
+  }
+
+  function drawPedestal(c, P, p) {
+    c.fillStyle = P.stoneDark;
+    c.fillRect(p.x - 8, p.baseY - 4, 16, 5);
+    c.fillStyle = P.stone;
+    poly(c, [
+      { x: p.x - 5, y: p.baseY - 4 },
+      { x: p.x - 3, y: p.topY },
+      { x: p.x + 3, y: p.topY },
+      { x: p.x + 5, y: p.baseY - 4 },
+    ]);
+    c.fill();
+  }
+
+  function drawRaft(c, P, m, g) {
+    const basin = g.basins.find((b) => b.def.id === m.raft.basin);
+    const y = basin.level;
+    const bob = Math.sin(g.time * 1.6) * 0.5;
+    // Mât, puis planches
+    c.strokeStyle = P.wood;
+    c.lineCap = 'round';
+    c.lineWidth = 2.2;
+    line(c, [
+      { x: m.x, y: y - 1 },
+      { x: m.x, y: m.y },
+    ]);
+    c.stroke();
+    c.fillStyle = P.wood;
+    c.fillRect(m.x - 17, y - 2.6 + bob, 34, 4);
+    c.fillStyle = P.roof;
+    c.fillRect(m.x - 17, y + 0.2 + bob, 34, 1.2);
+    // Un passager
+    drawVillager(c, P, { x: m.x - 10, y: y - 2.4 + bob, s: 0.85, dir: 1 }, 7, g);
   }
 
   function drawPine(c, P, p) {
@@ -578,9 +690,9 @@ export function createRenderer(canvas) {
     c.fillRect(h.x + h.w * 0.1, h.baseY - h.h * 0.7, h.w * 0.22, h.h * 0.3);
   }
 
-  function drawIce(c, P, g) {
-    const pts = g.level.ice.points;
-    const m = g.ice.melt;
+  function drawIce(c, P, ice) {
+    const pts = ice.def.points;
+    const m = ice.melt;
     // La glace s'amincit et se rétracte légèrement en fondant.
     let cx = 0;
     let cy = 0;
@@ -599,18 +711,21 @@ export function createRenderer(canvas) {
     c.lineWidth = 0.8;
     c.globalAlpha = (0.94 - 0.6 * m) * 0.7;
     const mid = { x: cx + 6, y: cy - 2 };
-    for (const i of [0, 2, 4, 6]) {
+    for (let i = 0; i < shr.length; i += 2) {
       line(c, [shr[i], mid, shr[(i + 3) % shr.length]]);
       c.stroke();
     }
     c.globalAlpha = 1;
   }
 
-  function drawVillager(c, P, p, i, g) {
+  // ── Personnages ──
+
+  /** p = { x, y, s (taille), dir (1 ou -1) } ; step > 0 quand il marche. */
+  function drawVillager(c, P, p, i, g, step = 0) {
     const t = g.time;
     // Ils sautent de joie quand le temple s'allume.
     const joy = g.temple.lit ? smooth(g.win.t / 0.8) * (1 - smooth((g.win.t - 9) / 3)) : 0;
-    const hop = joy * Math.abs(Math.sin(t * 5.5 + i * 1.3)) * 5;
+    const hop = joy * Math.abs(Math.sin(t * 5.5 + i * 1.3)) * 5 + step * Math.abs(Math.sin(t * 9)) * 1.6;
     const bob = Math.sin(t * 1.8 + i * 2.1) * 0.5;
     c.save();
     c.translate(p.x, p.y - hop);
@@ -639,6 +754,36 @@ export function createRenderer(canvas) {
     c.restore();
   }
 
+  /** Un porteur : un villageois qui marche, son miroir sur le dos. */
+  function drawWalker(c, P, w, i, g) {
+    const pos = walkerPosition(w);
+    const s = w.def.s || 1;
+    drawVillager(c, P, { x: pos.x, y: pos.y, s, dir: 1 }, i + 11, g, w.moving ? 1 : 0);
+    if (w.done) return;
+    // Le miroir, tenu dans le dos par une hampe
+    const hop = w.moving ? Math.abs(Math.sin(g.time * 9)) * 1.6 : 0;
+    const bx = pos.x - 5 * s;
+    const by = pos.y - hop;
+    c.lineCap = 'round';
+    c.strokeStyle = P.wood;
+    c.lineWidth = 1.5;
+    line(c, [
+      { x: bx, y: by - 3 },
+      { x: bx - 1, y: by - 21 * s },
+    ]);
+    c.stroke();
+    c.strokeStyle = P.bronze;
+    c.lineWidth = 4;
+    line(c, [
+      { x: bx - 6, y: by - 16 * s },
+      { x: bx + 4, y: by - 28 * s },
+    ]);
+    c.stroke();
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 2;
+    c.stroke();
+  }
+
   function drawCloud(c, P, g) {
     const cl = g.level.cloud;
     const sh = g.cloudShape;
@@ -660,14 +805,14 @@ export function createRenderer(canvas) {
 
   // ───────────────────────────── Effets et repères ─────────────────────────────
 
-  function drawOverlay(c, g, pal, beamPolys) {
+  function drawOverlay(c, g) {
     const L = g.level;
     const t = g.time;
     const cr = L.temple.crystal;
 
     // Faisceaux : un voile doré par-dessus tout
     c.fillStyle = 'rgba(255, 206, 110, 0.30)';
-    for (const p of beamPolys) {
+    for (const p of g.light.beamPolys) {
       poly(c, p);
       c.fill();
     }
@@ -697,8 +842,8 @@ export function createRenderer(canvas) {
       c.lineWidth = 1.5;
       c.lineCap = 'round';
       c.lineJoin = 'round';
-      for (const path of L.conduits) {
-        const pts = path.map(([x, y]) => ({ x, y }));
+      for (const path of L.conduits || []) {
+        const pts = path.map(P2);
         let len = 0;
         for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
         c.setLineDash([len * flow, 9999]);
@@ -711,7 +856,7 @@ export function createRenderer(canvas) {
     // Halo des lanternes
     const lk = smooth((g.win.t - 2.4) / 1.6);
     if (lk > 0) {
-      for (const l of L.lanterns) {
+      for (const l of L.lanterns || []) {
         const gl = c.createRadialGradient(l.x, l.y, 0, l.x, l.y, 14);
         gl.addColorStop(0, `rgba(255,226,150,${0.55 * lk})`);
         gl.addColorStop(1, 'rgba(255,210,120,0)');
@@ -735,11 +880,11 @@ export function createRenderer(canvas) {
       c.fill();
     }
 
-    // Étincelles
+    // Étincelles (dorées) et embruns (blancs)
     for (const p of g.particles) {
-      if (p.type !== 'spark') continue;
+      if (p.type === 'drip') continue;
       const a = 1 - p.life / p.max;
-      c.fillStyle = `rgba(255,232,160,${a})`;
+      c.fillStyle = p.type === 'mist' ? `rgba(215,240,255,${a})` : `rgba(255,232,160,${a})`;
       c.beginPath();
       c.arc(p.x, p.y, 0.6 + a * 1.2, 0, TAU);
       c.fill();
@@ -818,11 +963,13 @@ export function createRenderer(canvas) {
 
     // Rail du nuage
     const cl = L.cloud;
-    c.strokeStyle = `rgba(255,255,255,${drag && drag.type === 'cloud' ? 0.5 : 0.22})`;
-    c.beginPath();
-    c.moveTo(cl.minX - cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
-    c.lineTo(cl.maxX + cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
-    c.stroke();
+    if (cl) {
+      c.strokeStyle = `rgba(255,255,255,${drag && drag.type === 'cloud' ? 0.5 : 0.22})`;
+      c.beginPath();
+      c.moveTo(cl.minX - cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
+      c.lineTo(cl.maxX + cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
+      c.stroke();
+    }
     c.setLineDash([]);
 
     // Anneau autour du soleil tant que le joueur ne l'a pas encore déplacé
@@ -836,7 +983,7 @@ export function createRenderer(canvas) {
     }
 
     // Chevrons de part et d'autre du nuage
-    if (g.touched.sun && !g.touched.cloud) {
+    if (cl && !g.touched.cloud) {
       c.strokeStyle = `rgba(255,255,255,${0.3 + 0.5 * pulse})`;
       c.lineWidth = 1.6;
       for (const d of [-1, 1]) {
@@ -853,7 +1000,7 @@ export function createRenderer(canvas) {
     for (const m of g.mirrors) {
       if (!m.free) continue;
       const active = drag && drag.mirror === m;
-      const hint = !g.touched.mirror || (m.frozen && !m.turned);
+      const hint = !m.turned;
       const a = active ? 0.75 : hint ? 0.3 + 0.4 * pulse : 0.22;
       c.strokeStyle = `rgba(255,240,200,${a})`;
       c.lineWidth = 1.3;

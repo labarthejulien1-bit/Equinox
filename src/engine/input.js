@@ -42,13 +42,16 @@ export function attachInput(canvas, view, getGame) {
       consider(dist(p, m) / 38, () => ({ type: 'mirror', mirror: m, last: null }));
     }
     consider(dist(p, sunPosition(g)) / 42, () => ({ type: 'sun', offset: g.sunAngle - sunAngleAt(g, p) }));
-    const cdx = Math.abs(p.x - g.cloudX) / (L.cloud.w / 2 + 14);
-    const cdy = Math.abs(p.y - L.cloud.y) / (L.cloud.h / 2 + 18);
-    consider(Math.max(cdx, cdy) * 0.9, () => ({ type: 'cloud', offset: g.cloudX - p.x }));
+    if (L.cloud) {
+      const cdx = Math.abs(p.x - g.cloudX) / (L.cloud.w / 2 + 14);
+      const cdy = Math.abs(p.y - L.cloud.y) / (L.cloud.h / 2 + 18);
+      consider(Math.max(cdx, cdy) * 0.9, () => ({ type: 'cloud', offset: g.cloudX - p.x }));
+    }
 
     if (!best) return;
     drag = best.make();
     drag.id = e.pointerId;
+    drag.game = g;
     g.drag = drag;
     canvas.setPointerCapture(e.pointerId);
     e.preventDefault();
@@ -57,6 +60,7 @@ export function attachInput(canvas, view, getGame) {
   canvas.addEventListener('pointermove', (e) => {
     if (!drag || e.pointerId !== drag.id) return;
     const g = getGame();
+    if (g !== drag.game) return; // le niveau a changé pendant le geste
     const p = toWorld(e);
     const L = g.level;
 
@@ -91,9 +95,9 @@ export function attachInput(canvas, view, getGame) {
   const end = (e) => {
     if (!drag || e.pointerId !== drag.id) return;
     const g = getGame();
-    if (drag.type === 'mirror') settleMirror(g, drag.mirror);
+    if (g === drag.game && drag.type === 'mirror') settleMirror(g, drag.mirror);
+    drag.game.drag = null;
     drag = null;
-    g.drag = null;
   };
   canvas.addEventListener('pointerup', end);
   canvas.addEventListener('pointercancel', end);

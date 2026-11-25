@@ -22,6 +22,7 @@
       <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
       <div id="hud" class="hidden">
         <div id="level-name"></div>
+        <button id="open-levels" aria-label="Choisir un niveau">☰</button>
         <button id="restart" aria-label="Recommencer le niveau">↺</button>
         <div id="hint"></div>
       </div>
@@ -41,9 +42,22 @@
           <h2 id="memory-title"></h2>
           <p id="memory-text"></p>
           <p id="memory-tech" class="tech"></p>
+          <p id="memory-end" class="end" hidden>La suite du voyage arrive bientôt.</p>
           <div class="actions">
-            <button id="contemplate">Contempler</button>
-            <button id="replay" class="ghost">Rejouer</button>
+            <button id="next">Niveau suivant</button>
+            <button id="contemplate" class="ghost">Contempler</button>
+            <button id="replay" class="ghost" hidden>Rejouer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Choix du niveau -->
+      <div id="levels" class="overlay hidden">
+        <div class="card">
+          <div class="eyebrow">Voyage</div>
+          <div id="level-list"></div>
+          <div class="actions">
+            <button id="close-levels" class="ghost">Fermer</button>
           </div>
         </div>
       </div>

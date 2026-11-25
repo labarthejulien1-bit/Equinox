@@ -69,10 +69,18 @@ body {
   text-shadow: 0 1px 6px rgba(7, 11, 26, 0.6);
 }
 
+#open-levels {
+  right: 56px;
+}
+
 #restart {
+  right: 10px;
+}
+
+#restart,
+#open-levels {
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + 6px);
-  right: 10px;
   width: 40px;
   height: 40px;
   border: 0;
@@ -253,6 +261,60 @@ button {
   font-size: 14px;
   letter-spacing: 0.06em;
   cursor: pointer;
+}
+
+.card .end {
+  margin-top: 14px;
+  font-size: 13px;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+/* ───── Choix du niveau ───── */
+
+#levels {
+  background: rgba(10, 16, 36, 0.6);
+  transition: opacity 0.35s ease;
+}
+
+#level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+#level-list button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border: 1px solid rgba(244, 241, 230, 0.22);
+  border-radius: 14px;
+  background: rgba(244, 241, 230, 0.04);
+  text-align: left;
+  cursor: pointer;
+}
+
+#level-list .num {
+  width: 26px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+#level-list .name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+#level-list .mark {
+  color: var(--gold);
+}
+
+#level-list button.done {
+  border-color: rgba(255, 226, 160, 0.45);
 }
 
 .actions button.ghost {

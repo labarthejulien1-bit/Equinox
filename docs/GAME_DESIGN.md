@@ -59,6 +59,8 @@ Tactile uniquement, un seul doigt, uniquement des « glisser ».
 | Soleil | glisser le long de son arc | ✅ |
 | Nuage | glisser le long de son rail | ✅ |
 | Miroir | tourner le doigt autour du miroir (aide à la visée au lâcher) | ✅ |
+| Miroir flottant | idem ; sa hauteur suit le niveau de l'eau | ✅ |
+| Porteur de miroir | aucun geste : il avance dès que le chemin le porte | ✅ |
 | Lentille | glisser sur un rail, comme le nuage | proposé |
 | Vanne / écluse | toucher pour ouvrir ou fermer | proposé |
 | Girouette | tourner : change le sens du vent | proposé |
@@ -115,7 +117,7 @@ Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
 | Ce qui reçoit | + Lumière | + Ombre | + Eau | + Vent | + Feu |
 | --- | --- | --- | --- | --- | --- |
 | **Glace** | fond → eau ✅ | reste gelée | — | — | fond vite |
-| **Eau** | s'évapore lentement → nuage | gèle → glace (pont, barrage) | coule, remplit | fait des vagues, pousse un radeau | → vapeur → nuage |
+| **Eau** | dégèle ✅ ; s'évapore lentement → nuage | gèle → glace (source, digue, pont) ✅ | coule, remplit ✅ | fait des vagues, pousse un radeau | → vapeur → nuage |
 | **Terre humide** | pousse → végétation | reste nue | devient humide | sèche | durcit → brique |
 | **Végétation** | grandit (liane, pont, échelle) | se referme, dort | grandit | disperse des graines | brûle → cendre fertile |
 | **Nuage** | s'amincit | grossit → pluie | — | se déplace | — |
@@ -192,17 +194,46 @@ d'une grotte fermée par une porte.
 Le soleil direct ne peut atteindre ni le glacier ni le temple (c'est vérifié
 par `npm run check`) : les deux miroirs sont nécessaires.
 
+### Niveau 2 — Le rideau d'eau ✅
+
+Le torrent libéré au niveau 1 tombe devant l'entrée du temple : la cascade
+brise le faisceau. Nouvelle règle : **l'ombre gèle l'eau calme**.
+
+1. Viser le temple : le faisceau se disperse dans la cascade.
+2. Amener l'ombre du nuage sur la source : elle gèle, la cascade se tarit.
+3. Garder la source à l'ombre et le miroir au soleil, puis viser.
+
+### Niveau 3 — La digue de glace ✅
+
+Un bassin, un miroir sur un radeau, une gorge par où l'eau s'échappe. Pas de
+nuage : seule l'ombre du relief compte, donc la position du soleil.
+
+1. Placer le soleil pour que l'ombre de la falaise couvre le seuil : l'eau
+   qui le franchit gèle en digue, le bassin se remplit, le radeau monte.
+2. Trop bas, le soleil laisse aussi le radeau dans l'ombre : il faut trouver
+   la bonne plage.
+3. Miroir en haut et au soleil : viser le temple dans la falaise.
+
+### Niveau 4 — Le pont de givre ✅
+
+Un villageois porte un miroir mais le torrent lui barre la route. Le socle
+qui l'attend n'est jamais atteint par le soleil direct.
+
+1. Amener l'ombre du nuage sur le torrent : il gèle en pont.
+2. Le porteur traverse tout seul et pose son miroir (la glace tient tant
+   qu'il est dessus).
+3. Écarter le nuage : miroir du village → miroir du socle → temple.
+
 ### Pistes pour la suite du monde I
 
 | # | Titre | Nouveauté | Idée |
 | --- | --- | --- | --- |
-| 2 | Le pont de givre | l'ombre gèle l'eau | Geler un torrent avec l'ombre du nuage pour qu'un villageois porte un miroir de l'autre côté. |
-| 3 | La pluie | nuage + ombre → pluie | Faire grossir le nuage dans l'ombre d'un pic, le pousser au-dessus d'un bassin à sec qui alimente une roue. |
-| 4 | Le lac | reflet de l'eau | Une eau calme est un miroir horizontal : remplir le lac à la bonne hauteur pour renvoyer le soleil sous une arche. |
-| 5 | La graine | lumière → végétation | Faire pousser une liane jusqu'à un miroir trop haut ; trop d'ombre et elle se referme. |
-| 6 | Deux temples | deux cristaux | Un seul faisceau, deux temples : il faut un cristal-relais qui garde la lumière quelques secondes. |
-| 7 | Le veilleur | lanterne portée | De nuit (soleil couché), guider la lumière du premier temple rallumé vers le second. |
-| 8 | Le phare | synthèse | Temple au sommet, toutes les mécaniques du monde I ; l'allumer fait fondre l'horizon. |
+| 5 | La pluie | nuage + ombre → pluie | Faire grossir le nuage dans l'ombre d'un pic, le pousser au-dessus d'un bassin à sec qui alimente une roue. |
+| 6 | Le lac | reflet de l'eau | Une eau calme est un miroir horizontal : remplir le lac à la bonne hauteur pour renvoyer le soleil sous une arche. |
+| 7 | La graine | lumière → végétation | Faire pousser une liane jusqu'à un miroir trop haut ; trop d'ombre et elle se referme. |
+| 8 | Deux temples | deux cristaux | Un seul faisceau, deux temples : il faut un cristal-relais qui garde la lumière quelques secondes. |
+| 9 | Le veilleur | lanterne portée | De nuit (soleil couché), guider la lumière du premier temple rallumé vers le second. |
+| 10 | Le phare | synthèse | Temple au sommet, toutes les mécaniques du monde I ; l'allumer fait fondre l'horizon. |
 
 ### Gabarit d'un niveau
 
@@ -215,8 +246,9 @@ par `npm run check`) : les deux miroirs sont nécessaires.
 ## 10. Feuille de route
 
 1. ✅ **v0.1** — moteur de lumière, direction artistique, niveau 1, PWA.
-2. **v0.2** — sons (nappes, tintement du cristal, eau), sauvegarde de la
-   progression, écran de choix des niveaux, niveaux 2 et 3.
-3. **v0.3** — nouveaux éléments (gel, pluie, végétation), monde I complet.
+2. ✅ **v0.2** — règles réutilisables, gel de l'eau, niveaux 2 à 4, sauvegarde
+   de la progression, choix des niveaux.
+3. **v0.3** — sons (nappes, tintement du cristal, eau), nouveaux éléments
+   (pluie, végétation), monde I complet.
 4. **v0.4** — emballage Capacitor, APK de test, retour haptique.
 5. **v1.0** — mondes II à V, AAB signé pour le Play Store.
