@@ -58,11 +58,14 @@ Au dernier temple, on découvre que tout avait été prévu pour ce retour : le
 culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
 était une étape du plan des anciens.
 
-### Le sens du titre (proposé)
+### Le sens du titre ✅
 
-L'équinoxe est le jour où la lumière et l'ombre sont à égalité. Les anciens
-auraient réglé leurs instruments sur ce jour-là : le dernier temple ne peut
-s'allumer qu'à l'équinoxe, quand le monde est assez dégelé pour revivre.
+Tout le jeu, comme toute l'ancienne civilisation, repose sur un équilibre du
+monde entre l'ombre et la lumière. Cet équilibre est parfait un seul jour :
+l'équinoxe. Le dernier temple ne s'allume que ce jour-là.
+
+Conséquence pour le jeu : ni la lumière ni l'ombre n'est « la bonne ». Chaque
+énigme demande de doser les deux, et le dernier monde les met à égalité.
 
 ### Ce que rend chaque temple
 
