@@ -28,27 +28,61 @@ l'ombre transforment le paysage, jusqu'à rallumer un temple ancien.
 
 ## 3. Univers et récit
 
-Un petit peuple vit dans un monde gelé. Il descend d'une civilisation qui
-maîtrisait l'énergie solaire. Une ère glaciaire a coupé cette civilisation de
-sa source ; avec les siècles, la technique est devenue un rite, puis un culte
-du soleil dont plus personne ne comprend l'origine.
+### L'histoire ✅
 
-Chaque temple rallumé rend :
+Une civilisation maîtrisait la lumière du soleil. Elle a vu venir l'ère
+glaciaire, et plutôt que de lutter, elle a **préparé le retour** :
+
+- elle a scellé ses temples et ses machines sous la glace, pour les protéger
+  du temps ;
+- elle a laissé à ses descendants un geste simple à répéter — tourner un
+  miroir vers le soleil — pour qu'ils sachent un jour tout réveiller.
+
+Les siècles ont passé. Le geste est devenu un rite, le rite un culte du
+soleil, et plus personne ne sait pourquoi on le fait. Le petit peuple vit au
+milieu des ruines sans les comprendre.
+
+Le joueur ne répare donc pas un désastre : il **tient une promesse** dont tout
+le monde a oublié l'existence.
+
+Ce que cette histoire explique déjà dans le jeu :
+
+- un miroir attendait dans le glacier du niveau 1 : il y avait été déposé ;
+- les temples sont intacts sous la glace : elle les protégeait ;
+- le village tourne son miroir « parce qu'on a toujours fait ainsi » ;
+- l'ombre et le froid sont des outils, pas des ennemis.
+
+### La fin du jeu ✅
+
+Au dernier temple, on découvre que tout avait été prévu pour ce retour : le
+culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
+était une étape du plan des anciens.
+
+### Le sens du titre (proposé)
+
+L'équinoxe est le jour où la lumière et l'ombre sont à égalité. Les anciens
+auraient réglé leurs instruments sur ce jour-là : le dernier temple ne peut
+s'allumer qu'à l'équinoxe, quand le monde est assez dégelé pour revivre.
+
+### Ce que rend chaque temple
 
 - un **souvenir** — un fragment de texte, à la manière d'une tradition orale ;
 - une **technologie** — un nouvel objet de jeu pour les niveaux suivants ;
 - un peu de **chaleur** — la palette glisse du blanc-bleu vers le vert et l'or.
 
-| Monde | Ambiance | Technologie retrouvée | Souvenir |
-| --- | --- | --- | --- |
-| I. Les glaces | blanc, bleu nuit | ✅ l'héliostat (miroir orientable) | « Ils ne priaient pas le soleil : ils le guidaient. » |
-| II. Le dégel | turquoise, premiers verts | la lentille (concentre la lumière → feu) | « La lumière serrée dans le poing devient flamme. » |
-| III. Les eaux | vert, brume | l'écluse et la roue (l'eau comme énergie) | « Ce que le soleil réveille, l'eau le porte. » |
-| IV. Les vents | or, ocre | la voile et la girouette (déplacer les nuages) | « Nous avons appris à demander la pluie. » |
-| V. L'équinoxe | or et nuit à parts égales | le cristal-mémoire (stocke la lumière) | « Le jour et la nuit se doivent l'un à l'autre. » |
+Les souvenirs racontent l'histoire à l'envers : d'abord ce que les anciens
+savaient faire, puis qu'ils ont vu venir l'hiver, enfin qu'ils attendaient
+quelqu'un.
 
-Le dernier monde renverse la leçon : l'ombre devient nécessaire (protéger du
-gel utile, garder l'eau, laisser dormir une graine). D'où le titre.
+| Monde | Ambiance | Ce qu'on y apprend des anciens | Souvenir |
+| --- | --- | --- | --- |
+| I. Les glaces | blanc, bleu nuit | ils guidaient la lumière | ✅ « Ils ne priaient pas le soleil : ils le guidaient. » |
+| II. Le dégel | turquoise, premiers verts | ils en faisaient de la chaleur | « La lumière serrée dans le poing devient flamme. » |
+| III. Les eaux | vert, brume | ils la confiaient à l'eau | « Ce que le soleil réveille, l'eau le porte. » |
+| IV. Les vents | or, ocre | ils ont vu venir le froid | « Le ciel se fermait. Nous avons compté les étés qu'il restait. » |
+| V. L'équinoxe | or et nuit à parts égales | ils ont tout préparé pour nous | « Nous avons rangé le jour sous la glace. À vous de l'ouvrir. » |
+
+La répartition des dix machines entre ces mondes reste à faire (voir § 7).
 
 ## 4. Contrôles
 
@@ -214,11 +248,15 @@ S'y ajoute l'héliostat (miroir orientable), déjà dans le jeu.
 Règle d'introduction : une seule machine nouvelle par niveau, d'abord seule,
 puis combinée avec les précédentes deux ou trois niveaux plus tard.
 
-### Pourquoi tout s'est arrêté (proposé)
+### Pourquoi tout s'est arrêté ✅
 
-Ils ont voulu abolir la nuit. À force de garder le jour, ils ont rompu
-l'équilibre, et le long hiver en est le contrecoup. C'est le sens du titre,
-et du dernier monde, où l'ombre redevient nécessaire.
+Ils ont vu venir l'ère glaciaire et ont choisi de mettre leur monde en
+sommeil, en préparant son réveil (voir § 3). Les temples ne sont donc pas des
+ruines de guerre ou d'abandon : ils sont **rangés**. Portes closes, miroirs
+repliés, cristaux éteints, le tout pris dans une glace qui a été voulue.
+
+Conséquence pour le dessin : ce qui est abîmé l'est par le temps (un anneau
+ébréché, une dalle couchée), jamais par la violence.
 
 ### Les ruines aujourd'hui
 
