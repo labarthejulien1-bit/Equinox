@@ -145,24 +145,82 @@ combiné avec les précédents deux ou trois niveaux plus tard.
 
 ## 7. Les temples de l'ancienne civilisation
 
-Vocabulaire de formes : le **cercle** (le soleil) inscrit dans le **triangle**
-(la montagne, le rayon).
+![Direction retenue pour les temples](images/temples-direction.jpg)
 
-- **Structure** ✅ : deux piliers inclinés et un fronton forment une « porte
-  solaire » ; au centre, un anneau gradué entoure un cristal en losange.
-- **Matière** : pierre claire, lisse, aux arêtes nettes — rien à voir avec les
-  maisons du village. Ce contraste raconte que le peuple actuel n'aurait pas
-  su le construire.
-- **Conduits** ✅ : de fines lignes gravées partent du temple. Éteintes, elles
-  sont presque invisibles ; quand le temple s'allume, la lumière y court
-  jusqu'au village et allume les lanternes.
-- **Trois états** : enseveli (glace, lierre, eau), dégagé mais éteint (bleu,
-  froid), allumé ✅ (or, éclaire la grotte et projette ses propres ombres).
-- **Variantes par monde** : temple-phare au sommet (I), temple-écluse sous un
-  lac (III), temple-orgue dans une gorge venteuse (IV), temple double
-  jour/nuit (V).
-- **Mécanismes associés** : porte de pierre ✅, roue à aubes ✅, plus tard
-  contrepoids, écluses, lentilles sur rail, girouettes.
+**Direction retenue** ✅ : *les instruments* en base, *les monolithes* en
+secondaire. Chaque bâtiment est un instrument qui mesure le ciel, taillé dans
+de grandes dalles nettes. (Écartée : la piste « orgues », des machines de
+bronze à tuyaux et chaudières, trop chargée pour un écran de téléphone.)
+
+### L'idée
+
+Ils ne fabriquaient pas d'énergie : ils traitaient la lumière comme de l'eau.
+Ils la captaient, la conduisaient dans la pierre, la gardaient, puis la
+changeaient en chaleur, en mouvement ou en vie.
+
+### Les règles de dessin
+
+- **Trois formes** : l'arc, le triangle, l'escalier droit. Aucun ornement.
+- **Des coupes nettes** : grandes faces planes, sommets en biseau, arêtes
+  vives. C'est ce qui donne les ombres les plus franches.
+- **Une seule gravure** : les conduits, lignes fines à angle droit ou à 45°.
+- **Une matière** : une pierre claire et lisse. Le bronze est réservé aux
+  pièces mobiles (miroirs, anneaux).
+- **Deux états** : endormi (pierre bleu froid, gravures presque invisibles,
+  cristal terne) et éveillé (gravures dorées, cristal lumineux).
+- **Une échelle** : les ruines dominent le paysage ; une maison du village
+  arrive à peine à la troisième marche.
+- **La forme annonce la fonction** : on doit deviner à quoi sert un lieu avant
+  de toucher quoi que ce soit.
+
+### Les pièces
+
+| Pièce | Vient de | Rôle | État |
+| --- | --- | --- | --- |
+| Porte solaire (deux piliers, un fronton) | instruments | abrite le cristal | ✅ dans le jeu |
+| Anneau au cristal | instruments | reçoit la lumière ; ses graduations indiquent l'angle | ✅ (version simple) |
+| Conduits gravés | instruments | portent la lumière dans la pierre | ✅ |
+| Gnomon à escalier | instruments | grand triangle dont l'ombre sert d'aiguille | à faire |
+| Oculus | instruments | trou rond : ne laisse passer qu'un rayon précis | à faire |
+| Dalle en biseau | monolithes | mur, écran, porte | à faire |
+| Fente de lumière | monolithes | la lumière y passe en lame | à faire |
+| Linteau en porte-à-faux | monolithes | fait une ombre « suspendue » | à faire |
+
+À ne pas reprendre des monolithes : les blocs en lévitation. Le jeu obéit à
+des règles physiques ; rien n'y flotte.
+
+### Ce que leurs machines savaient faire (proposé)
+
+Chaque verbe devient une mécanique ; chaque monde en introduit un ou deux.
+
+| Verbe | Machine | Dans le jeu |
+| --- | --- | --- |
+| Guider | héliostat, miroirs | ✅ renvoyer la lumière |
+| Conduire | conduits gravés | la lumière traverse la roche d'un point à un autre |
+| Concentrer | lentille, miroir courbe | feu, fonte rapide, forge |
+| Garder | cristal-mémoire | emporter du jour dans la nuit |
+| Mouvoir | « poumon de pierre » : l'air chauffé pousse un piston | portes, monte-charges, pompes |
+| Faire pousser | serre sous la glace | végétation, ponts de lianes |
+
+### Pourquoi tout s'est arrêté (proposé)
+
+Ils ont voulu abolir la nuit. À force de garder le jour, ils ont rompu
+l'équilibre, et le long hiver en est le contrecoup. C'est le sens du titre,
+et du dernier monde, où l'ombre redevient nécessaire.
+
+### Les ruines aujourd'hui
+
+- Toujours abîmées d'un côté : un anneau ébréché, une dalle couchée, un
+  escalier qui ne mène plus nulle part.
+- Prises dans la glace, noyées ou envahies de végétation selon le monde.
+- **Habitées sans être comprises** ✅ (sur la planche) : maisons adossées à un
+  gnomon, linge tendu entre un anneau et un escalier, enfants sur les marches.
+
+### Variantes par monde
+
+Temple-phare au sommet (I), temple-forge à lentille (II), temple-écluse à
+bassin en gradins (III), temple-girouette dans une gorge venteuse (IV),
+portes jumelles jour/nuit (V).
 
 ## 8. Le petit peuple et son village
 
