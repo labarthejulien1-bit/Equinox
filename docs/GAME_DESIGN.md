@@ -305,12 +305,50 @@ encore les capuchons corail d'origine).
 Conséquence : le peuple n'apporte plus de couleur chaude. La chaleur du
 monde gelé vient désormais des feux et des fenêtres de leurs habitations.
 
-### Les habitations (en cours de choix)
+### Les habitations ✅
 
 Le peuple d'aujourd'hui est primitif : il a perdu la technique des anciens.
-Six pistes dessinées — hutte de rondins, tente de peaux, dôme de pierres
-sèches, abri adossé à une ruine, hutte enterrée, nid sur pilotis. Le choix
-sera inscrit ici.
+Il n'y a pas un village mais **plusieurs tribus**, dispersées, chacune avec
+sa façon de bâtir. Un niveau montre un petit village d'un seul type, choisi
+selon le lieu. Planches : [habitations 1 à 3](images/habitations-1-3.jpg),
+[habitations 4 à 6](images/habitations-4-6.jpg).
+
+| # | Habitation | Ce qu'elle dit de la tribu |
+| --- | --- | --- |
+| 1 | Hutte de rondins | sédentaire, vit du bois |
+| 2 | Tente de peaux | nomade, suit les troupeaux |
+| 3 | Dôme de pierres sèches | bâtit avec les blocs des ruines, sans le savoir |
+| 4 | Abri adossé à une ruine | vit littéralement dans les restes des anciens |
+| 5 | Hutte enterrée | se protège du froid sous la terre et la neige |
+| 6 | Nid sur pilotis | vit au-dessus de l'eau ou de la neige profonde |
+
+Règle commune : dans un monde où les personnages sont en noir et blanc, le
+feu des portes et des fenêtres est la seule couleur chaude. Chaque
+habitation en a un, visible de loin.
+
+### Tribus et biomes (proposé)
+
+Le jeu traverse plusieurs milieux. Chaque milieu a sa tribu et son habitat.
+Répartition proposée, à valider :
+
+| Milieu | Habitation | Pourquoi |
+| --- | --- | --- |
+| Haute montagne, glaciers | hutte enterrée (5) | le sol protège du froid |
+| Plaines gelées | tente de peaux (2) | rien pour bâtir, on se déplace |
+| Forêt | hutte de rondins (1) | le bois est partout |
+| Hauts plateaux de ruines | abri adossé (4) | les dalles anciennes servent de murs |
+| Désert, pierre nue | dôme de pierres sèches (3) | frais le jour, tiède la nuit |
+| Lacs, marais, côtes | nid sur pilotis (6) | l'eau monte et descend |
+
+Ce que toutes les tribus ont en commun : la cape noire et le masque à barre
+de lumière. Ce qui pourrait les distinguer : le signe tracé au-dessus de la
+barre (soleil levant, graduations, trait vertical…), comme si chaque tribu
+n'avait gardé qu'un fragment du savoir des anciens.
+
+Piste liée au thème de l'équilibre : certains milieux souffrent de trop
+d'ombre (la glace), d'autres de trop de lumière (le désert). Dans les
+premiers on apporte la lumière ; dans les seconds, c'est l'ombre qu'il faut
+apporter.
 
 ### Le rite
 
