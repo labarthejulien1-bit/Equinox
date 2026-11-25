@@ -77,7 +77,11 @@ Les souvenirs racontent l'histoire à l'envers : d'abord ce que les anciens
 savaient faire, puis qu'ils ont vu venir l'hiver, enfin qu'ils attendaient
 quelqu'un.
 
-| Monde | Ambiance | Ce qu'on y apprend des anciens | Souvenir |
+Le tableau ci-dessous donne cet arc en cinq temps. Il a été écrit quand le
+jeu était pensé comme un seul monde gelé ; il faudra le redistribuer sur les
+six milieux (voir § 8) quand la répartition des niveaux sera faite.
+
+| Temps du récit | Ambiance d'origine | Ce qu'on y apprend des anciens | Souvenir |
 | --- | --- | --- | --- |
 | I. Les glaces | blanc, bleu nuit | ils guidaient la lumière | ✅ « Ils ne priaient pas le soleil : ils le guidaient. » |
 | II. Le dégel | turquoise, premiers verts | ils en faisaient de la chaleur | « La lumière serrée dans le poing devient flamme. » |
@@ -85,7 +89,7 @@ quelqu'un.
 | IV. Les vents | or, ocre | ils ont vu venir le froid | « Le ciel se fermait. Nous avons compté les étés qu'il restait. » |
 | V. L'équinoxe | or et nuit à parts égales | ils ont tout préparé pour nous | « Nous avons rangé le jour sous la glace. À vous de l'ouvrir. » |
 
-La répartition des dix machines entre ces mondes reste à faire (voir § 7).
+La répartition des dix machines entre les milieux reste à faire (voir § 7).
 
 ## 4. Contrôles
 
@@ -269,11 +273,13 @@ Conséquence pour le dessin : ce qui est abîmé l'est par le temps (un anneau
 - **Habitées sans être comprises** ✅ (sur la planche) : maisons adossées à un
   gnomon, linge tendu entre un anneau et un escalier, enfants sur les marches.
 
-### Variantes par monde
+### Variantes par milieu (pistes)
 
-Temple-phare au sommet (I), temple-forge à lentille (II), temple-écluse à
-bassin en gradins (III), temple-girouette dans une gorge venteuse (IV),
-portes jumelles jour/nuit (V).
+Temple-phare au sommet (montagne), temple-écluse à bassin en gradins (lacs),
+temple-forge à lentille (désert), temple enfoui sous les racines (forêt),
+temple à ciel ouvert sur son parvis (plateaux), temple-girouette dans le vent
+(plaines). Le dernier temple, celui de l'équinoxe, a des portes jumelles :
+une pour le jour, une pour la nuit.
 
 ## 8. Le petit peuple et son village
 
@@ -326,10 +332,9 @@ Règle commune : dans un monde où les personnages sont en noir et blanc, le
 feu des portes et des fenêtres est la seule couleur chaude. Chaque
 habitation en a un, visible de loin.
 
-### Tribus et biomes (proposé)
+### Tribus et milieux ✅
 
-Le jeu traverse plusieurs milieux. Chaque milieu a sa tribu et son habitat.
-Répartition proposée, à valider :
+Le jeu traverse **six milieux**. Chaque milieu a sa tribu et son habitat.
 
 | Milieu | Habitation | Pourquoi |
 | --- | --- | --- |
@@ -341,14 +346,21 @@ Répartition proposée, à valider :
 | Lacs, marais, côtes | nid sur pilotis (6) | l'eau monte et descend |
 
 Ce que toutes les tribus ont en commun : la cape noire et le masque à barre
-de lumière. Ce qui pourrait les distinguer : le signe tracé au-dessus de la
-barre (soleil levant, graduations, trait vertical…), comme si chaque tribu
-n'avait gardé qu'un fragment du savoir des anciens.
+de lumière.
 
-Piste liée au thème de l'équilibre : certains milieux souffrent de trop
-d'ombre (la glace), d'autres de trop de lumière (le désert). Dans les
-premiers on apporte la lumière ; dans les seconds, c'est l'ombre qu'il faut
-apporter.
+Encore à décider :
+
+- **La répartition des niveaux.** Le jeu final comptera plus de 30 niveaux,
+  répartis équitablement entre les six milieux (soit cinq ou plus par
+  milieu). L'ordre de traversée et la répartition restent à faire.
+- **Un signe par tribu** (proposé) : le signe tracé au-dessus de la barre de
+  lumière changerait d'une tribu à l'autre (soleil levant, graduations, trait
+  vertical…), comme si chacune n'avait gardé qu'un fragment du savoir ancien.
+- **Le sens du déséquilibre** (proposé) : certains milieux souffrent de trop
+  d'ombre (la glace), d'autres de trop de lumière (le désert). Dans les
+  premiers on apporte la lumière ; dans les seconds, l'ombre.
+- **Les couleurs** : chaque milieu aura besoin de sa palette de lumière et de
+  sa palette d'ombre. Seule celle de la glace existe aujourd'hui.
 
 ### Le rite
 
@@ -424,10 +436,20 @@ qui l'attend n'est jamais atteint par le soleil direct.
 
 ## 10. Feuille de route
 
+Cible du jeu final : **plus de 30 niveaux**, répartis équitablement sur les
+six milieux. Les quatre niveaux actuels servent à tester le moteur et les
+règles ; ils se passent tous dans la glace.
+
 1. ✅ **v0.1** — moteur de lumière, direction artistique, niveau 1, PWA.
 2. ✅ **v0.2** — règles réutilisables, gel de l'eau, niveaux 2 à 4, sauvegarde
-   de la progression, choix des niveaux.
-3. **v0.3** — sons (nappes, tintement du cristal, eau), nouveaux éléments
-   (pluie, végétation), monde I complet.
-4. **v0.4** — emballage Capacitor, APK de test, retour haptique.
-5. **v1.0** — mondes II à V, AAB signé pour le Play Store.
+   de la progression, choix des niveaux, lever de soleil progressif, bulles
+   pour jouer au pouce.
+3. ✅ **Conception** — histoire, sens du titre, direction des temples, dix
+   machines, design du petit peuple, six habitations, six milieux.
+4. **À venir, dans un ordre à décider** :
+   - mettre le nouveau design dans le jeu (personnages, temples, habitations) ;
+   - premières machines, un niveau par machine ;
+   - une palette d'ombre et de lumière par milieu ;
+   - sons (nappes, tintement du cristal, eau) ;
+   - répartition des 30 niveaux et des machines entre les milieux ;
+   - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.
