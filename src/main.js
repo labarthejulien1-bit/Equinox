@@ -1,6 +1,9 @@
 // Point d'entrée du jeu : on assemble les morceaux et on lance la boucle.
+//
+// Le code est écrit pour tourner aussi SANS étape de construction : tous les
+// imports sont relatifs et se terminent par .js, et la feuille de style est
+// chargée par index.html. Un simple serveur de fichiers suffit donc à jouer.
 
-import './style.css';
 import { levels } from './levels/index.js';
 import { createGame, update } from './game/game.js';
 import { createRenderer } from './game/render.js';
@@ -69,7 +72,7 @@ window.__equinox = {
 
 // Mode hors-ligne (PWA) : seulement sur le site publié, pas en développement
 // ni dans l'application Android.
-if (import.meta.env.PROD && !window.Capacitor) {
+if (import.meta.env?.PROD && !window.Capacitor) {
   window.addEventListener('load', () => {
     try {
       navigator.serviceWorker.register('./sw.js').catch(() => {});

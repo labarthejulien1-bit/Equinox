@@ -1,5 +1,9 @@
 # Publie le jeu sur GitHub Pages à chaque mise à jour de la branche main.
-# À activer une seule fois : Settings → Pages → Source : « GitHub Actions ».
+# Réglage recommandé : Settings → Pages → Source : « GitHub Actions ».
+#
+# Deux étapes séparées, volontairement : la publication ne démarre qu'une fois
+# le paquet du jeu bien enregistré par GitHub (dans une seule étape, elle le
+# cherchait parfois avant qu'il soit disponible, et échouait).
 name: Publier la démo (GitHub Pages)
 
 on:
@@ -17,11 +21,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
+    name: Vérifier et construire
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,5 +37,14 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
+  deploy:
+    name: Publier
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
