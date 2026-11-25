@@ -12,6 +12,7 @@ import { TAU, smooth } from '../engine/vec.js';
 import { mirrorGeometry } from '../engine/light.js';
 import { getPalettes, mix } from './palette.js';
 import { housePolygon, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
+import { sliderBubbles } from './sliders.js';
 
 const SNOW = 7; // épaisseur de la couche de neige
 const ROCK_RIM = 6; // épaisseur du liseré de roche
@@ -43,7 +44,7 @@ export function createRenderer(canvas) {
   const lit = litCanvas.getContext('2d');
 
   // La « vue » : comment passer des unités monde aux pixels de l'écran.
-  const view = { scale: 1, ox: 0, oy: 0, dpr: 1, left: 0, top: 0, right: 360, bottom: 720 };
+  const view = { scale: 1, ox: 0, oy: 0, dpr: 1, left: 0, top: 0, right: 360, bottom: 720, w: 360, h: 720 };
 
   function resize(level) {
     const rect = canvas.getBoundingClientRect();
@@ -64,6 +65,8 @@ export function createRenderer(canvas) {
     view.top = -view.oy / s;
     view.right = view.left + rect.width / s;
     view.bottom = view.top + rect.height / s;
+    view.w = rect.width; // taille de l'écran en pixels, pour l'interface
+    view.h = rect.height;
   }
 
   const world = (c) => {
@@ -122,6 +125,12 @@ export function createRenderer(canvas) {
 
     // Étape 3 : effets et repères.
     drawOverlay(ctx, g);
+
+    // Bulles du bas de l'écran (dessinées en pixels d'écran, pas en unités monde).
+    if (g.started) {
+      ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
+      drawSliders(ctx, g);
+    }
   }
 
   // ───────────────────────────── La scène ─────────────────────────────
@@ -944,6 +953,59 @@ export function createRenderer(canvas) {
     if (g.started) drawGuides(c, g);
   }
 
+  /** Les deux bulles du bas de l'écran : soleil et nuage, pour jouer au pouce. */
+  function drawSliders(c, g) {
+    const drag = g.drag;
+    for (const b of sliderBubbles(g, view)) {
+      const held = drag && drag.slider && drag.type === b.type;
+      // Tant qu'on tient une bulle, sa ligne apparaît en filigrane.
+      if (held) {
+        c.strokeStyle = 'rgba(255,255,255,0.16)';
+        c.lineWidth = 1.5;
+        c.lineCap = 'round';
+        c.setLineDash([0.1, 8]);
+        c.beginPath();
+        c.moveTo(b.r + 8, b.y);
+        c.lineTo(view.w - b.r - 8, b.y);
+        c.stroke();
+        c.setLineDash([]);
+      }
+      // Le disque
+      c.fillStyle = held ? 'rgba(30, 44, 92, 0.85)' : 'rgba(18, 27, 58, 0.6)';
+      c.beginPath();
+      c.arc(b.x, b.y, b.r, 0, TAU);
+      c.fill();
+      c.strokeStyle = held ? 'rgba(255, 226, 160, 0.95)' : 'rgba(255, 255, 255, 0.35)';
+      c.lineWidth = 1.4;
+      c.stroke();
+      // Le pictogramme
+      if (b.type === 'sun') {
+        c.fillStyle = '#ffe2a0';
+        c.beginPath();
+        c.arc(b.x, b.y, 5.2, 0, TAU);
+        c.fill();
+        c.strokeStyle = '#ffe2a0';
+        c.lineWidth = 1.5;
+        c.lineCap = 'round';
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * TAU;
+          c.beginPath();
+          c.moveTo(b.x + Math.cos(a) * 8.2, b.y + Math.sin(a) * 8.2);
+          c.lineTo(b.x + Math.cos(a) * 11, b.y + Math.sin(a) * 11);
+          c.stroke();
+        }
+      } else {
+        c.fillStyle = '#eef3ff';
+        c.beginPath();
+        c.arc(b.x - 5, b.y + 2, 4.2, 0, TAU);
+        c.arc(b.x, b.y - 2, 5.6, 0, TAU);
+        c.arc(b.x + 5.5, b.y + 1.5, 4.4, 0, TAU);
+        c.rect(b.x - 5, b.y + 1, 10.5, 5.2);
+        c.fill();
+      }
+    }
+  }
+
   /** Repères tactiles : ce qu'on peut toucher, et comment. */
   function drawGuides(c, g) {
     const L = g.level;
@@ -980,7 +1042,8 @@ export function createRenderer(canvas) {
 
     // Anneau autour du soleil tant que le joueur ne l'a pas encore déplacé
     const sun = g.light.sun;
-    if (!g.touched.sun) {
+    const viaSlider = drag && drag.slider && drag.type === 'sun';
+    if (!g.touched.sun || viaSlider) {
       c.strokeStyle = `rgba(255,240,190,${0.35 + 0.45 * pulse})`;
       c.lineWidth = 1.6;
       c.beginPath();

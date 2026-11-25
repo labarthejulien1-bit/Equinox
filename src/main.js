@@ -37,7 +37,7 @@ const ui = createUI({
   onNext: () => play(Math.min(index + 1, levels.length - 1)),
 });
 
-attachInput(canvas, renderer.view, () => game);
+attachInput(canvas, renderer.view, () => game, ui.touch);
 
 const resize = () => renderer.resize(game.level);
 window.addEventListener('resize', resize);

@@ -58,6 +58,7 @@ Tactile uniquement, un seul doigt, uniquement des « glisser ».
 | --- | --- | --- |
 | Soleil | glisser le long de son arc | ✅ |
 | Nuage | glisser le long de son rail | ✅ |
+| Bulles du bas de l'écran | glisser la bulle soleil ou la bulle nuage sur sa ligne : toute la largeur de l'écran = toute la course de l'objet. Pour jouer d'une main, au pouce | ✅ |
 | Miroir | tourner le doigt autour du miroir (aide à la visée au lâcher) | ✅ |
 | Miroir flottant | idem ; sa hauteur suit le niveau de l'eau | ✅ |
 | Porteur de miroir | aucun geste : il avance dès que le chemin le porte | ✅ |

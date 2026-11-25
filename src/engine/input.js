@@ -1,23 +1,32 @@
 // Contrôles tactiles (et souris sur ordinateur).
 //
-// Trois gestes, tous des « glisser » :
+// Tous les gestes sont des « glisser » :
 //   - le soleil suit le doigt le long de son arc ;
 //   - le nuage suit le doigt le long de son rail ;
-//   - un miroir tourne quand le doigt tourne autour de lui.
+//   - un miroir tourne quand le doigt tourne autour de lui ;
+//   - en bas de l'écran, deux bulles permettent de déplacer le soleil et le
+//     nuage au pouce, sans lever la main (voir game/sliders.js).
 
 import { clamp, rad, dist } from './vec.js';
 import { sunPosition, settleMirror } from '../game/game.js';
+import { sliderBubbles, moveSlider } from '../game/sliders.js';
 
-export function attachInput(canvas, view, getGame) {
+/**
+ * @param onTouch appelée à chaque appui, avec la position du doigt dans la
+ *                page (sert à l'interface, par exemple pour effacer l'indice)
+ */
+export function attachInput(canvas, view, getGame, onTouch = () => {}) {
   let drag = null;
 
+  // Position du doigt en pixels, par rapport au coin du canvas.
+  const toScreen = (e) => {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
   // Position du doigt en unités monde.
   const toWorld = (e) => {
-    const r = canvas.getBoundingClientRect();
-    return {
-      x: (e.clientX - r.left - view.ox) / view.scale,
-      y: (e.clientY - r.top - view.oy) / view.scale,
-    };
+    const s = toScreen(e);
+    return { x: (s.x - view.ox) / view.scale, y: (s.y - view.oy) / view.scale };
   };
 
   // Angle du soleil correspondant à un point de l'écran.
@@ -29,23 +38,37 @@ export function attachInput(canvas, view, getGame) {
   canvas.addEventListener('pointerdown', (e) => {
     const g = getGame();
     if (!g.started || drag) return;
-    const p = toWorld(e);
+    onTouch(e.clientX, e.clientY);
     const L = g.level;
 
-    // On cherche l'objet le plus proche du doigt (zones généreuses).
-    let best = null;
-    const consider = (score, make) => {
-      if (score < 1 && (!best || score < best.score)) best = { score, make };
-    };
-    for (const m of g.mirrors) {
-      if (!m.free) continue;
-      consider(dist(p, m) / 38, () => ({ type: 'mirror', mirror: m, last: null }));
+    // 1. Les bulles du bas de l'écran passent avant tout le reste.
+    const s = toScreen(e);
+    let grabbed = null;
+    for (const b of sliderBubbles(g, view)) {
+      const d = dist(s, b);
+      if (d < b.r + 10 && (!grabbed || d < grabbed.d)) grabbed = { d, b };
     }
-    consider(dist(p, sunPosition(g)) / 42, () => ({ type: 'sun', offset: g.sunAngle - sunAngleAt(g, p) }));
-    if (L.cloud) {
-      const cdx = Math.abs(p.x - g.cloudX) / (L.cloud.w / 2 + 14);
-      const cdy = Math.abs(p.y - L.cloud.y) / (L.cloud.h / 2 + 18);
-      consider(Math.max(cdx, cdy) * 0.9, () => ({ type: 'cloud', offset: g.cloudX - p.x }));
+
+    // 2. Sinon, on cherche l'objet le plus proche du doigt (zones généreuses).
+    let best = null;
+    if (grabbed) {
+      const b = grabbed.b;
+      best = { make: () => ({ type: b.type, slider: true, offset: b.x - s.x }) };
+    } else {
+      const p = toWorld(e);
+      const consider = (score, make) => {
+        if (score < 1 && (!best || score < best.score)) best = { score, make };
+      };
+      for (const m of g.mirrors) {
+        if (!m.free) continue;
+        consider(dist(p, m) / 38, () => ({ type: 'mirror', mirror: m, last: null }));
+      }
+      consider(dist(p, sunPosition(g)) / 42, () => ({ type: 'sun', offset: g.sunAngle - sunAngleAt(g, p) }));
+      if (L.cloud) {
+        const cdx = Math.abs(p.x - g.cloudX) / (L.cloud.w / 2 + 14);
+        const cdy = Math.abs(p.y - L.cloud.y) / (L.cloud.h / 2 + 18);
+        consider(Math.max(cdx, cdy) * 0.9, () => ({ type: 'cloud', offset: g.cloudX - p.x }));
+      }
     }
 
     if (!best) return;
@@ -61,9 +84,15 @@ export function attachInput(canvas, view, getGame) {
     if (!drag || e.pointerId !== drag.id) return;
     const g = getGame();
     if (g !== drag.game) return; // le niveau a changé pendant le geste
-    const p = toWorld(e);
     const L = g.level;
 
+    if (drag.slider) {
+      // La bulle suit le doigt sur sa ligne ; l'objet suit la bulle.
+      moveSlider(drag.type, g, view, toScreen(e).x + drag.offset);
+      return;
+    }
+
+    const p = toWorld(e);
     if (drag.type === 'sun') {
       let a = sunAngleAt(g, p) + drag.offset;
       if (a < -Math.PI / 2) a += Math.PI * 2; // évite un saut sous l'horizon gauche

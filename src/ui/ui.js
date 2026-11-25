@@ -105,5 +105,16 @@ export function createUI({ levels, isDone, onStart, onRestart, onSelect, onNext 
     }
   }
 
-  return { update };
+  /**
+   * Appelée à chaque appui sur le jeu. L'indice est écrit par-dessus les
+   * bulles du bas de l'écran : si le doigt se pose dessus, il s'efface (il
+   * reviendra quand il aura autre chose à dire).
+   */
+  function touch(x, y) {
+    if (!hint.classList.contains('visible')) return;
+    const r = hint.getBoundingClientRect();
+    if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 12 && y <= r.bottom + 12) hint.classList.remove('visible');
+  }
+
+  return { update, touch };
 }

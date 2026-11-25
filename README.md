@@ -79,13 +79,14 @@ src/
   style.css             mise en page, écran titre, carte souvenir
   engine/               briques réutilisables d'un niveau à l'autre
     light.js            ★ rayons, zones éclairées, reflets des miroirs
-    input.js            gestes tactiles (soleil, nuage, miroirs)
+    input.js            gestes tactiles (soleil, nuage, miroirs, bulles)
     vec.js              petites fonctions mathématiques
   game/
     game.js             ★ règles : la glace fond, l'eau gèle, la porte s'ouvre…
     render.js           ★ dessin : palette d'ombre + palette de lumière
     palette.js          toutes les couleurs (ère glaciaire → dégel)
     progress.js         niveaux terminés, gardés sur l'appareil
+    sliders.js          bulles du bas de l'écran (soleil et nuage au pouce)
   levels/
     index.js            la liste des niveaux, dans l'ordre
     level1.js … level4.js   un fichier par niveau : formes, positions, textes
