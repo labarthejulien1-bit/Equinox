@@ -189,18 +189,30 @@ changeaient en chaleur, en mouvement ou en vie.
 À ne pas reprendre des monolithes : les blocs en lévitation. Le jeu obéit à
 des règles physiques ; rien n'y flotte.
 
-### Ce que leurs machines savaient faire (proposé)
+### Les machines ✅
 
-Chaque verbe devient une mécanique ; chaque monde en introduit un ou deux.
+Dix machines retenues. Chacune suit une seule règle et réagit à ce qu'elle
+reçoit ; on les répartira au fil des niveaux pour varier les énigmes.
+Planches de référence : [machines 1 à 5](images/machines-1-5.jpg),
+[machines 6 à 10](images/machines-6-10.jpg).
 
-| Verbe | Machine | Dans le jeu |
-| --- | --- | --- |
-| Guider | héliostat, miroirs | ✅ renvoyer la lumière |
-| Conduire | conduits gravés | la lumière traverse la roche d'un point à un autre |
-| Concentrer | lentille, miroir courbe | feu, fonte rapide, forge |
-| Garder | cristal-mémoire | emporter du jour dans la nuit |
-| Mouvoir | « poumon de pierre » : l'air chauffé pousse un piston | portes, monte-charges, pompes |
-| Faire pousser | serre sous la glace | végétation, ponts de lianes |
+| # | Machine | Verbe | Règle | Énigme type | Coût |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Oculus | filtrer | ne laisse passer qu'un rayon, sous un angle précis | trouver la position exacte du soleil | léger |
+| 2 | Lentille sur rail | concentrer | rassemble la lumière en un point brûlant | aligner soleil, lentille et cible | moyen |
+| 3 | Cristal-mémoire | garder | se charge au soleil, puis éclaire quelques secondes | avoir lumière et ombre « en même temps » | moyen |
+| 4 | Conduit | conduire | la lumière entre par un œil et ressort par un autre | atteindre un lieu fermé | léger à moyen |
+| 5 | Poumon de pierre | mouvoir | se dilate à la lumière, se rétracte à l'ombre | monter ou descendre un miroir, un villageois | moyen |
+| 6 | Prisme | diviser | coupe un faisceau en deux | deux cibles avec un seul soleil | léger à moyen |
+| 7 | Cadran d'ombre | mesurer | la pointe de l'ombre sert de clé | poser l'ombre sur la bonne graduation | moyen |
+| 8 | Vanne solaire | libérer l'eau | s'ouvre à la lumière, se referme à l'ombre | décider où va l'eau | léger |
+| 9 | Serre | faire pousser | lumière et eau font pousser une liane | un pont vivant, qui fait aussi de l'ombre | lourd |
+| 10 | Cheminée à vent | souffler | chauffée, elle pousse le nuage | déplacer le nuage avec la lumière | moyen |
+
+S'y ajoute l'héliostat (miroir orientable), déjà dans le jeu.
+
+Règle d'introduction : une seule machine nouvelle par niveau, d'abord seule,
+puis combinée avec les précédentes deux ou trois niveaux plus tard.
 
 ### Pourquoi tout s'est arrêté (proposé)
 
