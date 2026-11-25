@@ -10,7 +10,7 @@
 // Un niveau (src/levels/) ne fait que LISTER ses éléments ; ce fichier les
 // fait vivre. Il ne dessine rien (voir render.js) : on peut le tester avec Node.
 
-import { rad, clamp, smooth, pointInPolygon } from '../engine/vec.js';
+import { rad, clamp, smooth, pointInPolygon, distToPolygon } from '../engine/vec.js';
 import {
   visibilityPolygon,
   traceBeams,
@@ -26,6 +26,14 @@ export const SLICES = 12; // finesse des faisceaux (tranches par miroir)
 // matière : c'est le liseré clair qu'on voit sur les surfaces éclairées.
 const BITE = { rock: 14, cloud: 12, ice: 12, house: 7, door: 2.5 };
 const biteOf = (owner) => BITE[typeof owner === 'string' ? owner : owner.kind] || 0;
+
+// Lever et coucher du soleil : la lumière ne s'allume pas d'un coup. Elle
+// monte à mesure que le soleil s'éloigne du relief (sur DAWN_ZONE unités) ou
+// sort du nuage (sur CLOUD_ZONE unités).
+const DAWN_ZONE = 40;
+const CLOUD_ZONE = 16;
+// Les teintes d'aube durent plus longtemps que la montée de la lumière.
+const DAWN_COLOR_ZONE = 105;
 
 const byId = (list, id) => list.find((e) => e.def.id === id);
 const pt = ([x, y]) => ({ x, y });
@@ -280,6 +288,14 @@ export function computeLight(g) {
   const hidden = pointInPolygon(sun, L.ground) || (L.cloud ? pointInPolygon(sun, cloudPolygon(g)) : false);
   const vis = hidden ? null : visibilityPolygon(sun.x, sun.y, segs, biteOf);
 
+  // intensity : force de la lumière du jour, de 0 (nuit) à 1 (plein jour).
+  // dawn : teinte d'aube, forte quand le soleil est bas ou frôle le relief.
+  const clear = smooth(distToPolygon(sun, L.ground) / DAWN_ZONE);
+  const outOfCloud = L.cloud ? smooth(distToPolygon(sun, cloudPolygon(g)) / CLOUD_ZONE) : 1;
+  const intensity = hidden ? 0 : Math.min(clear, outOfCloud);
+  const low = 1 - smooth((Math.sin(g.sunAngle) - 0.45) / 0.4);
+  const dawn = hidden ? 1 : Math.max(low, 1 - smooth(distToPolygon(sun, L.ground) / DAWN_COLOR_ZONE));
+
   const active = g.mirrors.filter((m) => m.free);
   const beams = traceBeams(hidden ? null : sun, active, segs, SLICES, biteOf);
   for (const m of g.mirrors) m.lit = beams.some((b) => b.mirror === m);
@@ -320,7 +336,18 @@ export function computeLight(g) {
     }
   }
 
-  return { sun, sunHidden: hidden, sunPoly: vis ? vis.points : null, beams, beamPolys, points, crystalLit, waterHits };
+  return {
+    sun,
+    sunHidden: hidden,
+    intensity,
+    dawn,
+    sunPoly: vis ? vis.points : null,
+    beams,
+    beamPolys,
+    points,
+    crystalLit,
+    waterHits,
+  };
 }
 
 /**
@@ -374,7 +401,7 @@ export function update(g, dt) {
     const e = Math.min(1.5, ice.exposure);
     ice.heating = e > 0;
     if (e > 0) {
-      ice.melt += (dt * e) / ice.def.meltTime;
+      ice.melt += (dt * e * light.intensity) / ice.def.meltTime; // lumière d'aube : fonte lente
       if (Math.random() < dt * 14) spawnDrip(g, ice);
     }
     if (ice.melt >= 1) {
@@ -390,7 +417,7 @@ export function update(g, dt) {
   // Eaux calmes : l'ombre les gèle, la lumière les dégèle.
   for (const f of g.frosts) {
     if (f.held) continue; // quelqu'un marche dessus : la glace tient bon
-    f.amount = clamp(f.amount + (f.lit ? -dt / f.def.meltTime : dt / f.def.freezeTime), 0, 1);
+    f.amount = clamp(f.amount + (f.lit ? (-dt * light.intensity) / f.def.meltTime : dt / f.def.freezeTime), 0, 1);
   }
 
   // Cours d'eau : ils coulent si leur source est ouverte, sinon ils se vident.
@@ -438,7 +465,7 @@ export function update(g, dt) {
 
   // Temple : le cristal se charge tant qu'il reçoit de la lumière.
   if (!g.temple.lit) {
-    g.temple.charge = clamp(g.temple.charge + (light.crystalLit ? dt / 1.4 : -dt / 0.9), 0, 1);
+    g.temple.charge = clamp(g.temple.charge + (light.crystalLit ? (dt * light.intensity) / 1.4 : -dt / 0.9), 0, 1);
     if (g.temple.charge >= 1) {
       g.temple.lit = true;
       g.events.push('temple-lit');

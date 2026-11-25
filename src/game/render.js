@@ -10,7 +10,7 @@
 
 import { TAU, smooth } from '../engine/vec.js';
 import { mirrorGeometry } from '../engine/light.js';
-import { getPalettes } from './palette.js';
+import { getPalettes, mix } from './palette.js';
 import { housePolygon, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
 
 const SNOW = 7; // épaisseur de la couche de neige
@@ -77,7 +77,7 @@ export function createRenderer(canvas) {
   function render(g) {
     const light = g.light;
     if (!light) return;
-    const pal = getPalettes(g.thaw);
+    const pal = getPalettes(g.thaw, light.dawn);
 
     // Zones éclairées par le soleil et les miroirs, sous forme de polygones.
     const shapes = [];
@@ -101,7 +101,9 @@ export function createRenderer(canvas) {
     world(ctx);
     drawScene(ctx, pal.shadow, g, false);
     screen(ctx);
+    ctx.globalAlpha = light.intensity; // à l'aube, le jour se pose en transparence sur la nuit
     ctx.drawImage(litCanvas, 0, 0);
+    ctx.globalAlpha = 1;
 
     // Lumières proches (temple, lanternes) : elles n'éclairent que le premier
     // plan autour d'elles, pas le ciel ni les montagnes lointaines.
@@ -166,15 +168,19 @@ export function createRenderer(canvas) {
 
     // Soleil (dessiné ici : il passe DERRIÈRE le relief du premier plan)
     const sun = g.light.sun;
-    const halo = c.createRadialGradient(sun.x, sun.y, 4, sun.x, sun.y, 78);
-    halo.addColorStop(0, 'rgba(255,238,170,0.75)');
-    halo.addColorStop(0.35, 'rgba(255,226,150,0.28)');
-    halo.addColorStop(1, 'rgba(255,220,140,0)');
+    // Plus il est bas, plus il est orangé, et plus son halo est large.
+    const dawn = g.light.dawn;
+    const glow = mix('#ffeeaa', '#ffb070', dawn);
+    const reach = 78 + 44 * dawn;
+    const halo = c.createRadialGradient(sun.x, sun.y, 4, sun.x, sun.y, reach);
+    halo.addColorStop(0, glow + 'c0');
+    halo.addColorStop(0.35, glow + '48');
+    halo.addColorStop(1, glow + '00');
     c.fillStyle = halo;
     c.beginPath();
-    c.arc(sun.x, sun.y, 78, 0, TAU);
+    c.arc(sun.x, sun.y, reach, 0, TAU);
     c.fill();
-    c.fillStyle = '#fff8dc';
+    c.fillStyle = mix('#fff8dc', '#ffd9a0', dawn);
     c.beginPath();
     c.arc(sun.x, sun.y, L.sun.radius, 0, TAU);
     c.fill();
@@ -811,7 +817,7 @@ export function createRenderer(canvas) {
     const cr = L.temple.crystal;
 
     // Faisceaux : un voile doré par-dessus tout
-    c.fillStyle = 'rgba(255, 206, 110, 0.30)';
+    c.fillStyle = `rgba(255, 206, 110, ${0.3 * g.light.intensity})`;
     for (const p of g.light.beamPolys) {
       poly(c, p);
       c.fill();

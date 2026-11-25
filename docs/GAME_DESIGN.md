@@ -78,6 +78,10 @@ Prune (silhouettes, économie de moyens).
   lumière (chaude) et en version ombre (froide). La scène est peinte en ombre,
   puis repeinte en lumière dans les zones éclairées : le bord est net, sans
   flou ni dégradé.
+- **Aube et crépuscule.** ✅ Le jour ne s'allume pas d'un coup : la lumière
+  monte à mesure que le soleil se dégage du relief, rose et dorée tant qu'il
+  est bas, blanche au zénith. Une lumière faible agit faiblement (fonte
+  lente).
 - **La nuit vit dans l'ombre.** ✅ Les étoiles n'apparaissent que là où le
   soleil ne passe pas.
 - **La lumière mord la matière.** ✅ Sur les surfaces éclairées, un liseré

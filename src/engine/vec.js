@@ -35,3 +35,19 @@ export function pointInPolygon(p, pts) {
 
 /** Transforme [[x, y], ...] en [{x, y}, ...]. */
 export const toPoints = (pairs) => pairs.map(([x, y]) => ({ x, y }));
+
+/** Distance entre le point p et le segment a–b. */
+export function distToSegment(p, a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const len2 = dx * dx + dy * dy || 1;
+  const t = clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / len2, 0, 1);
+  return Math.hypot(p.x - (a.x + dx * t), p.y - (a.y + dy * t));
+}
+
+/** Distance entre le point p et le bord d'un polygone. */
+export function distToPolygon(p, pts) {
+  let best = Infinity;
+  for (let i = 0; i < pts.length; i++) best = Math.min(best, distToSegment(p, pts[i], pts[(i + 1) % pts.length]));
+  return best;
+}

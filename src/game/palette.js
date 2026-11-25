@@ -89,31 +89,65 @@ const THAW = {
   },
 };
 
+// Teintes d'aube et de crépuscule : la lumière est rose et dorée quand le
+// soleil est bas, puis blanchit en montant. Seule la palette de lumière change.
+const DAWN = {
+  skyTop: '#7f93d8',
+  skyMid: '#f5bfb2',
+  skyBot: '#ffcb8a',
+  far1: '#f5d2cf',
+  far2: '#e4b8c6',
+  far3: '#c99fbf',
+  rock: '#b87f6a',
+  rockRim: '#f3b48a',
+  snow: '#ffe3cf',
+  ice: '#f1e3f3',
+  cloud: '#ffdfd4',
+  water: '#b7cbf0',
+  riverIce: '#ecd8ec',
+  caveBack: '#a8755a',
+  stone: '#f7d7a4',
+  pineSnow: '#ffe3cf',
+};
+// Ces couleurs changent avec le dégel (neige → herbe…) : on les teinte moins
+// à l'aube une fois le monde dégelé, pour ne pas reblanchir l'herbe.
+const THAWED = ['snow', 'pineSnow', 'far1', 'far2', 'far3', 'riverIce'];
+
 function hexToRgb(hex) {
   const n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-function mix(a, b, t) {
+/** Mélange deux couleurs '#rrggbb' (t = 0 → a, t = 1 → b). */
+export function mix(a, b, t) {
   const ca = hexToRgb(a);
   const cb = hexToRgb(b);
   const c = ca.map((v, i) => Math.round(v + (cb[i] - v) * t));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
+  return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
 }
 
-let cacheKey = -1;
+let cacheKey = '';
 let cache = null;
 
-/** Renvoie { lit, shadow } pour un degré de dégel entre 0 et 1. */
-export function getPalettes(thaw) {
-  const key = Math.round(thaw * 200);
+/**
+ * Renvoie { lit, shadow } pour un degré de dégel (thaw) et une teinte d'aube
+ * (dawn), tous deux entre 0 et 1.
+ */
+export function getPalettes(thaw, dawn = 0) {
+  const t = Math.round(thaw * 200) / 200;
+  const d = Math.round(dawn * 50) / 50;
+  const key = t + '|' + d;
   if (key === cacheKey) return cache;
-  const t = key / 200;
   const build = (mode) => {
     const out = {};
     for (const name in ICE[mode]) {
       const to = THAW[mode][name];
-      out[name] = to ? mix(ICE[mode][name], to, t) : ICE[mode][name];
+      let color = to ? mix(ICE[mode][name], to, t) : ICE[mode][name];
+      if (mode === 'lit' && DAWN[name]) {
+        const k = THAWED.includes(name) ? d * (1 - 0.65 * t) : d;
+        color = mix(color, DAWN[name], k * 0.85);
+      }
+      out[name] = color;
     }
     return out;
   };
