@@ -386,6 +386,36 @@ ressort dans l'ombre, à l'inverse des personnages.
 Pistes de ciel, non dessinées : un panache de neige soufflé au sommet, une mer
 de nuages en contrebas, l'aurore de nuit (déjà dans la palette Aurore).
 
+### Milieu 2 — Plaines gelées ✅
+
+Planches : [faune, flore et roches](images/decors-plaines-1.jpg),
+[glace, neige, eau et traces du peuple](images/decors-plaines-2.jpg). Les
+24 éléments sont retenus.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | mammouth laineux (1), troupeau de bêtes à bois (2), renard des neiges (3), chouette blanche (4), vol d'oies (5), ossements géants (6) | le mammouth (une ombre qui marche), les ossements (une ombre rayée) |
+| Flore et roches | herbes sèches (1), linaigrettes (2), bouleau nain (3), bloc erratique (4), coussins de mousse et de lichen (5), roseaux (6) | le bloc erratique |
+| Glace, neige et eau | butte de glace (1), congères (2), rivière gelée (3), glaces empilées (4), source chaude (5), neige soufflée par le vent (6) | la butte et les glaces (elles fondent), la rivière (elle gèle), la vapeur de la source (elle tamise la lumière) |
+| Traces du peuple et des anciens | séchoir à poissons (1), mât aux bois (2), trou de pêche (3), enclos (4), route ancienne (5), gnomon et ses bornes (6) | le gnomon, cadran solaire des anciens |
+
+Propre aux plaines :
+
+- **Tout ce qui dépasse compte.** Sur un sol plat, la moindre chose dressée
+  projette une ombre longue et très lisible.
+- **Le gnomon** : une grande pierre dressée par les anciens, et des bornes au
+  sol. Son ombre passe de borne en borne quand le soleil se déplace. C'est une
+  énigme toute trouvée pour ce milieu.
+- **Une barre horizontale fait une grande ombre** dans ce monde en coupe
+  (sous le séchoir, sous l'enclos). À placer avec soin dans les niveaux.
+
+Règles à ajouter au jeu si on s'en sert : une ombre qui se déplace toute seule
+(le mammouth), une vapeur qui affaiblit la lumière sans l'arrêter (la source
+chaude).
+
+Piste de ciel, non dessinée : un halo autour du soleil, avec deux faux soleils
+de chaque côté, comme on en voit par grand froid.
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
