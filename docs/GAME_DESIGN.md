@@ -177,7 +177,36 @@ trop proche d'une aube permanente.
 État : choisies, **pas encore dans le jeu** (seule A y est, c'est la palette
 actuelle).
 
-### Milieux 2 à 6
+### Milieu 2 — Plaines gelées ✅
+
+Deux palettes retenues. Planche : [Steppe pâle et Toundra rousse](images/palettes-plaines.jpg).
+
+| | A · Steppe pâle | C · Toundra rousse |
+| --- | --- | --- |
+| Esprit | paille et bleu gris, l'herbe sèche perce la neige | sol roux de mousses et de lichens, neige en plaques |
+| Ciel (haut) | `#a9c4d6` / `#151a2e` | `#9db7c9` / `#16142a` |
+| Ciel (milieu) | `#dfe9ea` / `#262d47` | `#dfe4e0` / `#2a2442` |
+| Horizon | `#f7efd9` / `#3f4664` | `#f6e6d2` / `#463a5c` |
+| Lointain 1 | `#e3e6dc` / `#444a66` | `#e6ddd4` / `#4a3e5e` |
+| Lointain 2 | `#d2d6c4` / `#3a405a` | `#d7c4b6` / `#40344f` |
+| Lointain 3 | `#bfc3a8` / `#30364e` | `#c4a898` / `#362a42` |
+| Sol | `#fbf8ee` / `#6c7696` (neige) | `#c9603a` / `#5a2c40` (mousse rousse) |
+| Plaques de neige | — | `#fffaf0` / `#8a80a8` |
+| Herbe, lichen | `#c9a85a` / `#5a5448` | `#f3b04a` / `#6a4a4a` |
+| Liseré de roche | `#d9c08a` / `#232840` | `#e0a070` / `#281c34` |
+| Corps de la roche | `#1a1e33` | `#1c1428` |
+| Eau | `#a8d8e6` / `#3a5a7a` | `#9fd0e0` / `#3a4f78` |
+| Nuage | `#ffffff` / `#7f89a8` | `#fff8f0` / `#857a9c` |
+| Pierre ancienne (clair / corps) | `#fff3d2` / `#414866` | `#fff0d0` / `#463e62` |
+
+Écartées pour ce milieu : « Banquise » (blanc et cyan, trop proche de
+l'Aurore de la montagne) et « Ciel d'acier » (gris-bleu d'orage).
+
+Décor propre aux plaines, apparu sur les planches : un **troupeau** de bêtes
+à bois (la tribu est nomade) et **l'ombre du nuage** qui traverse toute la
+plaine, très lisible sur un terrain plat.
+
+### Milieux 3 à 6
 
 À choisir, milieu par milieu.
 
