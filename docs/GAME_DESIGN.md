@@ -678,7 +678,7 @@ Un faisceau peut aussi être **faible** (la moitié d'un faisceau normal) : il
 | 20 | Brasero | créer | une lumière chaude l'allume ; il éclaire et réchauffe ensuite autour de lui, même à l'ombre |
 | 21 | Phare des anciens | créer | éteint au départ ; quand son œil reçoit de la lumière, il s'allume pour de bon et projette son propre faisceau, qu'on oriente |
 | 13 | Cristal teinté | exiger | son anneau montre la teinte qu'il attend ; toute autre lumière le laisse éteint |
-| 14 | Cristaux multiples | exiger | le temple a deux ou trois cristaux, à éclairer en même temps |
+| 14 | Cristaux multiples | exiger | le temple a deux ou trois cristaux, à éclairer en même temps ; chacun n'est atteignable que par un miroir précis (dès le niveau 6) |
 | 15 | Cristal d'équinoxe | exiger | il s'allume quand la frontière passe en son milieu : une moitié au soleil, l'autre dans l'ombre |
 | 16 | Cristal de nuit | exiger | l'inverse d'un cristal : il s'éveille quand on lui apporte l'ombre |
 | 18 | Serrure à ordre | exiger | trois cristaux à allumer dans le bon ordre, sans chronomètre : un cristal allumé le reste |
@@ -960,11 +960,11 @@ celles d'avant.
 | 3 | La digue de glace ✅ | l'ombre du relief, le miroir sur radeau | Bleu glacier |
 | 4 | Le pont de givre ✅ | le porteur de miroir | Bleu glacier |
 | 5 | L'aiguille ✅ | le miroir sur rail | Altitude (pas encore : le jeu n'a que la palette Bleu glacier) |
-| 6 | L'œil de pierre | le conduit | Altitude |
-| 7 | La corniche | la neige qui tombe | Minéral |
-| 8 | La veillée | la nuit, le cristal-mémoire | Aurore |
+| 6 | L'œil de pierre | le conduit ; le sanctuaire à deux cristaux | Altitude |
+| 7 | La corniche | la neige qui tombe ; un miroir caché dans la neige | Minéral |
+| 8 | La veillée | la nuit, les cristaux-mémoire | Aurore |
 | 9 | Les jumeaux | les miroirs jumelés | Minéral |
-| 10 | Le grand glacier | le temple à deux cristaux | Bleu glacier |
+| 10 | Le grand glacier | le sanctuaire à trois cristaux | Bleu glacier |
 
 **5 · L'aiguille.** Présents : le soleil, un miroir sur rail, une aiguille
 rocheuse, le temple sous un surplomb ; pas de nuage. Le miroir ne tourne
@@ -974,63 +974,152 @@ la paire soleil / position où le miroir reste au soleil et où le reflet passe
 sous le surplomb. Impossible autrement : le soleil direct n'entre jamais sous
 le surplomb.
 
-**6 · L'œil de pierre.** Présents : le soleil, le nuage, le miroir du
-village, une source et sa cascade, un conduit (un œil au sommet, son jumeau
-près du village), le temple. La cascade brise le faisceau, comme au niveau 2 ;
-mais ici l'ombre du nuage qui gèle la source couvre aussi le miroir.
-Solution : placer le soleil pour qu'il frappe l'œil du sommet ; l'œil jumeau
-éclaire le miroir sous le nuage, et l'on peut viser le temple. Impossible
-autrement : le nuage est trop large pour ombrer la source sans ombrer le
-miroir.
+#### La seconde moitié du chapitre : plusieurs faisceaux ✅
 
-**7 · La corniche.** Présents : le soleil, le nuage, le miroir du village, un
-porteur, une crevasse, deux corniches de neige, un socle, le temple. Une
-corniche chauffée s'effondre : celle du bas comblerait la crevasse, celle du
-haut barrerait le chemin. Solution : garder la corniche du haut à l'ombre du
-nuage, viser celle du bas avec le miroir ; le porteur traverse et pose son
-miroir, qui relaie la lumière vers le temple. Impossible autrement : la
-corniche du bas est sur une face que le soleil n'atteint jamais.
+Les niveaux 6 à 10 sont plus longs et plus difficiles que les cinq premiers
+(réécrits après l'essai des niveaux 1 à 5). Ce qui change :
 
-**8 · La veillée.** Présents : le soleil (qui peut se coucher), le miroir du
-village, un torrent, un porteur, un cristal-mémoire et un socle sur l'autre
-rive, le temple, un feu de camp. Sans nuage, seule la nuit peut geler le
-torrent ; mais la nuit, il n'y a plus de lumière à renvoyer. Solution : de
-jour, charger le cristal-mémoire avec le miroir ; coucher le soleil, le
-torrent gèle, le porteur traverse et pose son miroir près du cristal qui
-brille encore ; viser le temple avec cette lueur. Sans pression : si le
-cristal s'éteint, on refait le jour pour le recharger.
+- **Le sanctuaire a plusieurs cristaux** : deux aux niveaux 6 à 9, trois au
+  niveau 10. Il ne s'allume que si tous reçoivent de la lumière **en même
+  temps**. Chaque cristal montre son état, pour que le joueur voie où il en
+  est.
+- **Un miroir, un cristal.** Chaque cristal n'est atteignable que par un
+  miroir précis ; il faut donc autant de faisceaux que de cristaux.
+- **Un seul soleil pour tous les miroirs** : le déplacer dérègle tous les
+  reflets à la fois. C'est la vraie difficulté.
+- **Des préparatifs en chaîne** : chaque miroir se mérite (le sortir de la
+  neige ou de la glace, l'apporter, l'éclairer).
+- **Rien n'est jamais perdu** : une erreur coûte du temps, jamais un
+  recommencement. Il n'y a toujours ni chronomètre ni échec.
 
-**9 · Les jumeaux.** Présents : le soleil, deux miroirs reliés par une chaîne
-de part et d'autre d'une gorge, un pont de corde, un bloc de glace perché
-au-dessus du premier miroir, le temple. Tourner un miroir fait tourner l'autre
-à l'envers : pour une position du soleil, un seul réglage envoie la lumière du
-premier au second, et l'angle du second est alors imposé. La glace fait de
-l'ombre au premier miroir, à l'endroit exact où le soleil doit être pour
-atteindre le temple. Solution : placer le soleil ailleurs, pour que le jumeau
-envoie le reflet sur la glace et la fasse fondre ; puis ramener le soleil à la
-place que la glace cachait, et le jumeau vise le temple. (Énoncé corrigé : avec
-la glace simplement devant le temple, une seule position du soleil suffisait.)
-Impossible autrement : le premier miroir ne voit pas le temple.
+Le miroir sans tain et la paupière de pierre ne servent pas dans ce
+chapitre : ils sont gardés pour les suivants. (Le miroir sans tain donne des
+faisceaux faibles, qui ne suffisent pas à allumer un cristal : il demandera
+sa propre règle.)
 
-**10 · Le grand glacier.** Présents : le soleil, le nuage, le miroir du
-village, un miroir sur rail, un conduit, une source et sa cascade, le temple à
-deux cristaux au pied du grand glacier. Il faut éclairer les deux cristaux en
-même temps : l'un derrière un œil de pierre masqué par la cascade, l'autre
-sous un surplomb. Solution : geler la source avec le nuage, viser l'œil avec
-le miroir du village, puis régler le soleil et le rail pour le second cristal
-sans que l'ombre du nuage tombe sur un miroir. Ce que ça déclenche : le grand
-glacier fond, son eau descend vers les plaines. C'est la source du titre, et
-le lien avec le chapitre II.
+**6 · L'œil de pierre** — 2 faisceaux, environ 6 gestes.
+Présents : le soleil, le nuage, le miroir du village, un second miroir sur la
+crête, une source et sa cascade, un conduit (une borne sur la crête, sa
+jumelle dans le pré du village), le sanctuaire à deux cristaux derrière la
+cascade. Le cristal du bas, près de l'entrée de la grotte, n'est visible que
+du pré ; celui du haut, au fond, n'est visible que de la crête.
 
-À construire pour ce chapitre : le miroir sur rail, le conduit, le
-cristal-mémoire et la nuit, les miroirs jumelés, le temple à deux cristaux,
-et une règle venue du décor, la corniche de neige qui s'effondre quand on la
-chauffe.
+1. Viser la grotte : la cascade brise le reflet, comme au niveau 2.
+2. Mettre le nuage sur la source : elle gèle, la cascade se tarit ; mais le
+   village est maintenant dans l'ombre.
+3. Placer le soleil pour qu'il frappe la borne de la crête : sa jumelle
+   s'allume dans le pré et éclaire le miroir du village.
+4. Tourner le miroir du village vers le cristal du bas.
+5. Tourner le miroir de la crête vers le cristal du haut.
+6. Ajuster : l'ombre du nuage ne doit tomber ni sur la borne ni sur le miroir
+   de la crête, tout en couvrant la source.
+
+Impossible autrement : le soleil direct n'entre pas dans la grotte ; aucun
+des deux miroirs ne voit les deux cristaux.
+
+**7 · La corniche** — 2 faisceaux, environ 7 gestes.
+Présents : le soleil, le nuage, le miroir du village, un porteur, la rimaye
+(la crevasse au pied du rocher), deux corniches de neige, un socle, le
+sanctuaire dans une cheminée de roche. La corniche du haut cache un miroir
+ancien. La cheminée a deux cristaux : celui du bas ne se voit que du socle,
+celui du haut que du rebord où dort le miroir ancien.
+
+1. Garder la corniche du haut à l'ombre du nuage : si elle tombe maintenant,
+   elle barre le chemin du porteur.
+2. Viser la corniche du bas avec le miroir du village : elle s'effondre et
+   comble la rimaye.
+3. Le porteur traverse et pose son miroir sur le socle.
+4. Écarter le nuage : le soleil fait tomber la corniche du haut, qui ne gêne
+   plus personne et libère le miroir ancien.
+5. Miroir du village → miroir du socle.
+6. Miroir du socle → cristal du bas.
+7. Miroir ancien → cristal du haut.
+
+Ce qui était un danger devient un outil : c'est l'ordre qui compte. Si la
+corniche du haut tombe trop tôt, son tas de neige fond au soleil en quelques
+dizaines de secondes (ou plus vite sous le reflet du village) : on n'est
+jamais bloqué.
+
+**8 · La veillée** — 2 faisceaux, environ 8 gestes.
+Présents : le soleil (qui peut se coucher), le miroir du village, un lac, un
+porteur, deux cristaux-mémoire (l'un près du feu du village, l'autre sur
+l'autre rive, sous une avancée de roche, à côté du socle), le sanctuaire à
+deux cristaux dans la grotte au-dessus du village, un feu de camp.
+
+1. De jour, le cristal-mémoire du village se charge tout seul au soleil.
+2. Viser celui de l'autre rive avec le miroir du village : le soleil ne
+   l'atteint jamais, seul ce reflet le charge.
+3. Coucher le soleil : le lac gèle.
+4. Le porteur traverse et pose son miroir sur le socle, près du cristal qui
+   brille encore.
+5. Miroir du socle → premier cristal du sanctuaire, avec la lueur de l'autre
+   rive.
+6. Miroir du village → second cristal, avec la lueur du village.
+
+Les lueurs baissent lentement. Si l'une s'éteint avant la fin, on refait le
+jour pour la recharger : le miroir du porteur reste en place, le lac regèlera.
+De nuit, rien d'autre n'éclaire : la difficulté est de préparer le jour ce
+dont on aura besoin la nuit.
+
+**9 · Les jumeaux** — 2 faisceaux, environ 8 gestes.
+Présents : le soleil, deux miroirs reliés par une chaîne de part et d'autre
+d'une gorge, un pont de corde, un bloc de glace perché au-dessus du premier
+miroir, le miroir du village sur la terrasse d'en face, le sanctuaire à deux
+cristaux au fond de la gorge. Tourner un jumeau fait tourner l'autre à
+l'envers : pour une position du soleil, un seul réglage envoie la lumière du
+premier au second, et la direction du second est alors imposée. La glace fait
+de l'ombre au premier miroir, à l'endroit exact où le soleil doit être pour
+que le second touche le sanctuaire.
+
+1. Placer le soleil ailleurs et régler les jumeaux : le second envoie le
+   reflet sur la glace.
+2. La glace fond.
+3. Ramener le soleil vers la place que la glace cachait, en reréglant les
+   jumeaux à chaque essai, jusqu'à ce que le second touche le premier cristal.
+4. Le soleil ne doit plus bouger : tourner le miroir du village vers le
+   second cristal.
+
+Impossible autrement : le premier jumeau ne voit pas le sanctuaire ; le
+miroir du village ne voit que le second cristal. (Énoncé corrigé une première
+fois : avec la glace simplement devant le temple, une seule position du
+soleil suffisait.)
+
+**10 · Le grand glacier** — 3 faisceaux, dix gestes et plus.
+Présents : le soleil, le nuage, le miroir du village, un miroir sur rail, un
+troisième miroir pris dans un bloc de glace tombé du glacier, un conduit, une
+source et sa cascade, le sanctuaire à trois cristaux dans la paroi, sous le
+grand glacier : en haut sous la voûte de glace, au milieu dans une chambre
+sous le lac, en bas dans une grotte au pied de la cascade.
+
+1. Viser le bloc de glace avec le miroir du village : il fond et libère le
+   troisième miroir, au pied de la paroi.
+2. Mettre le nuage sur la source : elle gèle, la cascade se tarit et dégage
+   l'œil de pierre et la grotte du bas.
+3. Régler le soleil et la place du miroir sur rail : son reflet atteint le
+   cristal du haut, sous la voûte de glace.
+4. Le soleil a bougé : replacer le nuage pour que la source reste à l'ombre,
+   sans que son ombre tombe sur un des trois miroirs.
+5. Miroir du village → œil de pierre : le conduit porte la lumière au cristal
+   du milieu.
+6. Troisième miroir → cristal du bas.
+
+Deux besoins s'opposent : il faut du soleil pour dégager le miroir, puis de
+l'ombre pour tarir la cascade. Ce que ça déclenche : le grand glacier fond,
+son eau descend vers les plaines. C'est la source du titre, et le lien avec le
+chapitre II.
+
+À construire pour la seconde moitié du chapitre : le sanctuaire à plusieurs
+cristaux, le conduit, la corniche de neige qui s'effondre (et son tas qui
+fond), un miroir caché dans la neige, la nuit et le cristal-mémoire, les
+miroirs jumelés.
 
 Le plan de chaque niveau (relief, places des éléments, décors) a été choisi
 parmi trois maquettes ✅. Ce sont des dessins faits à la main : la géométrie
 exacte sera réglée et vérifiée par le test automatique au moment de construire
 chaque niveau.
+Les plans des niveaux 6 à 10 ont été choisis avant la réécriture de leurs
+énoncés : leur paysage reste, mais il faudra y ajouter des éléments (un
+miroir, un cristal, un replat).
 
 | Niveau | Plan retenu |
 | --- | --- |
@@ -1056,9 +1145,14 @@ chaque niveau.
   auge, des grottes aux contours irréguliers. Pas de murs verticaux tirés au
   cordeau, pas de plateaux plats comme des tables, pas de couloirs en boîte.
 - Une image lisible en trois secondes : où est le temple, qu'est-ce qui bouge.
-- Deux à quatre objets manipulables, pas plus.
-- Trois temps : comprendre (1 geste), débloquer (la réaction en chaîne),
-  viser (le dernier réglage).
+- Deux à quatre objets manipulables dans la première moitié d'un chapitre,
+  jusqu'à cinq dans la seconde ; jamais plus de trois miroirs à tourner du
+  doigt.
+- Première moitié d'un chapitre : trois temps — comprendre (1 geste),
+  débloquer (la réaction en chaîne), viser (le dernier réglage).
+- Seconde moitié : deux ou trois faisceaux à tenir en même temps, six à dix
+  gestes, des préparatifs dont l'ordre compte. Une erreur doit toujours
+  pouvoir se rattraper sans recommencer le niveau.
 - Au moins un « raccourci impossible » vérifié par un test automatique.
 
 ## 10. Feuille de route
