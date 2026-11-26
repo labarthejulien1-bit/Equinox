@@ -1025,8 +1025,10 @@ cristal-mémoire et la nuit, les miroirs jumelés, le temple à deux cristaux,
 et une règle venue du décor, la corniche de neige qui s'effondre quand on la
 chauffe.
 
-En cours : le plan de chaque niveau (relief, places des éléments, décors),
-choisi niveau par niveau parmi plusieurs propositions.
+Le plan de chaque niveau (relief, places des éléments, décors) a été choisi
+parmi trois maquettes ✅. Ce sont des dessins faits à la main : la géométrie
+exacte sera réglée et vérifiée par le test automatique au moment de construire
+chaque niveau.
 
 | Niveau | Plan retenu |
 | --- | --- |
@@ -1039,6 +1041,7 @@ choisi niveau par niveau parmi plusieurs propositions.
 | 7 · La corniche | « La rimaye, inversée » : le village est à droite sur une moraine ; un glacier mène au pied d'un contrefort rocheux, à gauche, où s'ouvre la rimaye. La corniche du haut coiffe le rebord du rocher, celle du bas est à l'abri dessous, comme le socle. **Changement par rapport à l'énoncé** : le cristal du temple est au fond d'une cheminée de roche, au-dessus du socle, et non dans une grotte en face. Nuage bas et petit. Palette Minéral |
 | 8 · La veillée | « La veillée au bord du lac » : le torrent de l'énoncé devient un petit lac, que le porteur traverse sur la glace. Le village veille autour du feu sur la rive gauche, sous la grotte du temple ; le cristal-mémoire et le socle sont sur la rive droite, sous une avancée de roche. Le soleil peut descendre sous l'horizon. L'aurore est un décor. Palette Aurore |
 | 9 · Les jumeaux | « La gorge » : une gorge profonde franchie par un pont de corde ; le premier miroir en haut à gauche sous un bloc de glace perché, son jumeau à mi-hauteur à droite dans un creux de la paroi, le temple tout en bas. La lumière descend en zigzag sur toute la hauteur. Palette Minéral |
+| 10 · Le grand glacier | « La porte du glacier » : le grand glacier descend de la crête jusqu'à un petit lac, la source, dont la cascade tombe sur toute la hauteur de la paroi. Le rail est sur le replat du haut, le village tout en bas. Le second cristal est sous la voûte de glace d'où sort l'eau du glacier ; le premier dans une chambre creusée sous le lac, au bout du conduit dont l'œil est derrière la cascade. À régler : la montagne de gauche doit cacher le soleil bas, pour qu'il ne se glisse pas sous la voûte |
 
 ### Gabarit d'un niveau
 
