@@ -603,6 +603,78 @@ tour : c'est ce qui permet les réactions en chaîne.
 Règle d'or pour ajouter un élément : il doit réagir à au moins deux briques
 et en produire ou en transporter au moins une. Sinon, c'est du décor.
 
+### Les éléments d'énigme ✅
+
+Pour atteindre le cristal, la lumière doit être déviée, parfois teintée,
+parfois divisée ; les temples les plus difficiles demandent plusieurs
+lumières. Dix-neuf éléments retenus. Planches :
+[dévier et colorer](images/elements-enigme-1.jpg),
+[diviser, créer, temples exigeants](images/elements-enigme-2.jpg). Les numéros
+sont ceux des planches (le 10 et le 17 ont été écartés).
+
+**Les deux teintes.** Le prisme sépare la lumière du soleil en une lumière
+chaude et une lumière froide ; réunies, elles redonnent la lumière blanche.
+C'est l'équilibre de l'équinoxe, appliqué à la lumière. La teinte n'est pas
+qu'une clé : elle change la façon dont le monde réagit.
+
+| Lumière | Ce qu'elle fait |
+| --- | --- |
+| Blanche (celle du soleil) | éclaire et réchauffe, comme dans le jeu actuel |
+| Chaude | réchauffe fort : fait fondre, sécher, pousser ; allume un brasero |
+| Froide | éclaire sans chauffer : la glace et le givre tiennent |
+
+Un faisceau peut aussi être **faible** (la moitié d'un faisceau normal) : il
+éclaire, mais ne suffit pas seul à allumer un cristal.
+
+| # | Élément | Verbe | Règle |
+| --- | --- | --- | --- |
+| 1 | Miroir sur rail | dévier | il ne tourne pas, il glisse le long de son rail |
+| 2 | Miroirs jumelés | dévier | reliés par une chaîne : quand l'un tourne, l'autre tourne à l'envers |
+| 3 | Tournesol de bronze | dévier | il suit le soleil tout seul et renvoie toujours au même endroit ; il faut le garder éclairé |
+| 4 | Miroir courbe | dévier | il ouvre le faisceau en éventail : la lumière va partout, mais elle est faible |
+| 5 | Lentille de glace | dévier | elle dévie le faisceau ; la lumière chaude la fait fondre, la froide la traverse sans dégât |
+| 6 | Prisme | teinter | il sépare la lumière blanche en un faisceau chaud et un faisceau froid |
+| 7 | Verre teinté | teinter | un vitrail à deux carreaux qu'on fait glisser ; le faisceau prend la teinte du carreau traversé |
+| 8 | Teintes naturelles | teinter | chaque milieu a son filtre : la glace donne une lumière froide, l'ambre et le verre de sable une lumière chaude |
+| 9 | Creuset | réunir | deux faisceaux entrent, un seul sort ; chaud et froid redonnent du blanc |
+| 11 | Miroir sans tain | diviser | la moitié de la lumière passe, l'autre est renvoyée : deux faisceaux faibles |
+| 12 | Paupière de pierre | commander | elle ne s'ouvre que si son œil est éclairé : un premier faisceau ouvre le passage au second |
+| 20 | Brasero | créer | une lumière chaude l'allume ; il éclaire et réchauffe ensuite autour de lui, même à l'ombre |
+| 21 | Phare des anciens | créer | éteint au départ ; quand son œil reçoit de la lumière, il s'allume pour de bon et projette son propre faisceau, qu'on oriente |
+| 13 | Cristal teinté | exiger | son anneau montre la teinte qu'il attend ; toute autre lumière le laisse éteint |
+| 14 | Cristaux multiples | exiger | le temple a deux ou trois cristaux, à éclairer en même temps |
+| 15 | Cristal d'équinoxe | exiger | il s'allume quand la frontière passe en son milieu : une moitié au soleil, l'autre dans l'ombre |
+| 16 | Cristal de nuit | exiger | l'inverse d'un cristal : il s'éveille quand on lui apporte l'ombre |
+| 18 | Serrure à ordre | exiger | trois cristaux à allumer dans le bon ordre, sans chronomètre : un cristal allumé le reste |
+| 19 | Lotus de lumière | porter | il s'ouvre au soleil et porte un villageois ; il se referme dès que l'ombre revient |
+
+Écartés : le pochoir à signe (10) et la balance de lumière (17).
+
+Comment ils s'articulent avec le reste :
+
+- Le **prisme** est la machine 6 du § 7, dont la règle est maintenant précise.
+  Les neuf autres machines restent valables et s'ajoutent à cette liste.
+- Le **phare des anciens** est aussi un décor des lacs (§ 5 ter) ; il peut
+  servir dans d'autres milieux. C'est une seconde source de lumière, fixe, qui
+  marche même quand le soleil est caché.
+- Le **cristal d'équinoxe** fait de la frontière nette entre ombre et lumière
+  la solution elle-même : il est tout désigné pour le dernier temple.
+- Le **cristal de nuit** donne un but aux niveaux du désert, où l'on apporte
+  l'ombre.
+- Chacun n'a qu'un seul geste (tourner **ou** glisser), pour rester jouable
+  d'un pouce.
+
+Encore à décider, au moment de les construire :
+
+- la teinte du faisceau du phare (blanche, ou celle de la lumière qui l'a
+  réveillé) ;
+- ce que la lumière froide fait à l'eau (la laisse-t-elle geler ?) et ce que
+  la lumière chaude fait de plus que la blanche, en chiffres ;
+- comment montrer les teintes à un joueur qui distingue mal les couleurs (par
+  exemple un faisceau froid en pointillé).
+
+État : choisis, **pas encore dans le jeu**.
+
 ### Introduction progressive
 
 Un seul nouvel élément par niveau, d'abord en situation évidente, puis
@@ -668,7 +740,7 @@ Planches de référence : [machines 1 à 5](images/machines-1-5.jpg),
 | 3 | Cristal-mémoire | garder | se charge au soleil, puis éclaire quelques secondes | avoir lumière et ombre « en même temps » | moyen |
 | 4 | Conduit | conduire | la lumière entre par un œil et ressort par un autre | atteindre un lieu fermé | léger à moyen |
 | 5 | Poumon de pierre | mouvoir | se dilate à la lumière, se rétracte à l'ombre | monter ou descendre un miroir, un villageois | moyen |
-| 6 | Prisme | diviser | coupe un faisceau en deux | deux cibles avec un seul soleil | léger à moyen |
+| 6 | Prisme | diviser | sépare la lumière en un faisceau chaud et un faisceau froid (voir § 6) | deux cibles avec un seul soleil | léger à moyen |
 | 7 | Cadran d'ombre | mesurer | la pointe de l'ombre sert de clé | poser l'ombre sur la bonne graduation | moyen |
 | 8 | Vanne solaire | libérer l'eau | s'ouvre à la lumière, se referme à l'ombre | décider où va l'eau | léger |
 | 9 | Serre | faire pousser | lumière et eau font pousser une liane | un pont vivant, qui fait aussi de l'ombre | lourd |
@@ -870,11 +942,11 @@ règles ; ils se passent tous dans la glace.
    pour jouer au pouce.
 3. ✅ **Conception** — histoire, sens du titre, direction des temples, dix
    machines, design du petit peuple, six habitations, six milieux, 18
-   palettes, 139 décors (§ 5 ter).
+   palettes, 139 décors (§ 5 ter), 19 éléments d'énigme (§ 6).
 4. **À venir, dans un ordre à décider** :
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;
-   - premières machines, un niveau par machine ;
+   - premières machines et premiers éléments d'énigme, un par niveau ;
    - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
    - sons (nappes, tintement du cristal, eau) ;
    - répartition des 30 niveaux et des machines entre les milieux ;
