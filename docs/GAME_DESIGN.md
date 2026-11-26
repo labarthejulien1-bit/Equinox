@@ -363,6 +363,29 @@ Règle des couleurs chaudes : dans un monde froid, avec des personnages en
 noir et blanc, tout ce qui est orange ou rouge (lichens, baies, feu) attire
 l'œil. On en met peu, et jamais près de ce que le joueur doit regarder.
 
+**139 décors retenus** ✅ sur les six milieux :
+
+| Milieu | Décors | La famille propre au milieu | L'élément clé |
+| --- | --- | --- | --- |
+| 1 · Haute montagne, glaciers | 22 | glace et neige | la glace, qui fond et qui gèle |
+| 2 · Plaines gelées | 24 | glace, neige et eau | le gnomon : sur un sol plat, toute ombre est longue |
+| 3 · Forêt | 24 | sous-bois, eau et brume | la trouée de lumière dans le feuillage |
+| 4 · Hauts plateaux de ruines | 24 | ruines des anciens | l'oculus et les ruines, qui se cachent le soleil |
+| 5 · Désert, pierre nue | 22 | sable, vent et eau | l'ombre, rare et précieuse |
+| 6 · Lacs, marais, côtes | 23 | eau, lumière et marées | le miroir d'eau |
+
+Plusieurs décors demandent une règle que le jeu n'a pas encore. Elles sont
+notées milieu par milieu ; en voici la liste :
+
+- une ombre qui se déplace toute seule (le mammouth) ;
+- un voile qui affaiblit la lumière sans l'arrêter (vapeur, brume, tourbillon
+  de sable) ;
+- un miroir brisé, qui renvoie plusieurs petits rayons ;
+- l'eau qui s'évapore au soleil et reste à l'ombre ;
+- un objet poussé par le vent (le virevoltant) ;
+- l'eau calme qui reflète la lumière, et les vagues qui brisent le reflet ;
+- la marée.
+
 État : rien de tout cela n'est encore dans le jeu.
 
 ### Milieu 1 — Haute montagne, glaciers ✅
@@ -511,6 +534,37 @@ Propre au désert :
 Règles à ajouter au jeu si on s'en sert : l'eau qui s'évapore au soleil et
 reste à l'ombre (le miroir de la règle du gel), le tourbillon qui voile la
 lumière en se déplaçant, le virevoltant poussé par le vent.
+
+### Milieu 6 — Lacs, marais, côtes ✅
+
+Planches : [faune, flore et roches](images/decors-lacs-1.jpg),
+[eau, lumière, marées et traces du peuple](images/decors-lacs-2.jpg). Les
+numéros sont ceux des planches.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | héron (1), flamants roses (2), grenouille sur son nénuphar (3), libellules (4), banc de poissons (5), crabe (6) | — |
+| Flore et roches | saule pleureur (1), nénuphars et lotus (2), iris des marais (3), palétuvier (4), algues (5), rocher à coquillages (6) | le saule et le palétuvier (de l'ombre sur l'eau) |
+| Eau, lumière et marées | miroir d'eau (1), vagues (2), îlot (3), marée basse (5), arc-en-ciel (6) | le miroir d'eau, les vagues, la marée |
+| Traces du peuple et des anciens | pirogue (1), ponton (2), filets qui sèchent (3), lanternes flottantes (4), ruines englouties (5), phare des anciens (6) | la pirogue, le ponton, les lanternes (lumières de nuit), le miroir englouti, le phare |
+
+Écarté : le gué de pierres (eau 4).
+
+Propre aux lacs :
+
+- **Le miroir d'eau.** Une eau calme renvoie la lumière comme un miroir
+  couché ; des vagues brisent le reflet. C'est l'élément clé de ce milieu.
+- **On voit sous l'eau**, puisque le jeu est en coupe : poissons, algues,
+  ruines englouties. Un miroir au fond de l'eau ouvre des énigmes où la
+  lumière doit plonger.
+- **Le phare des anciens** est la machine à lumière de la côte ; il est
+  éteint, comme les temples.
+- **Les ombres se lisent très bien sur l'eau** (sous les flamants, sous le
+  ponton).
+
+Règles à ajouter au jeu si on s'en sert : l'eau calme qui reflète la lumière
+et les vagues qui brisent le reflet, la marée qui fait monter et descendre
+l'eau (à décider : ce qui la commande).
 
 ## 6. Système d'éléments
 
@@ -816,11 +870,12 @@ règles ; ils se passent tous dans la glace.
    pour jouer au pouce.
 3. ✅ **Conception** — histoire, sens du titre, direction des temples, dix
    machines, design du petit peuple, six habitations, six milieux, 18
-   palettes. En cours : les décors, milieu par milieu (§ 5 ter).
+   palettes, 139 décors (§ 5 ter).
 4. **À venir, dans un ordre à décider** :
-   - mettre le nouveau design dans le jeu (personnages, temples, habitations) ;
+   - mettre le nouveau design dans le jeu (personnages, temples, habitations,
+     palettes et décors des milieux) ;
    - premières machines, un niveau par machine ;
-   - une palette d'ombre et de lumière par milieu ;
+   - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
    - sons (nappes, tintement du cristal, eau) ;
    - répartition des 30 niveaux et des machines entre les milieux ;
    - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.
