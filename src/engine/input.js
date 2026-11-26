@@ -4,6 +4,7 @@
 //   - le soleil suit le doigt le long de son arc ;
 //   - le nuage suit le doigt le long de son rail ;
 //   - un miroir tourne quand le doigt tourne autour de lui ;
+//   - un miroir sur rail suit le doigt le long de son rail ;
 //   - en bas de l'écran, deux bulles permettent de déplacer le soleil et le
 //     nuage au pouce, sans lever la main (voir game/sliders.js).
 
@@ -35,6 +36,13 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
     return Math.atan2((s.cy - p.y) / s.ry, (p.x - s.cx) / s.rx);
   };
 
+  // Place sur un rail (de 0 à 1) du point le plus proche du doigt.
+  const railAt = (rail, p) => {
+    const dx = rail.x1 - rail.x0;
+    const dy = rail.y1 - rail.y0;
+    return ((p.x - rail.x0) * dx + (p.y - rail.y0) * dy) / (dx * dx + dy * dy);
+  };
+
   canvas.addEventListener('pointerdown', (e) => {
     const g = getGame();
     if (!g.started || drag) return;
@@ -61,7 +69,8 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
       };
       for (const m of g.mirrors) {
         if (!m.free) continue;
-        consider(dist(p, m) / 38, () => ({ type: 'mirror', mirror: m, last: null }));
+        if (m.rail) consider(dist(p, m) / 38, () => ({ type: 'rail', mirror: m, offset: m.t - railAt(m.rail, p) }));
+        else consider(dist(p, m) / 38, () => ({ type: 'mirror', mirror: m, last: null }));
       }
       consider(dist(p, sunPosition(g)) / 42, () => ({ type: 'sun', offset: g.sunAngle - sunAngleAt(g, p) }));
       if (L.cloud) {
@@ -101,6 +110,9 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
     } else if (drag.type === 'cloud') {
       g.cloudX = clamp(p.x + drag.offset, L.cloud.minX, L.cloud.maxX);
       g.touched.cloud = true;
+    } else if (drag.type === 'rail') {
+      drag.mirror.t = clamp(railAt(drag.mirror.rail, p) + drag.offset, 0, 1);
+      g.touched.rail = true;
     } else if (drag.type === 'mirror') {
       const m = drag.mirror;
       // Trop près du pivot, l'angle du doigt ne veut rien dire : on attend.

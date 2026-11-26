@@ -16,7 +16,7 @@ import { toPoints } from '../engine/vec.js';
 
 export default {
   id: 1,
-  number: 'I',
+  number: '1',
   title: 'Le glacier suspendu',
   size: { w: 360, h: 720 },
 

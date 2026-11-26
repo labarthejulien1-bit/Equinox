@@ -1,101 +1,85 @@
 // Niveau 2 — « Le rideau d'eau »
 //
-// Le torrent libéré au niveau 1 tombe maintenant devant l'entrée du temple :
-// la cascade disperse la lumière. Nouvelle règle : l'ombre gèle l'eau calme.
+// Un cirque glaciaire : un petit lac retenu par une barre rocheuse (un
+// « verrou »), d'où tombe une cascade. Le temple est dans une grotte, juste
+// derrière la chute : elle brise la lumière.
+// Nouvelle règle : l'ombre gèle l'eau calme.
 //
 // Solution prévue :
 //  1. viser le temple avec le miroir : le faisceau se brise dans la cascade ;
-//  2. amener l'ombre du nuage sur la source, en haut de la falaise : elle
-//     gèle et la cascade se tarit ;
-//  3. garder la source à l'ombre ET le miroir au soleil, puis viser le temple.
+//  2. amener l'ombre du nuage sur le lac, en haut de la barre : il gèle et la
+//     cascade se tarit ;
+//  3. garder le lac à l'ombre ET le miroir au soleil, puis viser le temple.
 
-import { toPoints } from '../engine/vec.js';
+import { terrain } from './terrain.js';
+
+// Le relief, de la gauche vers la droite (voir terrain.js).
+const relief = terrain([
+  { pts: [[-3000, 372], [-50, 372], [-8, 440], [20, 510], [44, 548]], rough: 11, snow: true }, // versant de gauche
+  { pts: [[44, 548], [80, 556], [118, 562], [142, 572]], rough: 12, amp: 0.03, depth: 1, snow: true }, // la moraine du village
+  { pts: [[142, 572], [164, 592], [186, 608], [202, 616]], rough: 13, amp: 0.04, depth: 1, snow: true }, // pente vers le torrent
+  { pts: [[202, 616], [218, 622], [236, 618]] }, // la vasque au pied de la chute
+  { pts: [[236, 618], [243, 596], [241, 576], [246, 560]] },
+  { pts: [[246, 560], [270, 556], [302, 552], [334, 548]], cave: true }, // sol de la grotte
+  { pts: [[334, 548], [342, 520], [328, 494], [300, 480], [268, 474], [248, 472]], cave: true }, // sa voûte
+  { pts: [[248, 472], [243, 452], [247, 440], [236, 434], [226, 430]] }, // la barre rocheuse, en surplomb
+  { pts: [[226, 430], [238, 427]], snow: true }, // le rebord d'où tombe l'eau
+  { pts: [[238, 427], [242, 433.5], [292, 434], [296, 427]] }, // la cuvette du lac
+  { pts: [[296, 427], [314, 412], [330, 380], [342, 330], [352, 270], [360, 200], [374, 140], [404, 90], [3000, 90]], rough: 19, snow: true }, // la paroi du cirque
+]);
 
 export default {
   id: 2,
-  number: 'II',
+  number: '2',
   title: 'Le rideau d’eau',
   size: { w: 360, h: 720 },
 
   sun: { cx: 180, cy: 330, rx: 172, ry: 268, min: 22, max: 150, start: 100, radius: 13 },
-  cloud: { y: 172, minX: 44, maxX: 316, startX: 70, w: 88, h: 30 },
+  cloud: { y: 222, minX: 44, maxX: 316, startX: 70, w: 80, h: 28 },
 
-  ground: toPoints([
-    [-3000, 3000], //  0
-    [-3000, 236], //   1
-    [-6, 236], //      2
-    [22, 262], //      3
-    [36, 340], //      4
-    [44, 428], //      5  plateau du village
-    [125, 430], //     6
-    [130, 520], //     7
-    [122, 600], //     8
-    [112, 650], //     9  vallée
-    [240, 648], //    10  pied de la falaise
-    [240, 560], //    11  bas de l'entrée de la grotte
-    [262, 566], //    12
-    [335, 566], //    13
-    [335, 505], //    14
-    [300, 490], //    15
-    [240, 480], //    16  haut de l'entrée de la grotte
-    [240, 330], //    17
-    [230, 316], //    18
-    [224, 301], //    19  bord d'où tombe la cascade
-    [250, 299], //    20
-    [252, 304], //    21  cuvette de la source
-    [276, 304], //    22
-    [278, 299], //    23
-    [3000, 296], //   24
-    [3000, 3000], //  25
-  ]),
-  snow: [
-    [1, 6],
-    [9, 10],
-    [19, 20],
-    [23, 24],
-  ],
-  caves: [[11, 16]],
+  ...relief,
 
-  mirrors: [{ id: 'village', x: 100, y: 406, angle: -20, len: 26, mount: { type: 'pole', baseY: 430 } }],
+  mirrors: [{ id: 'village', x: 116, y: 540, angle: -20, len: 26, mount: { type: 'pole', baseY: 562 } }],
 
-  temple: { x: 306, baseY: 566, crystal: { x: 304, y: 541, r: 10 } },
+  // Le temple est plus petit que celui du niveau 1 : la grotte est basse.
+  temple: { x: 304, baseY: 552, scale: 0.8, crystal: { x: 303, y: 532, r: 8 } },
 
-  // La source : une eau calme, qui gèle à l'ombre et dégèle au soleil.
+  // Le lac : une eau calme, qui gèle à l'ombre et dégèle au soleil.
   // probes = points témoins : s'ils voient tous de l'ombre, l'eau gèle.
   frosts: [
     {
       id: 'source',
       role: 'spring',
-      rect: { x0: 252, x1: 276, y0: 299.5, y1: 304 },
+      rect: { x0: 242, x1: 292, y0: 428, y1: 434 },
       probes: [
-        [258, 300.5],
-        [264, 300.5],
-        [270, 300.5],
+        [252, 429],
+        [267, 429],
+        [282, 429],
       ],
       freezeTime: 2.4,
       meltTime: 2.0,
     },
   ],
 
-  // Le torrent naît de la source, tombe devant la grotte, suit la vallée.
+  // Le torrent naît du lac, tombe devant la grotte, finit dans la vasque.
   streams: [
     {
       id: 'torrent',
-      spring: 'source', // il s'arrête quand la source est gelée
+      spring: 'source', // il s'arrête quand le lac est gelé
       startFull: true,
       speed: 260,
       parts: [
         {
           run: [
-            [253, 301],
-            [226, 302.5],
+            [243, 429.5],
+            [228, 431],
           ],
         },
-        { fall: { x: 221.5, top: 302, bottom: 649 }, blocksLight: true },
+        { fall: { x: 223.5, top: 431, bottom: 620 }, blocksLight: true },
         {
           run: [
-            [221, 651.5],
-            [113, 653],
+            [223, 622],
+            [206, 618.5],
           ],
         },
       ],
@@ -103,24 +87,26 @@ export default {
   ],
   beds: [
     [
-      [113, 653],
-      [240, 651],
+      [204, 618],
+      [218, 623.5],
+      [234, 620],
     ],
   ],
 
-  houses: [{ x: 66, baseY: 429, w: 22, h: 15, roof: 13 }],
-  lanterns: [{ x: 118, y: 415, baseY: 430 }],
+  houses: [{ x: 76, baseY: 556, w: 22 }],
+  lanterns: [{ x: 134, y: 553, baseY: 568 }],
   villagers: [
-    { x: 84, y: 429, s: 1.0, dir: 1 },
-    { x: 112, y: 429.5, s: 0.8, dir: -1 },
-    { x: 300, y: 297.5, s: 1.0, dir: -1 },
-    { x: 160, y: 650, s: 0.95, dir: 1 },
+    { x: 100, y: 560, s: 1.0, dir: 1 },
+    { x: 128, y: 566, s: 0.8, dir: -1 },
+    { x: 270, y: 428, s: 1.0, dir: 1 },
   ],
-  pines: [
-    { x: 334, y: 297, h: 38 },
-    { x: 352, y: 297, h: 28 },
-    { x: 8, y: 248, h: 26 },
-    { x: 138, y: 650, h: 26 },
+  decor: [
+    { type: 'raptor', layer: 'sky', x: 110, y: 330, r: 30, s: 0.6 },
+    { type: 'ibex', x: 343, y: 322, s: 0.7, dir: -1 },
+    { type: 'cairn', x: 52, y: 551, s: 0.45 },
+    { type: 'marmots', x: 162, y: 590, s: 0.45 },
+    { type: 'hare', x: 310, y: 416, s: 0.5, dir: -1 },
+    { type: 'bush', x: 30, y: 528, s: 0.55 },
   ],
 
   hint(g) {
@@ -129,10 +115,10 @@ export default {
     if (g.temple.lit) return '';
     if (source.amount < 0.5) {
       if (g.light && g.light.waterHits.length) return 'La cascade brise la lumière en mille éclats…';
-      if (!g.touched.mirror) return 'Le torrent libéré tombe devant le temple. Essaie le miroir.';
+      if (!g.touched.mirror) return 'Le torrent tombe devant le temple. Essaie le miroir.';
       return 'L’ombre garde le froid : là où elle se pose, l’eau calme gèle';
     }
-    if (!mirror.lit) return 'La source dort sous la glace. Le miroir, lui, a besoin de soleil.';
+    if (!mirror.lit) return 'Le lac dort sous la glace. Le miroir, lui, a besoin de soleil.';
     return 'La voie est libre : guide la lumière jusqu’au temple';
   },
 

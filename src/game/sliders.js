@@ -15,7 +15,11 @@ export const SLIDER = {
   margin: 8, // espace entre la bulle et le bord de l'écran, en bout de course
   sunY: 88, // hauteur de la ligne du soleil, depuis le bas de l'écran
   cloudY: 40, // hauteur de la ligne du nuage
+  railY: 136, // hauteur de la ligne du miroir sur rail, quand il y a aussi un nuage
 };
+
+/** Le miroir sur rail du niveau, s'il y en a un (et s'il est libre). */
+const railMirror = (g) => g.mirrors.find((m) => m.rail && m.free);
 
 /** Début et fin de la course d'une bulle, en pixels. */
 function track(view) {
@@ -30,17 +34,22 @@ function position(type, g) {
     const max = rad(L.sun.max);
     return (max - g.sunAngle) / (max - rad(L.sun.min));
   }
+  if (type === 'rail') return railMirror(g).t;
   return (g.cloudX - L.cloud.minX) / (L.cloud.maxX - L.cloud.minX);
 }
 
 /** Les bulles à afficher : [{ type, x, y, r }] en pixels d'écran. */
 export function sliderBubbles(g, view) {
   const { x0, x1 } = track(view);
-  const types = g.level.cloud ? ['sun', 'cloud'] : ['sun'];
+  const types = ['sun'];
+  if (g.level.cloud) types.push('cloud');
+  if (railMirror(g)) types.push('rail');
+  // Le rail prend la ligne du nuage quand il n'y a pas de nuage.
+  const lineOf = { sun: SLIDER.sunY, cloud: SLIDER.cloudY, rail: g.level.cloud ? SLIDER.railY : SLIDER.cloudY };
   return types.map((type) => ({
     type,
     x: x0 + position(type, g) * (x1 - x0),
-    y: view.h - (type === 'sun' ? SLIDER.sunY : SLIDER.cloudY),
+    y: view.h - lineOf[type],
     r: SLIDER.r,
   }));
 }
@@ -54,6 +63,9 @@ export function moveSlider(type, g, view, x) {
     const max = rad(L.sun.max);
     g.sunAngle = max - k * (max - rad(L.sun.min));
     g.touched.sun = true;
+  } else if (type === 'rail') {
+    railMirror(g).t = k;
+    g.touched.rail = true;
   } else {
     g.cloudX = L.cloud.minX + k * (L.cloud.maxX - L.cloud.minX);
     g.touched.cloud = true;

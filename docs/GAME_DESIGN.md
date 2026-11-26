@@ -664,7 +664,7 @@ Un faisceau peut aussi être **faible** (la moitié d'un faisceau normal) : il
 
 | # | Élément | Verbe | Règle |
 | --- | --- | --- | --- |
-| 1 | Miroir sur rail | dévier | il ne tourne pas, il glisse le long de son rail |
+| 1 | Miroir sur rail ✅ | dévier | il ne tourne pas, il glisse le long de son rail (dans le jeu depuis le niveau 5) |
 | 2 | Miroirs jumelés | dévier | reliés par une chaîne : quand l'un tourne, l'autre tourne à l'envers |
 | 3 | Tournesol de bronze | dévier | il suit le soleil tout seul et renvoie toujours au même endroit ; il faut le garder éclairé |
 | 4 | Miroir courbe | dévier | il ouvre le faisceau en éventail : la lumière va partout, mais elle est faible |
@@ -949,8 +949,8 @@ qui l'attend n'est jamais atteint par le soleil direct.
 
 ### Chapitre I — La source : les dix niveaux ✅
 
-Les niveaux 1 à 4 existent (voir ci-dessus). Les niveaux 5 à 10 sont écrits,
-pas encore construits. Chaque niveau n'apporte qu'une nouveauté et réutilise
+Les niveaux 1 à 5 sont dans le jeu. Les niveaux 6 à 10 sont écrits, pas
+encore construits. Chaque niveau n'apporte qu'une nouveauté et réutilise
 celles d'avant.
 
 | # | Titre | Ce qui est nouveau | Palette |
@@ -959,7 +959,7 @@ celles d'avant.
 | 2 | Le rideau d'eau ✅ | l'ombre gèle l'eau | Bleu glacier |
 | 3 | La digue de glace ✅ | l'ombre du relief, le miroir sur radeau | Bleu glacier |
 | 4 | Le pont de givre ✅ | le porteur de miroir | Bleu glacier |
-| 5 | L'aiguille | le miroir sur rail | Altitude |
+| 5 | L'aiguille ✅ | le miroir sur rail | Altitude (pas encore : le jeu n'a que la palette Bleu glacier) |
 | 6 | L'œil de pierre | le conduit | Altitude |
 | 7 | La corniche | la neige qui tombe | Minéral |
 | 8 | La veillée | la nuit, le cristal-mémoire | Aurore |
@@ -1035,10 +1035,10 @@ chaque niveau.
 | Niveau | Plan retenu |
 | --- | --- |
 | 1 · Le glacier suspendu | le plan actuel, habillé avec le nouveau design (hutte enterrée, capes noires, temple à anneau, décors de la montagne). ✅ Fait dans le jeu |
-| 2 · Le rideau d'eau | « Le verrou » : un cirque glaciaire, le lac retenu par une barre rocheuse, la grotte du temple derrière la chute, le village en bas sur une moraine. À reconstruire dans le jeu |
-| 3 · La digue de glace | « La proue » : un lac de montagne large et peu profond, un éperon rocheux qui avance au-dessus du déversoir, le village sur l'éperon, la grotte du temple sur la rive gauche. À reconstruire dans le jeu |
-| 4 · Le pont de givre | « Le bloc perché » : un torrent de fond de vallée ; le socle attend à gauche sous un énorme bloc posé sur la pente, le village est sur la rive droite sous la grotte du temple. Le nuage est plus bas et plus petit, pour que son ombre ne couvre que le torrent. À reconstruire dans le jeu |
-| 5 · L'aiguille | « La vire » : le rail des anciens suit une corniche du versant, au pied de l'aiguille ; le temple est en face, plus bas, sous un surplomb ; le reflet descend en travers du vallon. Palette Altitude. À régler finement : le surplomb doit arrêter le soleil bas sans arrêter le reflet |
+| 2 · Le rideau d'eau | « Le verrou » : un cirque glaciaire, le lac retenu par une barre rocheuse, la grotte du temple derrière la chute, le village en bas sur une moraine. ✅ Fait dans le jeu |
+| 3 · La digue de glace | « La proue » : un lac de montagne large et peu profond, un éperon rocheux qui avance au-dessus du déversoir, le village sur l'éperon, la grotte du temple sur la rive gauche. ✅ Fait dans le jeu |
+| 4 · Le pont de givre | « Le bloc perché » : un torrent de fond de vallée ; le socle attend à gauche sous un énorme bloc posé sur la pente, le village est sur la rive droite sous la grotte du temple. Le nuage est plus bas et plus petit, pour que son ombre ne couvre que le torrent. ✅ Fait dans le jeu |
+| 5 · L'aiguille | « La vire » : le rail des anciens suit une corniche du versant, au pied de l'aiguille ; le temple est en face, plus bas, sous un surplomb ; le reflet descend en travers du vallon. ✅ Fait dans le jeu, avec la palette Bleu glacier en attendant la palette Altitude |
 | 6 · L'œil de pierre | « Les deux bornes » : le village est dans un pré au pied de la chute, presque sous le lac de la source ; la grotte du temple est derrière la chute. Les deux yeux du conduit sont des bornes anciennes : l'une sur la crête de gauche, l'autre dans le pré. Le nuage doit être large |
 | 7 · La corniche | « La rimaye, inversée » : le village est à droite sur une moraine ; un glacier mène au pied d'un contrefort rocheux, à gauche, où s'ouvre la rimaye. La corniche du haut coiffe le rebord du rocher, celle du bas est à l'abri dessous, comme le socle. **Changement par rapport à l'énoncé** : le cristal du temple est au fond d'une cheminée de roche, au-dessus du socle, et non dans une grotte en face. Nuage bas et petit. Palette Minéral |
 | 8 · La veillée | « La veillée au bord du lac » : le torrent de l'énoncé devient un petit lac, que le porteur traverse sur la glace. Le village veille autour du feu sur la rive gauche, sous la grotte du temple ; le cristal-mémoire et le socle sont sur la rive droite, sous une avancée de roche. Le soleil peut descendre sous l'horizon. L'aurore est un décor. Palette Aurore |
@@ -1078,9 +1078,12 @@ règles ; ils se passent tous dans la glace.
 4. ✅ **v0.3** — le nouveau design entre dans le jeu : villageois à cape
    noire et barre de lumière, huttes enterrées, anneau gradué du temple,
    premiers décors de la montagne. Niveau 1 habillé.
-5. **À venir, dans un ordre à décider** :
-   - reconstruire les niveaux 2 à 4 sur leurs nouveaux plans, puis construire
-     les niveaux 5 à 10 du chapitre I ;
+5. ✅ **v0.4** — écran des six chapitres (seul le I est ouvert) ; niveaux 2,
+   3 et 4 reconstruits sur leurs nouveaux plans ; niveau 5 et son miroir sur
+   rail ; outil `terrain()` pour écrire un relief naturel.
+6. **À venir, dans un ordre à décider** :
+   - construire les niveaux 6 à 10 du chapitre I ;
+   - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;
    - premières machines et premiers éléments d'énigme, un par niveau ;

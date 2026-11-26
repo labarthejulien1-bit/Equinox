@@ -4,7 +4,7 @@
 // imports sont relatifs et se terminent par .js, et la feuille de style est
 // chargée par index.html. Un simple serveur de fichiers suffit donc à jouer.
 
-import { levels } from './levels/index.js';
+import { chapters, levels, LEVELS_PER_CHAPTER } from './levels/index.js';
 import { createGame, update } from './game/game.js';
 import { createRenderer } from './game/render.js';
 import { loadDone, markDone } from './game/progress.js';
@@ -14,7 +14,7 @@ import { createUI } from './ui/ui.js';
 const canvas = document.getElementById('game');
 const renderer = createRenderer(canvas);
 
-// On reprend au premier niveau pas encore terminé.
+// Derrière l'écran titre, on montre le premier niveau pas encore terminé.
 let index = Math.max(
   0,
   levels.findIndex((l) => !loadDone().includes(l.id)),
@@ -30,13 +30,11 @@ function play(i) {
 }
 
 const ui = createUI({
-  levels,
+  chapters,
+  perChapter: LEVELS_PER_CHAPTER,
   isDone: (id) => loadDone().includes(id),
-  onStart: () => {
-    game.started = true;
-  },
   onRestart: () => play(index),
-  onSelect: (i) => play(i),
+  onSelect: (level) => play(levels.indexOf(level)),
   onNext: () => play(Math.min(index + 1, levels.length - 1)),
 });
 

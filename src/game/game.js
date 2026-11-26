@@ -49,7 +49,14 @@ export function createGame(level) {
     cloudX: L.cloud ? L.cloud.startX : 0,
     cloudShape: L.cloud ? makeCloudShape(L.cloud.w, L.cloud.h) : null,
     // Un miroir est « libre » s'il n'est ni pris dans la glace, ni porté.
-    mirrors: L.mirrors.map((m) => ({ ...m, angle: rad(m.angle), free: !m.frozen && !m.carried, lit: false })),
+    // (t = position le long du rail, pour les miroirs qui en ont un)
+    mirrors: L.mirrors.map((m) => ({
+      ...m,
+      angle: rad(m.angle),
+      t: m.rail ? (m.rail.start ?? 0.5) : 0,
+      free: !m.frozen && !m.carried,
+      lit: false,
+    })),
     // Glaciers : fondent à la lumière, une fois pour toutes.
     ices: (L.ices || []).map((def) => ({ def, kind: 'ice', melt: 0, gone: false, heating: false, exposure: 0 })),
     // Eaux calmes : gèlent à l'ombre (amount → 1), dégèlent à la lumière (→ 0).
@@ -69,7 +76,7 @@ export function createGame(level) {
     temple: { charge: 0, lit: false, glow: 0 },
     win: { t: 0 },
     thaw: 0, // 0 = ère glaciaire, 1 = monde dégelé
-    touched: { sun: false, cloud: false, mirror: false },
+    touched: { sun: false, cloud: false, mirror: false, rail: false },
     particles: [],
     events: [], // messages pour l'interface : 'ice-gone', 'door-open', 'mirror-placed', 'temple-lit'
     light: null, // résultat du dernier calcul de lumière
@@ -233,6 +240,23 @@ export function walkerPosition(w) {
   return pointAt(w.geo, w.d);
 }
 
+/**
+ * Met à leur place les miroirs qui ne tiennent pas en place tout seuls :
+ *  - un miroir sur radeau suit le niveau de son bassin ;
+ *  - un miroir sur rail glisse entre les deux bouts de son rail (m.t va de 0
+ *    à 1), un peu au-dessus de lui.
+ */
+export function placeMirrors(g) {
+  for (const m of g.mirrors) {
+    if (m.raft) m.y = byId(g.basins, m.raft.basin).level - m.raft.offset;
+    if (m.rail) {
+      const r = m.rail;
+      m.x = r.x0 + (r.x1 - r.x0) * m.t;
+      m.y = r.y0 + (r.y1 - r.y0) * m.t - (r.height ?? 15);
+    }
+  }
+}
+
 /** Tous les bords qui arrêtent la lumière, à cet instant. */
 export function buildSegments(g) {
   const L = g.level;
@@ -286,6 +310,7 @@ export function buildSegments(g) {
 /** Calcule où va la lumière : zone ensoleillée, faisceaux, lumières ponctuelles. */
 export function computeLight(g) {
   const L = g.level;
+  placeMirrors(g);
   const segs = buildSegments(g);
   const sun = sunPosition(g);
 
@@ -361,6 +386,7 @@ export function computeLight(g) {
  * Sur un écran tactile, viser au degré près serait frustrant.
  */
 export function settleMirror(g, mirror) {
+  if (mirror.rail) return; // un miroir sur rail ne tourne pas
   const score = () => {
     const l = computeLight(g);
     return (
@@ -394,9 +420,6 @@ export function settleMirror(g, mirror) {
 export function update(g, dt) {
   const L = g.level;
   g.time += dt;
-
-  // Les miroirs flottants suivent le niveau de leur bassin.
-  for (const m of g.mirrors) if (m.raft) m.y = byId(g.basins, m.raft.basin).level - m.raft.offset;
 
   const light = (g.light = computeLight(g));
 

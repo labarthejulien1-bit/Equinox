@@ -32,8 +32,13 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 
 1. Créer `src/levels/levelN.js` en copiant le niveau le plus proche ; il ne
    contient que des listes d'éléments (voir le tableau « Les briques d'un
-   niveau » du README) et sa fonction `hint(g)`.
-2. L'ajouter à `src/levels/index.js`.
+   niveau » du README) et sa fonction `hint(g)`. Le relief s'écrit en
+   tronçons nommés avec `terrain()` (`src/levels/terrain.js`). Son plan
+   (relief, places des éléments) a été choisi : voir le tableau des plans
+   dans `docs/GAME_DESIGN.md` (§ 9) ; il doit ressembler à un vrai paysage et
+   occuper toute la hauteur de l'écran.
+2. L'ajouter à son chapitre dans `src/levels/index.js` (et retirer son titre
+   de la liste `soon`).
 3. Écrire sa fonction `checkLevelN` dans `scripts/check-level.mjs` : au moins
    un raccourci impossible, et la solution prévue de bout en bout.
 4. Si le niveau demande une règle nouvelle, l'ajouter dans `game.js` comme un

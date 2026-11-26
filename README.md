@@ -6,18 +6,20 @@ temples d'une civilisation solaire oubliée sous la glace.
 
 ![Aperçu du niveau 1](docs/images/apercu.jpg)
 
-**État actuel : v0.3** — quatre niveaux jouables de bout en bout, sur les
-dix prévus pour le premier chapitre (le jeu final en comptera soixante) :
+**État actuel : v0.4** — le jeu comptera six chapitres de dix niveaux. Le
+premier chapitre, « La source », a cinq niveaux jouables de bout en bout :
 
 | | Niveau | Ce qu'on y apprend |
 | --- | --- | --- |
-| I | Le glacier suspendu | La lumière réchauffe ; les miroirs la guident |
-| II | Le rideau d'eau | L'ombre gèle l'eau calme : elle devient un outil |
-| III | La digue de glace | L'ombre du relief retient l'eau et la fait monter |
-| IV | Le pont de givre | Le petit peuple agit quand le monde le lui permet |
+| 1 | Le glacier suspendu | La lumière réchauffe ; les miroirs la guident |
+| 2 | Le rideau d'eau | L'ombre gèle l'eau calme : elle devient un outil |
+| 3 | La digue de glace | L'ombre du relief retient l'eau et la fait monter |
+| 4 | Le pont de givre | Le petit peuple agit quand le monde le lui permet |
+| 5 | L'aiguille | Un miroir sur rail : le soleil et sa place règlent le reflet |
 
-La progression est gardée sur l'appareil. Le bouton ☰ permet de choisir un
-niveau (tous sont ouverts pour l'instant, pour faciliter les tests).
+La progression est gardée sur l'appareil. Après l'écran titre, on choisit un
+chapitre puis un niveau ; le bouton ☰ y ramène. Tous les niveaux construits
+sont ouverts, pour faciliter les tests ; les autres apparaissent grisés.
 
 ## Technologies
 
@@ -90,9 +92,10 @@ src/
     progress.js         niveaux terminés, gardés sur l'appareil
     sliders.js          bulles du bas de l'écran (soleil et nuage au pouce)
   levels/
-    index.js            la liste des niveaux, dans l'ordre
-    level1.js … level4.js   un fichier par niveau : formes, positions, textes
-  ui/ui.js              écran titre, indices, choix du niveau, souvenir
+    index.js            les six chapitres et leurs niveaux, dans l'ordre
+    terrain.js          outil pour écrire le relief en tronçons nommés
+    level1.js … level5.js   un fichier par niveau : formes, positions, textes
+  ui/ui.js              écran titre, choix du chapitre et du niveau, indices, souvenir
 public/                 icône, manifeste PWA, service worker
 scripts/check-level.mjs test automatique de tous les niveaux
 docs/GAME_DESIGN.md     le document de conception du jeu
@@ -110,7 +113,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | --- | --- | --- |
 | `sun`, `cloud` | soleil sur son arc, nuage sur son rail (facultatif) | déplacés par le joueur |
 | `ground`, `snow`, `caves` | le relief | bloque la lumière |
-| `mirrors` | miroirs (sur mât, pris dans la glace, sur radeau, portés) | renvoient la lumière |
+| `mirrors` | miroirs (sur mât, pris dans la glace, sur radeau, portés, sur rail) | renvoient la lumière ; celui sur rail ne tourne pas, il glisse |
 | `ices` | glaciers | fondent à la lumière, une fois pour toutes |
 | `frosts` | eaux calmes : source, digue, pont | gèlent à l'ombre, dégèlent à la lumière |
 | `streams` | cours d'eau (tronçons qui coulent ou qui tombent) | coulent si leur source est ouverte ; une cascade peut arrêter la lumière |
@@ -155,6 +158,6 @@ cloud (à ajouter à l'étape 2).
 Le fichier `CLAUDE.md` explique le projet à Claude à chaque session. Exemples
 de demandes qui marchent bien :
 
-- « Ajoute un niveau 5 avec de la pluie, en suivant `docs/GAME_DESIGN.md`. »
+- « Construis le niveau 6 du chapitre I, en suivant `docs/GAME_DESIGN.md`. »
 - « Dans le niveau 1, rends le glacier deux fois plus long à fondre. »
 - « Change la couleur de la neige dans l'ombre pour un bleu plus violet. »

@@ -313,9 +313,82 @@ function checkLevel4(level) {
   }
 }
 
+// ── Niveau 5 ──────────────────────────────────────────────────────────
+
+function checkLevel5(level) {
+  const places = [];
+  for (let t = 0; t <= 1.0001; t += 0.05) places.push(t);
+  {
+    // Sans le miroir, le soleil n'entre jamais sous le surplomb.
+    const g = createGame(level);
+    g.mirrors[0].free = false;
+    const r = sweepSky(g, (l) => l.crystalLit);
+    check(r.hits === 0, `le soleil direct n'atteint jamais le cristal (${r.hits}/${r.total})`);
+  }
+  {
+    // Bouger une seule des deux commandes ne suffit pas.
+    const g = createGame(level);
+    const mirror = g.mirrors[0];
+    const start = mirror.t;
+    const bySun = sweepSky(g, (l) => l.crystalLit);
+    check(bySun.hits === 0, 'sans toucher au rail, aucune position du soleil ne marche');
+    g.sunAngle = rad(level.sun.start);
+    let byRail = 0;
+    for (const t of places) {
+      mirror.t = t;
+      if (computeLight(g).crystalLit) byRail++;
+    }
+    mirror.t = start;
+    check(byRail === 0, 'sans toucher au soleil, aucune place sur le rail ne marche');
+  }
+  {
+    // Combien de paires (soleil, place) allument le temple ?
+    const g = createGame(level);
+    const mirror = g.mirrors[0];
+    let pairs = 0;
+    let shaded = 0;
+    for (let a = level.sun.min; a <= level.sun.max; a += 1) {
+      for (const t of places) {
+        g.sunAngle = rad(a);
+        mirror.t = t;
+        const l = computeLight(g);
+        if (l.crystalLit) pairs++;
+        if (!l.sunHidden && !mirror.lit) shaded++;
+      }
+    }
+    check(pairs >= 40, `paires (soleil, place) qui marchent : ${pairs}`);
+    check(shaded >= 20, `l'aiguille met parfois le miroir à l'ombre (${shaded} cas)`);
+  }
+  {
+    const g = createGame(level);
+    const mirror = g.mirrors[0];
+    run(g, 1);
+    check(mirror.lit && g.temple.charge === 0, 'au départ, le miroir est au soleil mais son reflet se perd');
+    g.sunAngle = rad(142);
+    run(g, 2);
+    check(!g.temple.lit, 'soleil bien placé, miroir mal placé : rien ne s’allume');
+    mirror.t = 0.7;
+    run(g, 3);
+    check(g.temple.lit, 'soleil et rail réglés ensemble : le temple s’allume');
+    // De combien peut-on se tromper sur le soleil et sur le rail ?
+    let sunOk = 0;
+    for (let d = -10; d <= 10; d += 0.5) {
+      g.sunAngle = rad(142 + d);
+      if (computeLight(g).crystalLit) sunOk += 0.5;
+    }
+    g.sunAngle = rad(142);
+    let railOk = 0;
+    for (let t = 0; t <= 1.0001; t += 0.02) {
+      mirror.t = t;
+      if (computeLight(g).crystalLit) railOk += 2;
+    }
+    check(sunOk >= 4 && railOk >= 20, `le réglage reste confortable (soleil ${sunOk}°, rail ${railOk} % de sa longueur)`);
+  }
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
-const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4 };
+const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5 };
 for (const level of levels) {
   console.log(`\nNiveau ${level.id} — ${level.title}`);
   if (checks[level.id]) checks[level.id](level);

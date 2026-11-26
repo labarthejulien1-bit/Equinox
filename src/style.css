@@ -270,25 +270,41 @@ button {
   opacity: 0.75;
 }
 
-/* ───── Choix du niveau ───── */
+/* ───── Choix du chapitre et du niveau ───── */
 
-#levels {
+.menu {
   background: rgba(10, 16, 36, 0.6);
   transition: opacity 0.35s ease;
 }
 
-#level-list {
+.menu .card {
+  padding: 22px 18px 18px;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 16px;
 }
 
-#level-list button {
+.menu .place {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 300;
+  opacity: 0.75;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 14px;
+  overflow-y: auto; /* dix niveaux ne tiennent pas toujours sur un petit écran */
+  min-height: 0;
+}
+
+.list button {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px 16px;
+  padding: 11px 14px;
   border: 1px solid rgba(244, 241, 230, 0.22);
   border-radius: 14px;
   background: rgba(244, 241, 230, 0.04);
@@ -296,25 +312,42 @@ button {
   cursor: pointer;
 }
 
-#level-list .num {
+.list .num {
   width: 26px;
   font-size: 13px;
   letter-spacing: 0.1em;
   color: var(--gold);
 }
 
-#level-list .name {
+.list .name {
   flex: 1;
   font-size: 15px;
   font-weight: 300;
 }
 
-#level-list .mark {
-  color: var(--gold);
+/* Sous le titre d'un chapitre : son milieu */
+.list .name small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  opacity: 0.65;
 }
 
-#level-list button.done {
+.list .mark {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.list button.done {
   border-color: rgba(255, 226, 160, 0.45);
+}
+
+/* Chapitre ou niveau pas encore disponible */
+.list button:disabled {
+  opacity: 0.42;
+  cursor: default;
+  border-style: dashed;
 }
 
 .actions button.ghost {

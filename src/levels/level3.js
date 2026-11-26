@@ -1,88 +1,76 @@
 // Niveau 3 — « La digue de glace »
 //
-// Un bassin, un radeau qui porte un miroir, et une gorge par où l'eau
-// s'échappe. À l'ombre, l'eau qui franchit le seuil gèle et bâtit une digue :
-// le bassin se remplit, le radeau monte.
+// Un lac de montagne, large et peu profond. Un radeau y porte un miroir. À
+// droite, un éperon rocheux avance en proue au-dessus du déversoir par où
+// l'eau s'échappe. À l'ombre, l'eau qui franchit ce seuil gèle et bâtit une
+// digue : le lac monte, le radeau aussi.
 //
 // Solution prévue :
-//  1. placer le soleil assez à droite pour que l'ombre de la falaise couvre
-//     le seuil : la digue monte, l'eau aussi ;
+//  1. placer le soleil assez à droite pour que l'ombre de l'éperon couvre le
+//     déversoir : la digue monte, l'eau aussi ;
 //  2. …mais pas trop bas, sinon le radeau reste lui aussi dans l'ombre ;
-//  3. une fois le miroir en haut et au soleil, viser le temple dans la falaise.
+//  3. une fois le miroir en haut et au soleil, viser le temple, dont la grotte
+//     s'ouvre sur la rive gauche.
 
-import { toPoints } from '../engine/vec.js';
+import { terrain } from './terrain.js';
+
+const relief = terrain([
+  { pts: [[-3000, 200], [-40, 200], [0, 236], [30, 286], [52, 332]], rough: 1, snow: true }, // versant de gauche
+  { pts: [[52, 332], [74, 380], [88, 418], [84, 440]] },
+  { pts: [[84, 440], [64, 420], [38, 414], [14, 424], [4, 446], [10, 480]], cave: true }, // voûte de la grotte
+  { pts: [[10, 480], [40, 479], [64, 477], [82, 468]], cave: true }, // son sol, relevé à l'entrée
+  { pts: [[82, 468], [96, 500], [114, 542], [134, 570], [164, 584]], rough: 5, amp: 0.03, depth: 1 }, // la cuvette du lac
+  { pts: [[164, 584], [202, 588], [232, 574], [246, 562], [252, 553]], rough: 6, amp: 0.03, depth: 1 },
+  { pts: [[252, 553], [258, 551], [264, 553]] }, // le seuil du déversoir
+  { pts: [[264, 553], [268, 620], [274, 690], [280, 762]] }, // le ravin
+  { pts: [[294, 762], [304, 660], [312, 580], [316, 500], [310, 430], [298, 384], [268, 330]] }, // le dessous de l'éperon
+  { pts: [[268, 330], [278, 300], [300, 268], [326, 250], [352, 246], [374, 232], [420, 170], [3000, 170]], rough: 9, amp: 0.04, snow: true }, // son dos, où vit le village
+]);
 
 export default {
   id: 3,
-  number: 'III',
+  number: '3',
   title: 'La digue de glace',
   size: { w: 360, h: 720 },
 
   sun: { cx: 180, cy: 330, rx: 172, ry: 268, min: 22, max: 150, start: 105, radius: 13 },
   // Pas de nuage ici : seul le relief fait de l'ombre.
 
-  ground: toPoints([
-    [-3000, 3000], //  0
-    [-3000, 225], //   1
-    [40, 225], //      2
-    [96, 238], //      3
-    [110, 262], //     4
-    [110, 385], //     5  haut de l'entrée de la grotte
-    [92, 366], //      6
-    [30, 358], //      7
-    [14, 380], //      8
-    [14, 436], //      9
-    [110, 436], //    10  bas de l'entrée de la grotte
-    [110, 580], //    11  fond du bassin
-    [250, 580], //    12
-    [250, 540], //    13  seuil
-    [264, 540], //    14
-    [264, 900], //    15  gorge
-    [282, 900], //    16
-    [282, 330], //    17
-    [260, 300], //    18  surplomb de la falaise
-    [3000, 296], //   19
-    [3000, 3000], //  20
-  ]),
-  snow: [
-    [1, 4],
-    [18, 19],
-  ],
-  caves: [[5, 10]],
+  ...relief,
 
   mirrors: [
     {
       id: 'radeau',
       x: 180,
-      y: 524,
+      y: 536,
       angle: 0,
       len: 24,
-      raft: { basin: 'bassin', offset: 16 }, // flotte 16 unités au-dessus de l'eau
+      raft: { basin: 'lac', offset: 16 }, // flotte 16 unités au-dessus de l'eau
       mount: { type: 'raft' },
     },
   ],
 
-  temple: { x: 50, baseY: 436, crystal: { x: 52, y: 411, r: 10 } },
+  temple: { x: 38, baseY: 479, scale: 0.75, crystal: { x: 37, y: 460, r: 7.5 } },
 
   // Le seuil : l'eau qui le franchit gèle à l'ombre et monte en digue.
   frosts: [
     {
       id: 'digue',
       role: 'dam',
-      rect: { x0: 250, x1: 264, y0: 440, y1: 540 },
+      rect: { x0: 252, x1: 264, y0: 480, y1: 553 },
       probes: [
-        [257, 536],
-        [257, 492],
-        [257, 448],
+        [258, 549],
+        [258, 516],
+        [258, 486],
       ],
       freezeTime: 4.5,
       meltTime: 3.0,
     },
   ],
 
-  basins: [{ id: 'bassin', x0: 110, x1: 250, floor: 580, low: 540, high: 440, dam: 'digue', speed: 26, spout: { x: 110, y: 508 } }],
+  basins: [{ id: 'lac', x0: 78, x1: 252, floor: 592, low: 552, high: 480, dam: 'digue', speed: 20, spout: { x: 96, y: 498 } }],
 
-  // Tant que la digue n'existe pas, l'eau s'échappe par la gorge.
+  // Tant que la digue n'existe pas, l'eau s'échappe par le ravin.
   streams: [
     {
       id: 'fuite',
@@ -93,28 +81,30 @@ export default {
       parts: [
         {
           run: [
-            [249, 541.5],
-            [268, 542.5],
+            [251, 553.5],
+            [258, 552],
+            [265, 554],
+            [269, 620],
+            [275, 690],
+            [281, 762],
           ],
         },
-        { fall: { x: 269.5, top: 542, bottom: 900 } },
       ],
     },
   ],
 
-  houses: [
-    { x: 312, baseY: 297, w: 24, h: 16, roof: 13 },
-    { x: 344, baseY: 297, w: 26, h: 19, roof: 15 },
-  ],
-  lanterns: [{ x: 292, y: 283, baseY: 298 }],
+  houses: [{ x: 338, baseY: 248, w: 22 }],
+  lanterns: [{ x: 304, y: 251, baseY: 265 }],
   villagers: [
-    { x: 328, y: 296.5, s: 1.0, dir: -1 },
-    { x: 60, y: 229, s: 0.9, dir: 1 },
+    { x: 316, y: 253, s: 1.0, dir: -1 },
+    { x: 362, y: 240, s: 0.8, dir: -1 },
   ],
-  pines: [
-    { x: 22, y: 225, h: 40 },
-    { x: 78, y: 234, h: 28 },
-    { x: 360, y: 296, h: 30 },
+  decor: [
+    { type: 'raptor', layer: 'sky', x: 170, y: 290, r: 30, s: 0.6 },
+    { type: 'ibex', x: 22, y: 272, s: 0.7 },
+    { type: 'cairn', x: 286, y: 289, s: 0.45 },
+    { type: 'bush', x: 60, y: 350, s: 0.5 },
+    { type: 'hare', x: 4, y: 240, s: 0.45 },
   ],
 
   hint(g) {
@@ -122,10 +112,10 @@ export default {
     const mirror = g.mirrors[0];
     if (g.temple.lit) return '';
     if (dam.amount < 0.05) {
-      if (!g.touched.sun) return 'L’eau s’échappe par la gorge, et le radeau reste au fond';
-      return 'Au soleil, rien ne gèle. Quelle ombre pourrait couvrir le seuil ?';
+      if (!g.touched.sun) return 'L’eau s’échappe par le ravin, et le radeau reste trop bas';
+      return 'Au soleil, rien ne gèle. Quelle ombre pourrait couvrir le déversoir ?';
     }
-    if (dam.amount < 0.95) return dam.lit ? 'La digue fond…' : 'À l’ombre de la falaise, l’eau bâtit une digue…';
+    if (dam.amount < 0.95) return dam.lit ? 'La digue fond…' : 'À l’ombre de l’éperon, l’eau bâtit une digue…';
     if (!mirror.lit) return 'Le radeau est monté. Son miroir, lui, attend le soleil.';
     return 'Guide la lumière jusqu’au temple';
   },

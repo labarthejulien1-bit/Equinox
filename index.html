@@ -52,12 +52,25 @@
         </div>
       </div>
 
-      <!-- Choix du niveau -->
-      <div id="levels" class="overlay hidden">
+      <!-- Choix du chapitre : six chapitres, un par milieu -->
+      <div id="chapters" class="overlay menu hidden">
         <div class="card">
-          <div class="eyebrow">Voyage</div>
-          <div id="level-list"></div>
+          <div class="eyebrow">Le voyage</div>
+          <div id="chapter-list" class="list"></div>
           <div class="actions">
+            <button id="close-chapters" class="ghost">Fermer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Choix du niveau, dans un chapitre -->
+      <div id="levels" class="overlay menu hidden">
+        <div class="card">
+          <div id="levels-chapter" class="eyebrow"></div>
+          <div id="levels-place" class="place"></div>
+          <div id="level-list" class="list"></div>
+          <div class="actions">
+            <button id="back-chapters" class="ghost">Chapitres</button>
             <button id="close-levels" class="ghost">Fermer</button>
           </div>
         </div>

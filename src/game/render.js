@@ -364,6 +364,12 @@ export function createRenderer(canvas) {
     const x = T.x;
     const y = T.baseY;
     const cr = T.crystal;
+    // Un temple peut être plus petit (scale < 1) quand sa grotte est basse.
+    const k = T.scale ?? 1;
+    c.save();
+    c.translate(x, y);
+    c.scale(k, k);
+    c.translate(-x, -y);
     // Marches
     c.fillStyle = P.stoneDark;
     c.fillRect(x - 27, y - 4, 54, 5);
@@ -394,6 +400,7 @@ export function createRenderer(canvas) {
       { x: x - 17, y: y - 47 },
     ]);
     c.fill();
+    c.restore();
     // Anneau du soleil autour du cristal
     c.strokeStyle = P.stone;
     c.lineWidth = 2.4;
@@ -613,6 +620,43 @@ export function createRenderer(canvas) {
         { x: m.x + 6, y: mt.baseY + 1 },
       ]);
       c.stroke();
+    } else if (mt.type === 'rail') {
+      // Le rail des anciens : une barre de pierre, deux butées, un filet d'or.
+      const r = m.rail;
+      c.strokeStyle = P.stoneDark;
+      c.lineWidth = 3.4;
+      c.lineCap = 'butt';
+      line(c, [
+        { x: r.x0 - 6, y: r.y0 - 1.6 },
+        { x: r.x1 + 6, y: r.y1 - 1.6 },
+      ]);
+      c.stroke();
+      c.fillStyle = P.stone;
+      c.fillRect(r.x0 - 8, r.y0 - 7, 4, 8);
+      c.fillRect(r.x1 + 4, r.y1 - 7, 4, 8);
+      c.strokeStyle = P.bronze;
+      c.lineWidth = 0.8;
+      line(c, [
+        { x: r.x0 - 3, y: r.y0 - 2.4 },
+        { x: r.x1 + 3, y: r.y1 - 2.4 },
+      ]);
+      c.stroke();
+      // Le chariot qui porte le miroir
+      const base = m.y + (r.height ?? 15) - 2.6;
+      c.fillStyle = P.bronze;
+      poly(c, [
+        { x: m.x - 6, y: base },
+        { x: m.x + 6, y: base },
+        { x: m.x + 2.5, y: m.y + 3 },
+        { x: m.x - 2.5, y: m.y + 3 },
+      ]);
+      c.fill();
+      c.fillStyle = P.stone;
+      for (const dx of [-4, 4]) {
+        c.beginPath();
+        c.arc(m.x + dx, base + 0.6, 1.7, 0, TAU);
+        c.fill();
+      }
     } else if (mt.type === 'arm') {
       c.strokeStyle = P.bronze;
       c.lineWidth = 2;
@@ -858,25 +902,28 @@ export function createRenderer(canvas) {
   function drawWalker(c, P, w, i, g) {
     const pos = walkerPosition(w);
     const s = w.def.s || 1;
-    drawVillager(c, P, { x: pos.x, y: pos.y, s, dir: 1 }, i + 11, g, w.moving ? 1 : 0);
+    // Il regarde là où il va : à gauche si son chemin part vers la gauche.
+    const path = w.def.path;
+    const dir = path[path.length - 1][0] < path[0][0] ? -1 : 1;
+    drawVillager(c, P, { x: pos.x, y: pos.y, s, dir }, i + 11, g, w.moving ? 1 : 0);
     if (w.done) return;
     // Le miroir, tenu dans le dos par une hampe
     const hop = w.moving ? Math.abs(Math.sin(g.time * 9)) * 1.6 : 0;
-    const bx = pos.x - 5 * s;
+    const bx = pos.x - 5 * s * dir;
     const by = pos.y - hop;
     c.lineCap = 'round';
     c.strokeStyle = P.wood;
     c.lineWidth = 1.5;
     line(c, [
       { x: bx, y: by - 3 },
-      { x: bx - 1, y: by - 21 * s },
+      { x: bx - dir, y: by - 21 * s },
     ]);
     c.stroke();
     c.strokeStyle = P.bronze;
     c.lineWidth = 4;
     line(c, [
-      { x: bx - 6, y: by - 16 * s },
-      { x: bx + 4, y: by - 28 * s },
+      { x: bx - 6 * dir, y: by - 16 * s },
+      { x: bx + 4 * dir, y: by - 28 * s },
     ]);
     c.stroke();
     c.strokeStyle = P.iceLine;
@@ -1079,6 +1126,27 @@ export function createRenderer(canvas) {
           c.lineTo(b.x + Math.cos(a) * 11, b.y + Math.sin(a) * 11);
           c.stroke();
         }
+      } else if (b.type === 'rail') {
+        // Un petit miroir incliné et ses deux flèches
+        c.lineCap = 'round';
+        c.strokeStyle = '#d9aa52';
+        c.lineWidth = 4;
+        c.beginPath();
+        c.moveTo(b.x - 4, b.y + 5);
+        c.lineTo(b.x + 4, b.y - 5);
+        c.stroke();
+        c.strokeStyle = '#fffbe2';
+        c.lineWidth = 2;
+        c.stroke();
+        c.strokeStyle = '#eef3ff';
+        c.lineWidth = 1.4;
+        for (const d of [-1, 1]) {
+          c.beginPath();
+          c.moveTo(b.x + d * 9, b.y - 3.5);
+          c.lineTo(b.x + d * 12.5, b.y);
+          c.lineTo(b.x + d * 9, b.y + 3.5);
+          c.stroke();
+        }
       } else {
         c.fillStyle = '#eef3ff';
         c.beginPath();
@@ -1154,6 +1222,27 @@ export function createRenderer(canvas) {
     for (const m of g.mirrors) {
       if (!m.free) continue;
       const active = drag && drag.mirror === m;
+      if (m.rail) {
+        // Un miroir sur rail : deux chevrons, de part et d'autre, le long du rail.
+        const viaSlider = drag && drag.slider && drag.type === 'rail';
+        const a = active || viaSlider ? 0.8 : !g.touched.rail ? 0.3 + 0.5 * pulse : 0.25;
+        const tilt = Math.atan2(m.rail.y1 - m.rail.y0, m.rail.x1 - m.rail.x0);
+        c.strokeStyle = `rgba(255,240,200,${a})`;
+        c.lineWidth = 1.6;
+        for (const d of [-1, 1]) {
+          c.save();
+          c.translate(m.x, m.y);
+          c.rotate(tilt);
+          const x = d * (m.len / 2 + 8 + (g.touched.rail ? 0 : pulse * 3));
+          c.beginPath();
+          c.moveTo(x - d * 3, -5);
+          c.lineTo(x + d * 2, 0);
+          c.lineTo(x - d * 3, 5);
+          c.stroke();
+          c.restore();
+        }
+        continue;
+      }
       const hint = !m.turned;
       const a = active ? 0.75 : hint ? 0.3 + 0.4 * pulse : 0.22;
       c.strokeStyle = `rgba(255,240,200,${a})`;
