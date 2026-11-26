@@ -1024,8 +1024,16 @@ chauffe.
 En cours : le plan de chaque niveau (relief, places des éléments, décors),
 choisi niveau par niveau parmi plusieurs propositions.
 
+| Niveau | Plan retenu |
+| --- | --- |
+| 1 · Le glacier suspendu | le plan actuel, habillé avec le nouveau design (hutte enterrée, capes noires, temple à anneau, décors de la montagne) |
+
 ### Gabarit d'un niveau
 
+- **Un relief naturel.** Le plan d'un niveau doit ressembler à un vrai
+  paysage : des pentes, des épaulements, des crêtes, des vallées en V ou en
+  auge, des grottes aux contours irréguliers. Pas de murs verticaux tirés au
+  cordeau, pas de plateaux plats comme des tables, pas de couloirs en boîte.
 - Une image lisible en trois secondes : où est le temple, qu'est-ce qui bouge.
 - Deux à quatre objets manipulables, pas plus.
 - Trois temps : comprendre (1 geste), débloquer (la réaction en chaîne),
