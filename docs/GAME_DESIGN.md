@@ -998,13 +998,17 @@ torrent gèle, le porteur traverse et pose son miroir près du cristal qui
 brille encore ; viser le temple avec cette lueur. Sans pression : si le
 cristal s'éteint, on refait le jour pour le recharger.
 
-**9 · Les jumeaux.** Présents : le soleil, deux miroirs reliés de part et
-d'autre d'une crevasse, un pont de corde, un sérac devant le temple. Tourner
-un miroir fait tourner l'autre à l'envers : pour une position du soleil, un
-seul réglage envoie la lumière du premier au second, et l'angle du second est
-alors imposé. Solution : la position du soleil où le second miroir touche le
-sérac, pour le faire fondre, puis celle où il touche le temple. Impossible
-autrement : le premier miroir ne voit pas le temple.
+**9 · Les jumeaux.** Présents : le soleil, deux miroirs reliés par une chaîne
+de part et d'autre d'une gorge, un pont de corde, un bloc de glace perché
+au-dessus du premier miroir, le temple. Tourner un miroir fait tourner l'autre
+à l'envers : pour une position du soleil, un seul réglage envoie la lumière du
+premier au second, et l'angle du second est alors imposé. La glace fait de
+l'ombre au premier miroir, à l'endroit exact où le soleil doit être pour
+atteindre le temple. Solution : placer le soleil ailleurs, pour que le jumeau
+envoie le reflet sur la glace et la fasse fondre ; puis ramener le soleil à la
+place que la glace cachait, et le jumeau vise le temple. (Énoncé corrigé : avec
+la glace simplement devant le temple, une seule position du soleil suffisait.)
+Impossible autrement : le premier miroir ne voit pas le temple.
 
 **10 · Le grand glacier.** Présents : le soleil, le nuage, le miroir du
 village, un miroir sur rail, un conduit, une source et sa cascade, le temple à
@@ -1034,6 +1038,7 @@ choisi niveau par niveau parmi plusieurs propositions.
 | 6 · L'œil de pierre | « Les deux bornes » : le village est dans un pré au pied de la chute, presque sous le lac de la source ; la grotte du temple est derrière la chute. Les deux yeux du conduit sont des bornes anciennes : l'une sur la crête de gauche, l'autre dans le pré. Le nuage doit être large |
 | 7 · La corniche | « La rimaye, inversée » : le village est à droite sur une moraine ; un glacier mène au pied d'un contrefort rocheux, à gauche, où s'ouvre la rimaye. La corniche du haut coiffe le rebord du rocher, celle du bas est à l'abri dessous, comme le socle. **Changement par rapport à l'énoncé** : le cristal du temple est au fond d'une cheminée de roche, au-dessus du socle, et non dans une grotte en face. Nuage bas et petit. Palette Minéral |
 | 8 · La veillée | « La veillée au bord du lac » : le torrent de l'énoncé devient un petit lac, que le porteur traverse sur la glace. Le village veille autour du feu sur la rive gauche, sous la grotte du temple ; le cristal-mémoire et le socle sont sur la rive droite, sous une avancée de roche. Le soleil peut descendre sous l'horizon. L'aurore est un décor. Palette Aurore |
+| 9 · Les jumeaux | « La gorge » : une gorge profonde franchie par un pont de corde ; le premier miroir en haut à gauche sous un bloc de glace perché, son jumeau à mi-hauteur à droite dans un creux de la paroi, le temple tout en bas. La lumière descend en zigzag sur toute la hauteur. Palette Minéral |
 
 ### Gabarit d'un niveau
 
