@@ -416,6 +416,35 @@ chaude).
 Piste de ciel, non dessinée : un halo autour du soleil, avec deux faux soleils
 de chaque côté, comme on en voit par grand froid.
 
+### Milieu 3 — Forêt ✅
+
+Planches : [faune, flore et roches](images/decors-foret-1.jpg),
+[sous-bois, eau, brume et traces du peuple](images/decors-foret-2.jpg). Les
+24 éléments sont retenus.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | élan (1), ours (2), loup (3), écureuil (4), pic à tête rouge (5), lucioles (6) | les lucioles (elles n'apparaissent que dans l'ombre) |
+| Flore et roches | fougères (1), champignons (2), arbre mort (3), rocher moussu (4), arbre creux (5), grand mélèze (6) | les arbres : un tronc met dans l'ombre tout ce qui est derrière lui |
+| Sous-bois, eau et brume | trouée de lumière (1), tronc couché (2), ruisseau et cascade (3), barrage de castors (4), nappe de brume (5), toile d'araignée (6) | la trouée, le tronc couché (un pont), le barrage (une digue), la brume, la toile (sa rosée brille quand un rayon la touche) |
+| Traces du peuple et des anciens | tas de bûches et billot (1), lanternes (2), tronc sculpté (3), charbonnière (4), arche prise dans les racines (5), miroir avalé par un arbre (6) | les lanternes (lumières de nuit), le miroir avalé |
+
+Propre à la forêt :
+
+- **La trouée de lumière.** Sous les arbres tout est dans l'ombre, sauf un
+  rayon qui tombe par un trou du feuillage. Déplacer le soleil déplace ce
+  rayon. C'est l'énigme propre à ce milieu, et c'est le milieu le plus sombre
+  du jeu : la lumière y est rare.
+- **Des indices qui ne bloquent rien.** Les lucioles montrent où est l'ombre,
+  la rosée de la toile montre où passe un rayon.
+- **Le miroir avalé par un arbre** est l'équivalent du miroir pris dans la
+  glace du niveau 1. À décider : comment on le libère.
+- **La nature refait les règles connues** : le barrage de castors est une
+  digue, le tronc couché est un pont.
+
+Règle à ajouter au jeu si on s'en sert : une brume qui affaiblit la lumière
+sans l'arrêter (la même règle que la vapeur de la source chaude des plaines).
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
