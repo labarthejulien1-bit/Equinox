@@ -11,7 +11,8 @@
 import { TAU, smooth } from '../engine/vec.js';
 import { mirrorGeometry } from '../engine/light.js';
 import { getPalettes, mix } from './palette.js';
-import { housePolygon, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
+import { hutSize, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
+import { drawDecor } from './decor.js';
 import { sliderBubbles } from './sliders.js';
 
 const SNOW = 7; // épaisseur de la couche de neige
@@ -175,6 +176,9 @@ export function createRenderer(canvas) {
     ridge(c, P.far2, 4.1 + seed, 432, 52, 0.0165, true);
     ridge(c, P.far3, 7.7 + seed, 474, 30, 0.012, false);
 
+    // Décors du ciel (un rapace qui plane…)
+    for (const d of L.decor || []) if (d.layer === 'sky') drawDecor(c, P, d, g);
+
     // Soleil (dessiné ici : il passe DERRIÈRE le relief du premier plan)
     const sun = g.light.sun;
     // Plus il est bas, plus il est orangé, et plus son halo est large.
@@ -285,8 +289,9 @@ export function createRenderer(canvas) {
       c.fillRect(l.x - 2.2, l.y - 3, 4.4, 6);
     }
 
-    // Maisons
+    // Huttes du village, puis les décors posés sur le sol
     for (const h of L.houses || []) drawHouse(c, P, h, g);
+    for (const d of L.decor || []) if (d.layer !== 'sky') drawDecor(c, P, d, g);
 
     // Miroirs prisonniers de la glace, puis les glaciers eux-mêmes
     for (const ice of g.ices) {
@@ -395,12 +400,15 @@ export function createRenderer(canvas) {
     c.beginPath();
     c.arc(cr.x, cr.y, cr.r + 6, 0, TAU);
     c.stroke();
-    c.lineWidth = 1.4;
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * TAU + Math.PI / 8;
+    // Ses graduations, comme sur un cadran : une longue toutes les trois
+    c.lineWidth = 1.2;
+    c.lineCap = 'butt';
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * TAU;
+      const len = i % 3 === 0 ? 12.5 : 10.6;
       c.beginPath();
       c.moveTo(cr.x + Math.cos(a) * (cr.r + 8), cr.y + Math.sin(a) * (cr.r + 8));
-      c.lineTo(cr.x + Math.cos(a) * (cr.r + 11.5), cr.y + Math.sin(a) * (cr.r + 11.5));
+      c.lineTo(cr.x + Math.cos(a) * (cr.r + len), cr.y + Math.sin(a) * (cr.r + len));
       c.stroke();
     }
   }
@@ -645,7 +653,7 @@ export function createRenderer(canvas) {
     c.stroke();
     c.fillStyle = P.wood;
     c.fillRect(m.x - 17, y - 2.6 + bob, 34, 4);
-    c.fillStyle = P.roof;
+    c.fillStyle = P.wood;
     c.fillRect(m.x - 17, y + 0.2 + bob, 34, 1.2);
     // Un passager
     drawVillager(c, P, { x: m.x - 10, y: y - 2.4 + bob, s: 0.85, dir: 1 }, 7, g);
@@ -676,33 +684,59 @@ export function createRenderer(canvas) {
     }
   }
 
+  /** Une hutte enterrée : un dôme de terre et de neige, une porte, un feu. */
   function drawHouse(c, P, h, g) {
-    const l = h.x - h.w / 2;
-    c.fillStyle = P.wall;
-    c.fillRect(l, h.baseY - h.h, h.w, h.h + 1);
-    c.fillStyle = P.roof;
-    poly(c, [
-      { x: l - 3, y: h.baseY - h.h },
-      { x: h.x, y: h.baseY - h.h - h.roof },
-      { x: l + h.w + 3, y: h.baseY - h.h },
-    ]);
+    const { half, height } = hutSize(h);
+    const k = half / 42; // les mesures ci-dessous sont celles d'une hutte de 84 de large
+    c.save();
+    c.translate(h.x, h.baseY);
+    // Le dôme
+    c.fillStyle = P.turf;
+    c.beginPath();
+    c.ellipse(0, 0, half, height, 0, Math.PI, TAU);
+    c.closePath();
     c.fill();
-    // Neige sur le toit
+    // La neige, sur le côté du vent
     c.strokeStyle = P.snow;
-    c.lineWidth = 2.6;
+    c.lineWidth = 3 * k + 1;
     c.lineCap = 'round';
-    c.lineJoin = 'round';
+    c.beginPath();
+    c.ellipse(0, 0, half - 1.6, height - 1.6, 0, Math.PI * 1.1, Math.PI * 1.52);
+    c.stroke();
+    // La porte : un cadre de bois, et le feu qui brûle au fond
+    const dw = 16 * k;
+    const dh = 18 * k;
+    c.fillStyle = P.doorway;
+    c.fillRect(-dw / 2, -dh, dw, dh + 1);
+    const flicker = 0.85 + 0.15 * Math.sin(g.time * 7 + h.x);
+    const warm = c.createRadialGradient(0, -dh * 0.3, 0, 0, -dh * 0.3, dh * (g.temple.glow > 0.6 ? 1.5 : 1));
+    warm.addColorStop(0, `rgba(255, 220, 140, ${0.75 * flicker})`);
+    warm.addColorStop(1, 'rgba(255, 220, 140, 0)');
+    c.fillStyle = warm;
+    c.fillRect(-dw, -dh * 1.6, dw * 2, dh * 1.7);
+    c.fillStyle = '#ffcf7a';
+    c.fillRect(-dw * 0.3, -dh * 0.62, dw * 0.6, dh * 0.62 + 1);
+    c.strokeStyle = P.wood;
+    c.lineWidth = 2.2 * k + 0.6;
+    c.lineCap = 'butt';
     line(c, [
-      { x: l - 2, y: h.baseY - h.h - 1 },
-      { x: h.x, y: h.baseY - h.h - h.roof },
-      { x: l + h.w + 2, y: h.baseY - h.h - 1 },
+      { x: -dw / 2 - 1, y: 1 },
+      { x: -dw / 2 - 1, y: -dh - 1 },
+      { x: dw / 2 + 1, y: -dh - 1 },
+      { x: dw / 2 + 1, y: 1 },
     ]);
     c.stroke();
-    // Porte, et fenêtre qui s'allume quand le temple revit
-    c.fillStyle = P.roof;
-    c.fillRect(h.x - h.w * 0.3, h.baseY - h.h * 0.55, h.w * 0.2, h.h * 0.55 + 1);
-    c.fillStyle = g.temple.glow > 0.6 ? '#ffdf8f' : P.roof;
-    c.fillRect(h.x + h.w * 0.1, h.baseY - h.h * 0.7, h.w * 0.22, h.h * 0.3);
+    // La fumée
+    c.fillStyle = P.snow;
+    for (let i = 0; i < 4; i++) {
+      const t = (g.time * 0.22 + i / 4 + h.x * 0.01) % 1;
+      c.globalAlpha = 0.6 * (1 - t);
+      c.beginPath();
+      c.arc(half * 0.42 + Math.sin(t * 5 + i) * 2.4, -height * 0.9 - t * 22, 1.6 + t * 2.6, 0, TAU);
+      c.fill();
+    }
+    c.globalAlpha = 1;
+    c.restore();
   }
 
   function drawIce(c, P, ice) {
@@ -736,6 +770,21 @@ export function createRenderer(canvas) {
   // ── Personnages ──
 
   /** p = { x, y, s (taille), dir (1 ou -1) } ; step > 0 quand il marche. */
+  /** Le tracé de la cape (une goutte à capuchon), pour la remplir ou s'y limiter. */
+  function cloakPath(c, bob) {
+    c.beginPath();
+    c.moveTo(-5.2, 0.5);
+    c.quadraticCurveTo(-6, -9 + bob, -1.2, -14.5 + bob);
+    c.quadraticCurveTo(0.5, -18.5 + bob, 3, -17 + bob); // pointe du capuchon
+    c.quadraticCurveTo(2.2, -15 + bob, 2.6, -13.5 + bob);
+    c.quadraticCurveTo(6, -8 + bob, 5.2, 0.5);
+    c.closePath();
+  }
+
+  /**
+   * Un villageois : cape noire à frise blanche, petit masque noir cerclé de
+   * blanc, et une barre de lumière à la place des yeux.
+   */
   function drawVillager(c, P, p, i, g, step = 0) {
     const t = g.time;
     // Ils sautent de joie quand le temple s'allume.
@@ -745,26 +794,62 @@ export function createRenderer(canvas) {
     c.save();
     c.translate(p.x, p.y - hop);
     c.scale(p.s * p.dir, p.s);
-    // Cape à capuche, en forme de goutte
+    // La cape
+    c.fillStyle = P.cloak;
+    cloakPath(c, bob);
+    c.fill();
+    // La frise de triangles, au bas de la cape (les enfants n'en ont pas encore)
+    if (p.s >= 0.9) {
+      c.save();
+      cloakPath(c, bob);
+      c.clip();
+      c.fillStyle = P.trim;
+      c.beginPath();
+      for (let x = -7.2; x < 7; x += 2.4) {
+        c.moveTo(x, -1.3);
+        c.lineTo(x + 1.2, -4.2);
+        c.lineTo(x + 2.4, -1.3);
+      }
+      c.fill();
+      c.fillRect(-8, -1.3, 16, 0.7);
+      c.restore();
+    }
+    // Le masque
+    const mx = 0.9;
+    const my = -9.6 + bob;
+    c.strokeStyle = P.trim;
+    c.lineWidth = 0.65;
+    c.beginPath();
+    c.ellipse(mx, my, 3.3, 3.2, 0, 0, TAU);
+    c.stroke();
     c.fillStyle = P.cloak;
     c.beginPath();
-    c.moveTo(-5.2, 0.5);
-    c.quadraticCurveTo(-6, -9 + bob, -1.2, -14.5 + bob);
-    c.quadraticCurveTo(0.5, -18.5 + bob, 3, -17 + bob); // pointe de la capuche
-    c.quadraticCurveTo(2.2, -15 + bob, 2.6, -13.5 + bob);
-    c.quadraticCurveTo(6, -8 + bob, 5.2, 0.5);
-    c.closePath();
+    c.ellipse(mx, my, 2.7, 2.6, 0, 0, TAU);
     c.fill();
-    // Visage et yeux
-    c.fillStyle = P.face;
+    // Le signe de l'aube : un demi-soleil et trois rayons
+    c.lineWidth = 0.45;
+    c.lineCap = 'round';
     c.beginPath();
-    c.ellipse(0.9, -9.6 + bob, 3, 2.9, 0, 0, TAU);
+    c.arc(mx, my - 0.55, 1.35, Math.PI, TAU);
+    c.stroke();
+    for (const a of [-2.4, -1.57, -0.74]) {
+      c.beginPath();
+      c.moveTo(mx + Math.cos(a) * 1.75, my - 0.55 + Math.sin(a) * 1.75);
+      c.lineTo(mx + Math.cos(a) * 2.3, my - 0.55 + Math.sin(a) * 2.3);
+      c.stroke();
+    }
+    // La barre de lumière : elle luit plus fort dans l'ombre, et cligne parfois
+    const blink = Math.sin(t * 0.9 + i * 3.7) > 0.985 ? 0.25 : 1;
+    const halo = c.createRadialGradient(mx, my - 0.3, 0, mx, my - 0.3, 5.5);
+    halo.addColorStop(0, `rgba(255, 240, 180, ${P.barGlow})`);
+    halo.addColorStop(1, 'rgba(255, 220, 130, 0)');
+    c.fillStyle = halo;
+    c.beginPath();
+    c.arc(mx, my - 0.3, 5.5, 0, TAU);
     c.fill();
-    c.fillStyle = P.eye;
-    const blink = Math.sin(t * 0.9 + i * 3.7) > 0.985 ? 0.2 : 1;
+    c.fillStyle = '#ffeeb4';
     c.beginPath();
-    c.ellipse(0.2, -9.8 + bob, 0.55, 0.75 * blink, 0, 0, TAU);
-    c.ellipse(2.4, -9.8 + bob, 0.55, 0.75 * blink, 0, 0, TAU);
+    c.roundRect(mx - 2, my - 0.3 - 0.48 * blink, 4, 0.96 * blink, 0.48 * blink);
     c.fill();
     c.restore();
   }

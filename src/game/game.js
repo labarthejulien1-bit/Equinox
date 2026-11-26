@@ -114,16 +114,21 @@ export function cloudPolygon(g) {
   return g.cloudShape.outline.map((p) => ({ x: p.x + g.cloudX, y: p.y + y }));
 }
 
+/** Demi-largeur et hauteur du dôme d'une hutte enterrée. */
+export function hutSize(h) {
+  const half = h.w * 0.75;
+  return { half, height: half * 0.72 };
+}
+
+/** Le contour d'une hutte (un dôme) : c'est lui qui fait de l'ombre. */
 export function housePolygon(h) {
-  const l = h.x - h.w / 2;
-  const r = h.x + h.w / 2;
-  return [
-    { x: l, y: h.baseY },
-    { x: l, y: h.baseY - h.h },
-    { x: h.x, y: h.baseY - h.h - h.roof },
-    { x: r, y: h.baseY - h.h },
-    { x: r, y: h.baseY },
-  ];
+  const { half, height } = hutSize(h);
+  const pts = [];
+  for (let i = 0; i <= 8; i++) {
+    const a = Math.PI + (i / 8) * Math.PI; // de la gauche à la droite, en passant par le sommet
+    pts.push({ x: h.x + Math.cos(a) * half, y: h.baseY + Math.sin(a) * height });
+  }
+  return pts;
 }
 
 /** Une porte descend dans le sol quand elle s'ouvre. */

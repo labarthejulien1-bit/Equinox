@@ -152,25 +152,30 @@ export default {
   wheels: [{ id: 'roue', x: 199, y: 635, r: 15, stream: 'torrent', door: 'porte' }],
   doors: [{ id: 'porte', x: 216, top: 452, bottom: 541, w: 7 }],
 
-  // Village.
+  // Le village : des huttes enterrées (w règle leur taille).
   houses: [
-    { x: 300, baseY: 413, w: 24, h: 15, roof: 13 },
-    { x: 330, baseY: 410, w: 28, h: 19, roof: 15 },
+    { x: 303, baseY: 413, w: 24 },
+    { x: 336, baseY: 410, w: 26 },
   ],
   lanterns: [
     { x: 281, y: 396, baseY: 411 },
-    { x: 349, y: 392, baseY: 407 },
+    { x: 359, y: 392, baseY: 407 },
   ],
   villagers: [
-    { x: 236, y: 410.5, s: 1.0, dir: 1 },
-    { x: 247, y: 409.5, s: 0.8, dir: 1 },
-    { x: 315, y: 412, s: 1.05, dir: -1 },
+    { x: 239, y: 410.5, s: 1.0, dir: 1 },
+    { x: 249, y: 409.5, s: 0.8, dir: 1 },
+    { x: 320, y: 412, s: 1.05, dir: -1 },
     { x: 176, y: 651.5, s: 0.95, dir: 1 },
   ],
-  pines: [
-    { x: 357, y: 407, h: 40 },
-    { x: 132, y: 648.5, h: 30 },
-    { x: -22, y: 220, h: 26 },
+  // Les décors de la haute montagne (voir src/game/decor.js).
+  decor: [
+    { type: 'raptor', layer: 'sky', x: 236, y: 138, r: 34, s: 0.6 },
+    { type: 'ibex', x: 120, y: 273, s: 0.8, dir: -1 },
+    { type: 'cairn', x: 30, y: 151.5, s: 0.5 },
+    { type: 'marmots', x: 117, y: 647, s: 0.5 },
+    { type: 'hare', x: 139, y: 650, s: 0.5 },
+    { type: 'bush', x: 226, y: 412, s: 0.55 },
+    { type: 'flags', x: 281, y: 394, x1: 301, y1: 396.5, sag: 5 },
   ],
 
   // Lignes gravées qui s'illuminent du temple jusqu'au village à la victoire.
@@ -183,8 +188,8 @@ export default {
     ],
     [
       [304, 470],
-      [349, 440],
-      [349, 407],
+      [359, 440],
+      [359, 407],
     ],
   ],
 

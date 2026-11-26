@@ -420,7 +420,9 @@ notées milieu par milieu ; en voici la liste :
 - l'eau calme qui reflète la lumière, et les vagues qui brisent le reflet ;
 - la marée.
 
-État : rien de tout cela n'est encore dans le jeu.
+État : les premiers décors de la montagne sont dans le niveau 1 (bouquetin,
+marmottes, lièvre, rapace, cairn, buisson à baies, fanions). Le reste n'est
+pas encore dans le jeu.
 
 ### Milieu 1 — Haute montagne, glaciers ✅
 
@@ -835,8 +837,8 @@ une pour le jour, une pour la nuit.
   s'allume ✅. À venir : se tourner vers la lumière, se blottir dans l'ombre,
   s'approcher des objets libérés (indice discret).
 
-État : choisi, **pas encore dans le jeu** (les niveaux actuels montrent
-encore les capuchons corail d'origine).
+État : ✅ dans le jeu depuis la v0.3 (cape, frise, masque, barre de
+lumière). Les anciens et les porteurs n'ont pas encore de dessin à part.
 
 Conséquence : le peuple n'apporte plus de couleur chaude. La chaleur du
 monde gelé vient désormais des feux et des fenêtres de leurs habitations.
@@ -1032,7 +1034,7 @@ chaque niveau.
 
 | Niveau | Plan retenu |
 | --- | --- |
-| 1 · Le glacier suspendu | le plan actuel, habillé avec le nouveau design (hutte enterrée, capes noires, temple à anneau, décors de la montagne) |
+| 1 · Le glacier suspendu | le plan actuel, habillé avec le nouveau design (hutte enterrée, capes noires, temple à anneau, décors de la montagne). ✅ Fait dans le jeu |
 | 2 · Le rideau d'eau | « Le verrou » : un cirque glaciaire, le lac retenu par une barre rocheuse, la grotte du temple derrière la chute, le village en bas sur une moraine. À reconstruire dans le jeu |
 | 3 · La digue de glace | « La proue » : un lac de montagne large et peu profond, un éperon rocheux qui avance au-dessus du déversoir, le village sur l'éperon, la grotte du temple sur la rive gauche. À reconstruire dans le jeu |
 | 4 · Le pont de givre | « Le bloc perché » : un torrent de fond de vallée ; le socle attend à gauche sous un énorme bloc posé sur la pente, le village est sur la rive droite sous la grotte du temple. Le nuage est plus bas et plus petit, pour que son ombre ne couvre que le torrent. À reconstruire dans le jeu |
@@ -1073,7 +1075,12 @@ règles ; ils se passent tous dans la glace.
    machines, design du petit peuple, six habitations, six milieux et six
    chapitres, 18
    palettes, 139 décors (§ 5 ter), 19 éléments d'énigme (§ 6).
-4. **À venir, dans un ordre à décider** :
+4. ✅ **v0.3** — le nouveau design entre dans le jeu : villageois à cape
+   noire et barre de lumière, huttes enterrées, anneau gradué du temple,
+   premiers décors de la montagne. Niveau 1 habillé.
+5. **À venir, dans un ordre à décider** :
+   - reconstruire les niveaux 2 à 4 sur leurs nouveaux plans, puis construire
+     les niveaux 5 à 10 du chapitre I ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;
    - premières machines et premiers éléments d'énigme, un par niveau ;

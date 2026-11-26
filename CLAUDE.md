@@ -56,6 +56,15 @@ palette d'ombre, puis en palette de lumière dans les zones éclairées.
   du peuple, idées de niveaux. À consulter avant d'inventer du contenu.
 - `README.md` — installation, publication PWA, étape Capacitor.
 
+## Ajouter un décor
+
+Les petits décors (animaux, cairns, buissons…) vivent dans
+`src/game/decor.js` : une fonction de dessin par type, enregistrée dans
+`DRAW`. Un niveau les pose dans sa liste `decor`. Ils ne bloquent pas la
+lumière ; s'il faut qu'un élément fasse de l'ombre, c'est un élément de jeu et
+il va dans `game.js`. Les décors retenus pour chaque milieu sont listés dans
+`docs/GAME_DESIGN.md` (§ 5 ter).
+
 ## Vérifier un changement visuel
 
 Chromium et Playwright sont disponibles dans les sessions cloud. Lancer

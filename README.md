@@ -6,7 +6,8 @@ temples d'une civilisation solaire oubliée sous la glace.
 
 ![Aperçu du niveau 1](docs/images/apercu.jpg)
 
-**État actuel : v0.2** — quatre niveaux jouables de bout en bout :
+**État actuel : v0.3** — quatre niveaux jouables de bout en bout, sur les
+dix prévus pour le premier chapitre (le jeu final en comptera soixante) :
 
 | | Niveau | Ce qu'on y apprend |
 | --- | --- | --- |
@@ -85,6 +86,7 @@ src/
     game.js             ★ règles : la glace fond, l'eau gèle, la porte s'ouvre…
     render.js           ★ dessin : palette d'ombre + palette de lumière
     palette.js          toutes les couleurs (ère glaciaire → dégel)
+    decor.js            petits décors : animaux, cairns, buissons, fanions
     progress.js         niveaux terminés, gardés sur l'appareil
     sliders.js          bulles du bas de l'écran (soleil et nuage au pouce)
   levels/
@@ -116,6 +118,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `wheels`, `doors` | roues à eau, portes de pierre | l'eau fait tourner la roue, qui ouvre la porte |
 | `walkers` | porteurs | avancent tant que le chemin les porte, puis posent leur miroir |
 | `temple` | le temple et son cristal | s'allume quand le cristal reçoit de la lumière |
+| `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme |
 
 ## Comment marche la lumière
 
