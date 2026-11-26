@@ -144,6 +144,26 @@ qui éclaire sans chauffer).
 
 ## 5 bis. Les palettes par milieu
 
+![Les 18 palettes retenues](images/palettes-recap.jpg)
+
+**18 palettes retenues** ✅, réparties sur les six milieux :
+
+| Milieu | Palettes retenues | Habitation |
+| --- | --- | --- |
+| 1 · Haute montagne, glaciers | Bleu glacier, Aurore, Altitude, Minéral | hutte enterrée |
+| 2 · Plaines gelées | Steppe pâle, Toundra rousse | tente de peaux |
+| 3 · Forêt | Taïga, Mélèzes d'or, Forêt de brume | hutte de rondins |
+| 4 · Hauts plateaux de ruines | Grès rose, Lande, Craie | abri adossé |
+| 5 · Désert, pierre nue | Sable d'or, Roche rouge, Désert de sel | dôme de pierres sèches |
+| 6 · Lacs, marais, côtes | Lagune, Marais, Lac rose | nid sur pilotis |
+
+Avec plus de 30 niveaux pour 18 palettes, chaque palette sert à un ou deux
+niveaux. Encore à décider : ce que devient chaque palette quand le temple
+s'allume (le « dégel » n'a de sens que dans les milieux froids), et les
+teintes d'aube propres à chaque milieu.
+
+État : seule la palette Bleu glacier est dans le jeu aujourd'hui.
+
 Chaque milieu a plusieurs palettes, qu'on fait varier d'un niveau à l'autre.
 Une palette donne, pour chaque élément, sa couleur **au soleil / dans
 l'ombre**. Les personnages (noir et blanc) et l'or des feux et des masques
@@ -294,9 +314,35 @@ vient des dunes, des ruines et des acacias, sous lesquels les villageois se
 tiennent. Le Désert de sel, avec son sol blanc, est la palette où les ombres
 se lisent le mieux de tout le jeu.
 
-### Milieu 6
+### Milieu 6 — Lacs, marais, côtes ✅
 
-À choisir.
+Trois palettes retenues. Planche : [Lagune, Marais, Lac rose](images/palettes-lacs.jpg).
+
+| | A · Lagune | B · Marais | D · Lac rose |
+| --- | --- | --- | --- |
+| Esprit | eau turquoise et sable clair, ombres bleu profond | olive et ocre, eau sombre, brume jaune pâle | eau rose, rives blanches, ombres violettes |
+| Ciel (haut) | `#7fd0e0` / `#0c1c34` | `#c2cf9a` / `#10160e` | `#f0b6c6` / `#1a1030` |
+| Ciel (milieu) | `#d2f0ec` / `#16324e` | `#e6ecc8` / `#1f2a1a` | `#fbdcd6` / `#30204c` |
+| Horizon | `#fff6dc` / `#28506a` | `#fbf4d6` / `#35452c` | `#fff3d8` / `#523a70` |
+| Rives lointaines 1 | `#dff0e6` / `#2c566c` | `#dfe4bf` / `#3a4a30` | `#f6dfe0` / `#584074` |
+| Rives lointaines 2 | `#bfe0d2` / `#22485c` | `#c2cc98` / `#2e3c28` | `#e9c4d0` / `#4a3464` |
+| Rives lointaines 3 | `#9fcdbb` / `#1a3a4c` | `#a3b278` / `#243020` | `#d8a6c0` / `#3c2a54` |
+| Rivage | `#fbeecb` / `#5f7a96` (sable) | `#b8b86a` / `#3f4a30` (herbe) | `#fff8f0` / `#7a6aa8` (sel) |
+| Roseaux | `#6fae6a` / `#2a5550` | `#d9a84a` / `#5a4a2a` | `#9a7a9a` / `#4a3a5c` |
+| Galets | `#ffffff` / `#7f9ab4` | `#e9e0a0` / `#5a6040` | `#ffe0ea` / `#8a6a98` |
+| Eau | `#3fc4c8` / `#0f5a74` | `#6f8a5a` / `#1c2c22` | `#f08aa8` / `#6a2f6a` |
+| Reflets sur l'eau | `#e6ffff` / `#6fc0d0` | `#dfe8b0` / `#6f8a6a` | `#fff0f4` / `#c890c0` |
+| Liseré de roche | `#e6cf9a` / `#152a40` | `#b89a5a` / `#161e14` | `#e9c0b0` / `#281a40` |
+| Corps de la roche | `#12203a` | `#12180f` | `#1c1436` |
+| Nuage | `#ffffff` / `#6f9ab4` | `#f6f6e2` / `#6a7a5a` | `#ffffff` / `#8a70a8` |
+| Pierre ancienne (clair / corps) | `#fff6d8` / `#34507a` | `#f6f2cc` / `#3a4a3a` | `#fff4e0` / `#4a3c70` |
+
+Écartée pour ce milieu : « Fjord » (eau bleu profond), trop proche du Bleu
+glacier de la montagne.
+
+Propre aux lacs : **l'eau montre très bien les ombres.** L'ombre d'un nuage y
+dessine une bande nette. À surveiller : dans le Marais, l'eau sombre et les
+ombres vert-noir se confondent ; c'est la palette la moins lisible du jeu.
 
 ## 6. Système d'éléments
 
