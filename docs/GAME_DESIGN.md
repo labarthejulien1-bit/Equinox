@@ -478,6 +478,40 @@ Propre aux plateaux :
 Règle à ajouter au jeu si on s'en sert : un miroir brisé qui renvoie plusieurs
 petits rayons dans des directions différentes, au lieu d'un seul.
 
+### Milieu 5 — Désert, pierre nue ✅
+
+Planches : [faune, flore et roches](images/decors-desert-1.jpg),
+[sable, vent, eau et traces du peuple](images/decors-desert-2.jpg). Les
+numéros sont ceux des planches.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | dromadaires (1), gazelles (2), fennec (3), serpent et sa trace (4), scorpion (5) | — |
+| Flore et roches | acacia parasol (1), cactus candélabre (2), virevoltant (3), fleurs du désert (4), rose des sables (5), surplomb et point d'eau (6) | l'acacia et le surplomb (de l'ombre), le point d'eau, le virevoltant (le vent le pousse) |
+| Sable, vent et eau | dune à crête vive (1), sable soufflé par le vent (2), oasis (3), tourbillon de sable (5), mirage (6) | la dune, l'oasis, le tourbillon (il voile la lumière) |
+| Traces du peuple et des anciens | puits à balancier (1), voile d'ombre (2), jarres d'eau (3), cuisine au miroir (4), temple englouti (5), champ de miroirs ensablé (6) | la voile d'ombre, le champ de miroirs, le temple |
+
+Écartés : le scarabée et sa boule (faune 6) et le sol craquelé (sable 4).
+
+Propre au désert :
+
+- **Ici, c'est l'ombre qui est précieuse.** Le peuple tend une voile pour s'en
+  fabriquer, garde ses jarres dessous, et l'eau ne subsiste que sous le
+  surplomb. Cela va dans le sens du déséquilibre proposé au § 8 : dans le
+  désert, on apporterait l'ombre plutôt que la lumière.
+- **La dune à crête vive** est la signature du jeu à l'état naturel : un
+  versant au soleil, l'autre dans l'ombre, séparés par une arête nette.
+- **La cuisine au miroir** : le peuple chauffe sa marmite avec un vieux miroir
+  courbe, sans savoir ce que c'est.
+- **Le champ de miroirs ensablé** offre plusieurs miroirs d'un coup : une base
+  pour des énigmes à reflets en chaîne.
+- **Le temple englouti** est le pendant du temple sous la glace ; ici c'est le
+  sable qui l'a recouvert.
+
+Règles à ajouter au jeu si on s'en sert : l'eau qui s'évapore au soleil et
+reste à l'ombre (le miroir de la règle du gel), le tourbillon qui voile la
+lumière en se déplaçant, le virevoltant poussé par le vent.
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
