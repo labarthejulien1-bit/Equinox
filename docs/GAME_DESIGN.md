@@ -445,6 +445,39 @@ Propre à la forêt :
 Règle à ajouter au jeu si on s'en sert : une brume qui affaiblit la lumière
 sans l'arrêter (la même règle que la vapeur de la source chaude des plaines).
 
+### Milieu 4 — Hauts plateaux de ruines ✅
+
+Planches : [faune, flore et roches](images/decors-plateaux-1.jpg),
+[ruines des anciens et traces du peuple](images/decors-plateaux-2.jpg). Les
+24 éléments sont retenus.
+
+Dans ce milieu, les ruines des anciens forment une famille à part, et les
+traces du peuple une autre.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | chèvres (1), corbeaux (2), lézard au soleil (3), lapins (4), papillons (5), poneys sauvages (6) | le lézard (il sort au soleil, se cache à l'ombre) |
+| Flore et roches | bruyère (1), coquelicots (2), aubépine tordue (3), cheminée de pierre (4), arche naturelle (5), cascade dans le vide (6) | la cheminée et l'arche (de grandes ombres), la cascade |
+| Ruines des anciens | colonnade brisée (1), escalier interrompu (2), dalle à oculus (3), anneau gradué tombé (4), grand miroir brisé (5), linteau en porte-à-faux (6) | toutes |
+| Traces du peuple | étendoir (1), potager dans un bassin (2), échelle et passerelle (3), ruches (4), cerf-volant (5), autel aux bougies (6) | l'échelle et la passerelle (un chemin pour les porteurs) |
+
+Propre aux plateaux :
+
+- **Les ruines sont les éléments de jeu.** Elles reprennent les pièces des
+  temples (§ 7) : l'oculus ne laisse passer qu'un mince rayon, qui dessine une
+  tache de lumière au milieu de l'ombre ; le linteau en porte-à-faux fait une
+  ombre suspendue, avec de la lumière en dessous ; la colonnade fait une ombre
+  rayée.
+- **Le lézard est l'inverse des lucioles de la forêt** : il montre où est la
+  lumière.
+- **Le peuple vit dans les ruines sans les comprendre** : il étend son linge
+  entre les colonnes, cultive dans un bassin ancien, et pose des bougies au
+  pied d'un cristal qu'il ne sait plus allumer.
+- **La mer de nuages** s'étend sous le bord du plateau ; la cascade y tombe.
+
+Règle à ajouter au jeu si on s'en sert : un miroir brisé qui renvoie plusieurs
+petits rayons dans des directions différentes, au lieu d'un seul.
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
