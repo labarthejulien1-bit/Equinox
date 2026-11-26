@@ -344,6 +344,48 @@ Propre aux lacs : **l'eau montre très bien les ombres.** L'ombre d'un nuage y
 dessine une bande nette. À surveiller : dans le Marais, l'eau sombre et les
 ombres vert-noir se confondent ; c'est la palette la moins lisible du jeu.
 
+## 5 ter. Les décors par milieu
+
+Chaque milieu a son catalogue de décors, rangés en quatre familles : la
+faune, la flore et les roches, ce qui est propre au milieu (glace, eau,
+sable…), et les traces laissées par le peuple et par les anciens. Les niveaux
+piochent dedans.
+
+Deux sortes de décors :
+
+- **ceux qui jouent** : ils font de l'ombre, arrêtent la lumière, fondent ou
+  gèlent. Ils sont posés par le niveau, comme n'importe quel élément ;
+- **ceux qui font vivre le monde** : animaux, fleurs, traces. Ils n'ont pas
+  d'effet sur l'énigme, mais ils suivent la règle commune : une couleur au
+  soleil, une couleur dans l'ombre.
+
+Règle des couleurs chaudes : dans un monde froid, avec des personnages en
+noir et blanc, tout ce qui est orange ou rouge (lichens, baies, feu) attire
+l'œil. On en met peu, et jamais près de ce que le joueur doit regarder.
+
+État : rien de tout cela n'est encore dans le jeu.
+
+### Milieu 1 — Haute montagne, glaciers ✅
+
+Planches : [faune, flore et roches](images/decors-montagne-1.jpg),
+[glace, neige et traces du peuple](images/decors-montagne-2.jpg). Les numéros
+sont ceux des planches.
+
+| Famille | Retenus | Ceux qui jouent |
+| --- | --- | --- |
+| Faune | bouquetin (1), marmottes (2), grand rapace (3), lièvre des neiges (5), traces dans la neige (6) | — |
+| Flore et roches | rocher à lichens (2), fleurs d'altitude (3), aiguille rocheuse (4), éboulis et bloc perché (5), buisson à baies rouges (6) | l'aiguille (ombre très longue), le bloc perché |
+| Glace et neige | séracs (1), crevasse (2), lac gelé (3), arche de glace (4), stalactites (5), corniche de neige (6) | tous : la glace fond, gèle, laisse passer ou arrête la lumière |
+| Traces du peuple et des anciens | cairn (1), fanions (2), pont de corde (3), traîneau (4), borne ancienne (5), feu de camp (6) | le pont de corde (un chemin pour les porteurs), le feu (une lumière de nuit) |
+
+Écartés : le lagopède (faune 4) et le pin couché par le vent (flore 1).
+
+Détail à garder : le lièvre est blanc. Il se fond dans la neige au soleil et
+ressort dans l'ombre, à l'inverse des personnages.
+
+Pistes de ciel, non dessinées : un panache de neige soufflé au sommet, une mer
+de nuages en contrebas, l'aurore de nuit (déjà dans la palette Aurore).
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
@@ -647,7 +689,8 @@ règles ; ils se passent tous dans la glace.
    de la progression, choix des niveaux, lever de soleil progressif, bulles
    pour jouer au pouce.
 3. ✅ **Conception** — histoire, sens du titre, direction des temples, dix
-   machines, design du petit peuple, six habitations, six milieux.
+   machines, design du petit peuple, six habitations, six milieux, 18
+   palettes. En cours : les décors, milieu par milieu (§ 5 ter).
 4. **À venir, dans un ordre à décider** :
    - mettre le nouveau design dans le jeu (personnages, temples, habitations) ;
    - premières machines, un niveau par machine ;
