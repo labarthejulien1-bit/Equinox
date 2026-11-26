@@ -142,6 +142,45 @@ Sources de lumière : soleil ✅, faisceaux des miroirs ✅, temple allumé ✅,
 lanternes ✅ ; à venir : feu, cristal chargé, lucioles, lune (lumière froide
 qui éclaire sans chauffer).
 
+## 5 bis. Les palettes par milieu
+
+Chaque milieu a plusieurs palettes, qu'on fait varier d'un niveau à l'autre.
+Une palette donne, pour chaque élément, sa couleur **au soleil / dans
+l'ombre**. Les personnages (noir et blanc) et l'or des feux et des masques
+ne changent pas d'une palette à l'autre.
+
+### Milieu 1 — Haute montagne, glaciers ✅
+
+Quatre palettes retenues. Planches :
+[A et B](images/palettes-montagne-A-B.jpg), [C et D](images/palettes-montagne-C-D.jpg).
+
+| | A · Bleu glacier | B · Aurore | C · Altitude | D · Minéral |
+| --- | --- | --- | --- | --- |
+| Esprit | la palette d'origine, neutre | sarcelle, aurore la nuit | indigo et rose, air raréfié | presque noir et blanc |
+| Ciel (haut) | `#86bbe3` / `#0f1733` | `#7cc4c9` / `#0b1a2b` | `#5f73c9` / `#120c2e` | `#cfd8df` / `#11141b` |
+| Ciel (milieu) | `#cde6f2` / `#1c2a52` | `#cfeee4` / `#143646` | `#b9b4e6` / `#241a55` | `#e8edf0` / `#1d222d` |
+| Horizon | `#fff0d6` / `#324578` | `#fdeee0` / `#226063` | `#ffd2c4` / `#45357f` | `#fbf6ec` / `#333a48` |
+| Lointain 1 | `#dcebf5` / `#394c7f` | `#dff3ee` / `#2a6a6a` | `#e6d9f0` / `#4a3d88` | `#eef1f3` / `#3a4250` |
+| Lointain 2 | `#c3daeb` / `#2e406f` | `#bfe3dc` / `#215a5e` | `#c9bde6` / `#3b2f74` | `#dde2e6` / `#2f3643` |
+| Lointain 3 | `#a9c7df` / `#253560` | `#9fcfc9` / `#1a4a52` | `#aa9fd6` / `#2e2460` | `#c7cfd6` / `#262c38` |
+| Neige | `#fffdf6` / `#5a77b0` | `#fbfffb` / `#4c9c98` | `#fff5f0` / `#7468c4` | `#ffffff` / `#77818f` |
+| Liseré de roche | `#e6c298` / `#1d2848` | `#e9c9a4` / `#17303a` | `#f0b08e` / `#22184a` | `#d9cdbd` / `#1a1e27` |
+| Corps de la roche | `#161e39` | `#0f2230` | `#1a1238` | `#14171e` |
+| Eau | `#8fe3f7` / `#2f60a8` | `#8ff0dc` / `#1f7a80` | `#b9c6ff` / `#4a48b0` | `#c4dbe6` / `#3e5466` |
+| Nuage | `#ffffff` / `#7b91be` | `#ffffff` / `#6fa8a8` | `#fff2ee` / `#8478c8` | `#ffffff` / `#8a93a0` |
+| Glace (clair / corps) | `#eafaff` / `#4a88c6` | `#effffa` / `#3aa79a` | `#f4f2ff` / `#6a6fd6` | `#f4fbff` / `#5f7f96` |
+| Pierre ancienne (clair / corps) | `#fff3d2` / `#3d4878` | `#fff3d2` / `#33506a` | `#ffeed6` / `#463a7a` | `#fffaf0` / `#3a404d` |
+
+Écartée pour ce milieu : « Or froid » (lumière dorée, ombres bleu pétrole),
+trop proche d'une aube permanente.
+
+État : choisies, **pas encore dans le jeu** (seule A y est, c'est la palette
+actuelle).
+
+### Milieux 2 à 6
+
+À choisir, milieu par milieu.
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
