@@ -157,8 +157,8 @@ qui éclaire sans chauffer).
 | 5 · Désert, pierre nue | Sable d'or, Roche rouge, Désert de sel | dôme de pierres sèches |
 | 6 · Lacs, marais, côtes | Lagune, Marais, Lac rose | nid sur pilotis |
 
-Avec plus de 30 niveaux pour 18 palettes, chaque palette sert à un ou deux
-niveaux. Encore à décider : ce que devient chaque palette quand le temple
+Avec 60 niveaux pour 18 palettes (dix niveaux par milieu), chaque palette
+sert à trois ou quatre niveaux. Encore à décider : ce que devient chaque palette quand le temple
 s'allume (le « dégel » n'a de sens que dans les milieux froids), et les
 teintes d'aube propres à chaque milieu.
 
@@ -846,9 +846,9 @@ de lumière.
 
 Encore à décider :
 
-- **La répartition des niveaux.** Le jeu final comptera plus de 30 niveaux,
-  répartis équitablement entre les six milieux (soit cinq ou plus par
-  milieu). L'ordre de traversée et la répartition restent à faire.
+- **La répartition des niveaux.** Le jeu final comptera **60 niveaux** ✅ :
+  six chapitres, un par milieu, de dix niveaux chacun. Chaque chapitre fait
+  avancer l'histoire. L'ordre des chapitres et leurs noms restent à fixer.
 - **Un signe par tribu** (proposé) : le signe tracé au-dessus de la barre de
   lumière changerait d'une tribu à l'autre (soleil levant, graduations, trait
   vertical…), comme si chacune n'avait gardé qu'un fragment du savoir ancien.
@@ -932,8 +932,8 @@ qui l'attend n'est jamais atteint par le soleil direct.
 
 ## 10. Feuille de route
 
-Cible du jeu final : **plus de 30 niveaux**, répartis équitablement sur les
-six milieux. Les quatre niveaux actuels servent à tester le moteur et les
+Cible du jeu final : **60 niveaux** en six chapitres de dix, un chapitre par
+milieu. Les quatre niveaux actuels servent à tester le moteur et les
 règles ; ils se passent tous dans la glace.
 
 1. ✅ **v0.1** — moteur de lumière, direction artistique, niveau 1, PWA.
@@ -949,5 +949,5 @@ règles ; ils se passent tous dans la glace.
    - premières machines et premiers éléments d'énigme, un par niveau ;
    - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
    - sons (nappes, tintement du cristal, eau) ;
-   - répartition des 30 niveaux et des machines entre les milieux ;
+   - ordre et noms des six chapitres, puis énoncé des dix niveaux de chacun ;
    - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.
