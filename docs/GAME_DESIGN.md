@@ -262,9 +262,41 @@ Propre aux plateaux : c'est le milieu où il y a **le plus d'ombre**, parce que
 les ruines se cachent le soleil les unes aux autres. Le Grès rose étant
 retenu ici, le désert doit partir dans une autre direction de couleur.
 
-### Milieux 5 et 6
+### Milieu 5 — Désert, pierre nue ✅
 
-À choisir, milieu par milieu.
+Trois palettes retenues. Planche : [Sable d'or, Roche rouge, Désert de sel](images/palettes-desert.jpg).
+
+| | A · Sable d'or | B · Roche rouge | C · Désert de sel |
+| --- | --- | --- | --- |
+| Esprit | dunes jaunes, ciel turquoise, ombres indigo | terre cuite et rouge sombre, ombres presque noires | sol blanc, ciel lilas, ombres bleu violet |
+| Ciel (haut) | `#7fc4cf` / `#141033` | `#3f9aa6` / `#07181c` | `#c9b6e0` / `#151230` |
+| Ciel (milieu) | `#cfe9dc` / `#27204f` | `#a9d6cc` / `#0f2c30` | `#eedff0` / `#28244e` |
+| Horizon | `#fff2c8` / `#45376e` | `#ffe2b0` / `#1f4a4a` | `#ffeee4` / `#44407a` |
+| Dunes lointaines 1 | `#f6e2b0` / `#4a3c72` | `#e6b08a` / `#3a2a34` | `#f4e9f2` / `#4a4680` |
+| Dunes lointaines 2 | `#ecc98a` / `#403264` | `#cf7f5a` / `#32202a` | `#e6d6ea` / `#3f3b70` |
+| Dunes lointaines 3 | `#deb06a` / `#352856` | `#b45a40` / `#2a1822` | `#d6c2e0` / `#343060` |
+| Sable | `#f6cf7a` / `#5f4a8a` | `#c9553a` / `#4a1c28` | `#ffffff` / `#7f7fc0` |
+| Herbe sèche | `#b89a4a` / `#3f3558` | `#d9a04a` / `#4a2c2c` | `#c9b0a0` / `#4f4a70` |
+| Taches au sol | `#fbe6a8` / `#6f5a98` | `#f0a070` / `#5a2a34` | `#f0e4f4` / `#6f6fb0` |
+| Liseré de roche | `#e0a050` / `#241a40` | `#e07a4a` / `#200f18` | `#e9dcd6` / `#22203f` |
+| Corps de la roche | `#1c1436` | `#1a0d14` | `#1a1838` |
+| Eau (oasis) | `#5fc8d0` / `#2a4a8a` | `#4fc0c0` / `#145058` | `#a8e0e6` / `#3a5a9a` |
+| Feuillage (clair / moyen / corps) | `#b9d07a` / `#6f9a5a` / `#2a3a40` | `#a8d08a` / `#5f9a6a` / `#1f3a34` | `#d6e6c0` / `#8fa890` / `#2c3450` |
+| Pierres sèches (clair / moyen / corps) | `#fff0c4` / `#d0b488` / `#54466e` | `#ffc89a` / `#c8785a` / `#4f2a34` | `#ffffff` / `#d0cade` / `#4c4a82` |
+| Pierre ancienne (clair / corps) | `#fff2cc` / `#4a4070` | `#ffe8c8` / `#4a3040` | `#ffffff` / `#484680` |
+
+Écartée pour ce milieu : « Cendre » (sable noir volcanique). Le sol y reste
+sombre même au soleil, donc l'ombre s'y lit mal et les capes noires s'y
+perdent.
+
+Propre au désert : **pas de nuage.** L'ombre y est rare et précieuse ; elle
+vient des dunes, des ruines et des acacias, sous lesquels les villageois se
+tiennent. Le Désert de sel, avec son sol blanc, est la palette où les ombres
+se lisent le mieux de tout le jeu.
+
+### Milieu 6
+
+À choisir.
 
 ## 6. Système d'éléments
 
