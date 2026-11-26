@@ -23,6 +23,7 @@ import {
   lampHalos,
 } from './game.js';
 import { drawDecor } from './decor.js';
+import { drawUnderground } from './underground.js';
 import { drawDoor, drawChain, drawWaterWheel, drawDrain, drawMachineGlow } from './machine.js';
 import { windAt } from './life.js';
 import { drawLifeSky, drawLifeFar, drawLifeGround, drawLifeFront, drawLifeGlow } from './lifeDraw.js';
@@ -295,6 +296,9 @@ export function createRenderer(canvas) {
       c.stroke();
     }
     c.restore();
+
+    // L'eau dans la roche, vue en coupe : veines d'amont, nappes d'aval
+    drawUnderground(c, P, g);
 
     // Lits gelés, puis l'eau qui court sur le sol
     c.lineCap = 'round';

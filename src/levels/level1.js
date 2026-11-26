@@ -139,6 +139,69 @@ export default {
       ],
     },
   ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // En amont, le névé du sommet nourrit le glacier par une fissure.
+  veins: [
+    {
+      after: 'glacier',
+      width: 5.5,
+      pocket: [
+        [23, 172],
+        [30, 160],
+        [39, 175],
+        [33, 183],
+      ],
+      path: [
+        [31, 168],
+        [40, 192],
+        [36, 214],
+        [56, 246],
+        [70, 262],
+        [78, 292],
+        [98, 312],
+        [110, 331],
+      ],
+    },
+  ],
+  // En aval, l'eau s'infiltre au pied de la falaise, remplit une nappe sous
+  // le temple, puis le trop-plein repart vers le bas de l'écran.
+  aquifers: [
+    {
+      stream: 'torrent',
+      inlet: [
+        [219, 654],
+        [232, 664],
+        [244, 679],
+      ],
+      cavern: [
+        [242, 682],
+        [250, 670],
+        [266, 663],
+        [286, 667],
+        [300, 661],
+        [312, 671],
+        [315, 690],
+        [306, 704],
+        [284, 709],
+        [260, 706],
+        [246, 697],
+      ],
+      low: 709, // fond de la grotte
+      high: 680, // niveau de l'eau quand elle est pleine (la hauteur du trop-plein)
+      fillTime: 18, // secondes pour la remplir
+      stalactites: [
+        [263, 664.5, 8],
+        [284, 667, 6],
+        [302, 662.5, 8],
+      ],
+      outlet: [
+        [313, 682],
+        [328, 704],
+        [348, 732],
+        [366, 760],
+      ],
+    },
+  ],
   // Lit gelé de la rivière (décor).
   beds: [
     [

@@ -47,6 +47,10 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
    type d'élément réutilisable, jamais comme un cas particulier du niveau.
 5. Vérifier le rendu par captures d'écran (voir plus bas).
 
+Si le niveau a de l'eau, on doit voir d'où elle vient et où elle repart :
+`veins` et `aquifers` (`src/game/underground.js`) la dessinent en coupe dans
+la roche, comme au niveau 1.
+
 À partir du niveau 6, un sanctuaire a plusieurs cristaux (`temple.crystals`),
 et chaque cristal ne doit être atteignable que par un seul miroir : le
 vérifier dans le test, cristal par cristal.

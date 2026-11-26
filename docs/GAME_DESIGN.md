@@ -981,6 +981,14 @@ descend : la pierre s'élève, la porte glisse le long de la falaise. Des
 lise même dans l'ombre. L'eau quitte la vallée par une arche au pied de la
 falaise.
 
+Le trajet de l'eau ✅ (choisi parmi trois maquettes : rivière souterraine,
+nappe, citerne des anciens). Tout est dessiné en coupe dans la roche :
+- **en amont**, le névé du sommet nourrit le glacier par une fissure prise
+  par la glace ; quand le glacier a fondu, la fissure coule ;
+- **en aval**, l'eau s'infiltre par l'arche, remplit en une vingtaine de
+  secondes une petite nappe sous le temple, puis le trop-plein repart en un
+  filet vers le bas de l'écran, à droite.
+
 ### Niveau 2 — Le rideau d'eau ✅
 
 Le torrent libéré au niveau 1 tombe devant l'entrée du temple : la cascade
@@ -1217,6 +1225,11 @@ Les plans des niveaux 6 à 10 ont été choisis avant la réécriture de leurs
 | 10 · Le grand glacier | « La porte du glacier » : le grand glacier descend de la crête jusqu'à un petit lac, la source, dont la cascade tombe sur toute la hauteur de la paroi. Le rail est sur le replat du haut, le village tout en bas. Le second cristal est sous la voûte de glace d'où sort l'eau du glacier ; le premier dans une chambre creusée sous le lac, au bout du conduit dont l'œil est derrière la cascade. ✅ Fait dans le jeu : trois cristaux étagés dans la paroi (voûte de glace, chambre à fenêtre, grotte du bas), sans conduit ; le troisième miroir est dans un bloc de glace près du village |
 
 ### Gabarit d'un niveau
+
+**L'eau a toujours une origine et une sortie visibles** ✅ : on doit voir
+d'où elle vient (névé, fissure, source, bord de l'écran) et où elle repart
+(nappe, tunnel, bord de l'écran). Fait au niveau 1 ; à poser dans les autres
+niveaux qui ont de l'eau.
 
 - **Toute la hauteur de l'écran.** Le jeu est en portrait : l'énigme doit se
   jouer de haut en bas, avec des éléments à des hauteurs bien différentes,

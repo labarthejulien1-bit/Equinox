@@ -92,6 +92,9 @@ export function createLife(g) {
     motes: [], // poussières dans les faisceaux
     blooms: [], // fleurs qui poussent quand le monde revient à la vie
     waters: [], // poissons et ronds dans l'eau, un par bassin
+    // Nappes sous la roche (voir underground.js) : où en sont le filet qui
+    // arrive (inlet), le remplissage (fill) et le filet qui repart (outlet)
+    aquifers: (L.aquifers || []).map((def) => ({ def, inlet: 0, fill: 0, outlet: 0 })),
     sky: { star: null, starIn: rnd(3, 6), flock: null, flockIn: rnd(9, 14) },
     focus: null, // ce que les villageois regardent
     focusT: 0,
@@ -335,6 +338,7 @@ export function updateLife(g, dt) {
   updateBits(g, life, dt);
   updateMotes(g, life, dt);
   updateWaters(g, life, dt);
+  updateAquifers(g, life, dt);
   updateSky(g, life, dt);
 
   // Les fleurs poussent une à une quand le sanctuaire s'est rallumé.
@@ -915,6 +919,20 @@ function updateWaters(g, life, dt) {
         g.events.push('plop');
       }
     }
+  }
+}
+
+/**
+ * Nappes : tant que leur cours d'eau coule jusqu'au bout, l'eau s'infiltre,
+ * la grotte se remplit, puis le trop-plein repart.
+ */
+function updateAquifers(g, life, dt) {
+  for (const a of life.aquifers) {
+    const stream = g.streams.find((s) => s.def.id === a.def.stream);
+    const flowing = !!stream && stream.on && stream.head >= 1;
+    a.inlet = approach(a.inlet, flowing ? 1 : 0, 1 / 1.4, dt);
+    if (a.inlet >= 1) a.fill = Math.min(1, a.fill + dt / (a.def.fillTime || 18));
+    a.outlet = approach(a.outlet, flowing && a.fill >= 1 ? 1 : 0, 1 / 2.2, dt);
   }
 }
 

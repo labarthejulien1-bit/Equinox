@@ -98,6 +98,7 @@ src/
     game.js             ★ règles : la glace fond, l'eau gèle, la porte s'ouvre…
     render.js           ★ dessin : palette d'ombre + palette de lumière
     palette.js          toutes les couleurs (ère glaciaire → dégel)
+    underground.js      dessin de l'eau dans la roche, en coupe : veines et nappes
     machine.js          dessin de la machine à eau : roue, chaîne, contrepoids, porte
     decor.js            dessin des petits décors : animaux, cairns, buissons, fleurs
     life.js             la vie du monde : ce que font les animaux, le vent, le village
@@ -138,6 +139,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `memories` | cristaux-mémoire | se chargent à la lumière, puis éclairent les miroirs proches dans le noir |
 | `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
 | `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fleurs, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme, mais les animaux réagissent à la lumière (voir `life.js`) |
+| `veins`, `aquifers` | l'eau dans la roche, vue en coupe : une fissure gelée en amont, une nappe qui se remplit en aval | décor seulement ; montre d'où vient l'eau et où elle repart |
 | `mists`, `blooms` | brume du matin dans un creux ; lignes où les fleurs poussent à la victoire | décor seulement |
 
 ## Comment marche la lumière
