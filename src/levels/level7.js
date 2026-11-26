@@ -117,7 +117,7 @@ export default {
       if (heap.active && !heap.gone) return 'La neige du haut est tombée sur le chemin. Elle fondra au soleil : patience.';
       if (!low.gone) {
         if (low.heating) return 'La corniche cède…';
-        return 'Le porteur n’ose pas s’engager : une crevasse coupe le glacier. La neige d’en bas pourrait la combler ; celle d’en haut doit rester à l’ombre.';
+        return 'Une crevasse arrête le porteur. La neige du bas peut la combler ; celle du haut doit rester à l’ombre.';
       }
       return 'La neige porte ses pas…';
     }

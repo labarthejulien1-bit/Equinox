@@ -121,7 +121,7 @@ export default {
     if (g.temple.lit) return '';
     if (!porter.done) {
       if (night) return g.frosts[0].amount > 0.05 ? 'La nuit fige le lac…' : 'La nuit tombe…';
-      if (mShore.charge < 0.9) return 'Pas de nuage ici : seule la nuit gèlera le lac. Mais la nuit, d’où viendra la lumière ? Ces cristaux gardent celle du jour.';
+      if (mShore.charge < 0.9) return 'Seule la nuit gèlera le lac. Ces deux cristaux gardent la lumière du jour : charge-les avant de coucher le soleil.';
       return 'Les deux cristaux ont bu le jour. Couche le soleil, tout à gauche.';
     }
     if (!night) return 'Le miroir est posé. Les cristaux ne rendent leur lumière que dans le noir.';

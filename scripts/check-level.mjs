@@ -764,9 +764,141 @@ function checkLevel9(level) {
   }
 }
 
+// ── Niveau 10 ─────────────────────────────────────────────────────────
+
+function checkLevel10(level) {
+  const [top, middle, bottom] = level.temple.crystals;
+  const iceOf = (g, id) => g.ices.find((i) => i.def.id === id);
+  /** Une partie où le bloc a fondu (troisième miroir libre) ; dry = chute tarie. */
+  const ready = (dry) => {
+    const g = createGame(level);
+    iceOf(g, 'bloc').gone = true;
+    mirrorOf(g, 'tiers').free = true;
+    if (dry) {
+      g.frosts[0].amount = 1;
+      g.streams[0].head = 0;
+    }
+    return g;
+  };
+  const places = [];
+  for (let t = 0; t <= 1.0001; t += 0.1) places.push(t);
+  {
+    // Chute tarie, sans miroirs : le soleil n'atteint aucun cristal.
+    const g = ready(true);
+    for (const m of g.mirrors) m.free = false;
+    const r = sweepSky(g, () => g.crystals.some((c) => c.lit));
+    check(r.hits === 0, `le soleil direct n'atteint aucun cristal (${r.hits}/${r.total})`);
+  }
+  {
+    // Tant que la chute coule, ni la fenêtre ni la grotte du bas ne sont atteignables.
+    const g = ready(false);
+    g.cloudX = level.cloud.minX;
+    let through = 0;
+    for (const a of [90, 110, 130]) {
+      g.sunAngle = rad(a);
+      for (const id of ['village', 'tiers']) through += sweepMirror(g, mirrorOf(g, id), () => g.crystals[1].lit || g.crystals[2].lit);
+    }
+    check(through === 0, 'tant que la chute coule, la fenêtre et la grotte du bas sont hors d’atteinte');
+  }
+  {
+    // Un miroir, un cristal.
+    const g = ready(true);
+    g.cloudX = -500;
+    let wrong = 0;
+    const rail = mirrorOf(g, 'rail');
+    rail.free = false; // (un miroir peut en éclairer un autre : on les essaie un par un)
+    for (const a of [90, 110, 130]) {
+      g.sunAngle = rad(a);
+      wrong += sweepMirror(g, mirrorOf(g, 'tiers'), () => g.crystals[0].lit || g.crystals[1].lit);
+      wrong += sweepMirror(g, mirrorOf(g, 'village'), () => g.crystals[0].lit);
+    }
+    rail.free = true;
+    for (let a = level.sun.min; a <= level.sun.max; a += 2) {
+      for (const t of places) {
+        g.sunAngle = rad(a);
+        rail.t = t;
+        mirrorOf(g, 'village').free = false;
+        mirrorOf(g, 'tiers').free = false;
+        computeLight(g);
+        if (g.crystals[1].lit || g.crystals[2].lit) wrong++;
+        mirrorOf(g, 'village').free = true;
+        mirrorOf(g, 'tiers').free = true;
+      }
+    }
+    check(wrong === 0, 'chaque cristal n’est atteignable que par son miroir (rail en haut, village au milieu, troisième en bas)');
+  }
+  {
+    // Le glacier fait parfois de l'ombre au lac tout seul, mais alors le village est à l'ombre lui aussi.
+    const g = ready(true);
+    g.cloudX = -500;
+    let shortcut = 0;
+    for (let a = level.sun.min; a <= level.sun.max; a += 1) {
+      g.sunAngle = rad(a);
+      const l = computeLight(g);
+      if (!g.frosts[0].lit && sunLit(l, mirrorOf(g, 'village'))) shortcut++;
+    }
+    check(shortcut === 0, `sans le nuage, le lac ne gèle jamais pendant que le village est au soleil (${shortcut} positions)`);
+  }
+  // Un réglage complet : lac à l'ombre du nuage, trois miroirs au soleil, rail sur le cristal du haut.
+  const setup = (() => {
+    const g = ready(true);
+    const rail = mirrorOf(g, 'rail');
+    let found = null;
+    let count = 0;
+    for (let a = 84; a <= 140; a += 2) {
+      for (let x = level.cloud.minX; x <= level.cloud.maxX; x += 8) {
+        for (const t of places) {
+          g.sunAngle = rad(a);
+          g.cloudX = x;
+          rail.t = t;
+          const l = computeLight(g);
+          const ok = !g.frosts[0].lit && g.crystals[0].lit && g.mirrors.every((m) => sunLit(l, m));
+          if (ok) count++;
+          if (ok && !found && t > 0.25 && t < 0.75) found = { a, x, t };
+        }
+      }
+    }
+    check(count >= 20, `lac à l'ombre + trois miroirs au soleil + rail sur le cristal du haut : ${count} réglages possibles`);
+    return found;
+  })();
+  if (!setup) return;
+  {
+    const g = createGame(level);
+    const village = mirrorOf(g, 'village');
+    const rail = mirrorOf(g, 'rail');
+    const third = mirrorOf(g, 'tiers');
+    run(g, 4);
+    check(iceOf(g, 'bloc').melt === 0 && !iceOf(g, 'glacier').gone && !g.crystals.some((c) => c.lit), 'au départ, rien ne fond et aucun cristal n’est éclairé');
+    g.sunAngle = rad(100);
+    g.cloudX = level.cloud.minX;
+    run(g, 0.5);
+    aimFromSun(g, village, centerOf(level.ices[1].points));
+    run(g, 4);
+    check(iceOf(g, 'bloc').gone && third.free, 'le reflet du village fait fondre le bloc : le troisième miroir est libre');
+    g.sunAngle = rad(setup.a);
+    g.cloudX = setup.x;
+    rail.t = setup.t;
+    run(g, 6);
+    check(g.frosts[0].amount >= 1 && g.streams[0].head === 0, 'à l’ombre du nuage, le lac gèle et la chute se tarit');
+    check(g.crystals[0].lit && !g.temple.lit, 'soleil et rail réglés : le cristal du haut brille, le sanctuaire attend');
+    third.angle = rad(90); // (pour être sûr qu'il ne vise rien par hasard)
+    aimFromSun(g, village, middle);
+    run(g, 2);
+    check(g.crystals[1].lit && !g.crystals[2].lit && !g.temple.lit, 'le miroir du village passe la fenêtre de pierre : deux cristaux sur trois');
+    aimFromSun(g, third, bottom);
+    run(g, 3);
+    check(g.temple.lit, 'les trois cristaux ensemble : le sanctuaire s’allume');
+    const t1 = tolerance(g, village, () => g.crystals[1].lit);
+    const t2 = tolerance(g, third, () => g.crystals[2].lit);
+    check(t1 >= 3 && t2 >= 3, `la visée reste confortable (village ${t1}°, troisième ${t2}°)`);
+    run(g, 12);
+    check(iceOf(g, 'glacier').gone && g.thaw > 0.9, 'le grand glacier fond : la source coule');
+  }
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
-const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9 };
+const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9, 10: checkLevel10 };
 // `npm run check -- 6` ne vérifie que le niveau 6 (pratique pendant qu'on le construit).
 const only = process.argv[2] ? Number(process.argv[2]) : null;
 for (const level of levels) {

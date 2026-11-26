@@ -6,8 +6,10 @@ temples d'une civilisation solaire oubliée sous la glace.
 
 ![Aperçu du niveau 1](docs/images/apercu.jpg)
 
-**État actuel : v0.4** — le jeu comptera six chapitres de dix niveaux. Le
-premier chapitre, « La source », a cinq niveaux jouables de bout en bout :
+**État actuel : v0.5** — le jeu comptera six chapitres de dix niveaux. Le
+premier chapitre, « La source », est complet : dix niveaux jouables de bout
+en bout. À partir du niveau 6, le sanctuaire a plusieurs cristaux, à éclairer
+en même temps avec plusieurs miroirs.
 
 | | Niveau | Ce qu'on y apprend |
 | --- | --- | --- |
@@ -16,6 +18,11 @@ premier chapitre, « La source », a cinq niveaux jouables de bout en bout :
 | 3 | La digue de glace | L'ombre du relief retient l'eau et la fait monter |
 | 4 | Le pont de givre | Le petit peuple agit quand le monde le lui permet |
 | 5 | L'aiguille | Un miroir sur rail : le soleil et sa place règlent le reflet |
+| 6 | L'œil de pierre | Deux cristaux, deux miroirs ; un conduit porte la lumière à l'abri |
+| 7 | La corniche | La neige qui tombe comble ou barre : l'ordre compte |
+| 8 | La veillée | La nuit : des cristaux gardent la lumière du jour |
+| 9 | Les jumeaux | Deux miroirs enchaînés, qui tournent à l'envers l'un de l'autre |
+| 10 | Le grand glacier | Trois cristaux, trois miroirs, un seul soleil |
 
 La progression est gardée sur l'appareil. Après l'écran titre, on choisit un
 chapitre puis un niveau ; le bouton ☰ y ramène. Tous les niveaux construits
@@ -94,7 +101,7 @@ src/
   levels/
     index.js            les six chapitres et leurs niveaux, dans l'ordre
     terrain.js          outil pour écrire le relief en tronçons nommés
-    level1.js … level5.js   un fichier par niveau : formes, positions, textes
+    level1.js … level10.js  un fichier par niveau : formes, positions, textes
   ui/ui.js              écran titre, choix du chapitre et du niveau, indices, souvenir
 public/                 icône, manifeste PWA, service worker
 scripts/check-level.mjs test automatique de tous les niveaux
@@ -113,14 +120,17 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | --- | --- | --- |
 | `sun`, `cloud` | soleil sur son arc, nuage sur son rail (facultatif) | déplacés par le joueur |
 | `ground`, `snow`, `caves` | le relief | bloque la lumière |
-| `mirrors` | miroirs (sur mât, pris dans la glace, sur radeau, portés, sur rail) | renvoient la lumière ; celui sur rail ne tourne pas, il glisse |
-| `ices` | glaciers | fondent à la lumière, une fois pour toutes |
+| `mirrors` | miroirs (sur mât, pris dans la glace, sur radeau, portés, sur rail, jumelés) | renvoient la lumière ; celui sur rail ne tourne pas, il glisse ; deux jumeaux (`twin`) tournent à l'envers l'un de l'autre |
+| `ices`, `fills` | glaciers, corniches de neige ; ce qu'une corniche comble en tombant | fondent à la lumière, une fois pour toutes (`beamOnly` : seulement sous un reflet ; `after` : n'apparaît qu'après la fonte d'une autre) |
 | `frosts` | eaux calmes : source, digue, pont | gèlent à l'ombre, dégèlent à la lumière |
 | `streams` | cours d'eau (tronçons qui coulent ou qui tombent) | coulent si leur source est ouverte ; une cascade peut arrêter la lumière |
 | `basins` | bassins | se remplissent quand leur digue est gelée |
 | `wheels`, `doors` | roues à eau, portes de pierre | l'eau fait tourner la roue, qui ouvre la porte |
-| `walkers` | porteurs | avancent tant que le chemin les porte, puis posent leur miroir |
-| `temple` | le temple et son cristal | s'allume quand le cristal reçoit de la lumière |
+| `walkers` | porteurs | avancent tant que le chemin les porte (pont gelé, crevasse comblée : `gates`), puis posent leur miroir |
+| `temple` | le temple et son cristal, ou ses cristaux (`crystals`) | s'allume quand tous ses cristaux reçoivent de la lumière en même temps |
+| `eyes` | conduit des anciens : un œil d'entrée, un œil de sortie | l'œil d'entrée éclairé allume l'œil de sortie, qui éclaire les miroirs proches |
+| `memories` | cristaux-mémoire | se chargent à la lumière, puis éclairent les miroirs proches dans le noir |
+| `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
 | `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme |
 
 ## Comment marche la lumière
@@ -158,6 +168,6 @@ cloud (à ajouter à l'étape 2).
 Le fichier `CLAUDE.md` explique le projet à Claude à chaque session. Exemples
 de demandes qui marchent bien :
 
-- « Construis le niveau 6 du chapitre I, en suivant `docs/GAME_DESIGN.md`. »
+- « Écris les énoncés des dix niveaux du chapitre II, en suivant `docs/GAME_DESIGN.md`. »
 - « Dans le niveau 1, rends le glacier deux fois plus long à fondre. »
 - « Change la couleur de la neige dans l'ombre pour un bleu plus violet. »

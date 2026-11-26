@@ -497,6 +497,15 @@ export function update(g, dt) {
   for (const ice of g.ices) {
     if (!ice.active && byId(g.ices, ice.def.after).gone) ice.active = true;
     if (ice.gone || !ice.active) continue;
+    // Un grand glacier (`thaws`) ne fond que lorsque le sanctuaire se rallume.
+    if (ice.def.thaws) {
+      if (g.temple.lit) {
+        ice.melt = Math.min(1, ice.melt + dt / 9);
+        if (Math.random() < dt * 20) spawnDrip(g, ice);
+        if (ice.melt >= 1) ice.gone = true;
+      }
+      continue;
+    }
     const e = Math.min(1.5, ice.exposure);
     ice.heating = e > 0;
     if (e > 0) {

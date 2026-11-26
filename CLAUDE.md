@@ -8,6 +8,8 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 - `npm run dev` — serveur de développement (Vite)
 - `npm run check` — vérifie chaque niveau (résoluble, sans raccourci). À lancer
   après toute modification de `src/engine/`, `src/game/game.js` ou d'un niveau.
+  Le tour complet prend environ trois minutes ; `npm run check -- 7` ne
+  vérifie que le niveau 7.
 - `npm run build` — build de production dans `dist/`
 
 ## Conventions
@@ -44,6 +46,10 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 4. Si le niveau demande une règle nouvelle, l'ajouter dans `game.js` comme un
    type d'élément réutilisable, jamais comme un cas particulier du niveau.
 5. Vérifier le rendu par captures d'écran (voir plus bas).
+
+À partir du niveau 6, un sanctuaire a plusieurs cristaux (`temple.crystals`),
+et chaque cristal ne doit être atteignable que par un seul miroir : le
+vérifier dans le test, cristal par cristal.
 
 Piège connu : un miroir éclairé renvoie toujours un faisceau, même quand le
 joueur n'y a pas touché. Choisir son angle de départ pour que ce faisceau ne
