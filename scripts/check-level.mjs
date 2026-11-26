@@ -6,7 +6,7 @@
 //  - la solution prévue fonctionne de bout en bout.
 
 import { levels } from '../src/levels/index.js';
-import { createGame, update, computeLight, sunPosition } from '../src/game/game.js';
+import { createGame, update, computeLight, sunPosition, turnMirror } from '../src/game/game.js';
 import { aimMirror } from '../src/engine/light.js';
 import { rad } from '../src/engine/vec.js';
 
@@ -576,9 +576,197 @@ function checkLevel7(level) {
   }
 }
 
+// ── Niveau 8 ──────────────────────────────────────────────────────────
+
+function checkLevel8(level) {
+  const [low, high] = level.temple.crystals;
+  const NIGHT = 186; // angle où le soleil est couché
+  const memOf = (g, id) => g.memories.find((m) => m.def.id === id);
+  {
+    // Le soleil seul : ni les cristaux, ni le cristal-mémoire de l'autre rive, ni le socle.
+    const g = createGame(level);
+    for (const m of g.mirrors) m.free = false;
+    mirrorOf(g, 'socle').free = true;
+    let crystals = 0;
+    let shore = 0;
+    let socle = 0;
+    let night = 0;
+    for (let a = level.sun.min; a <= level.sun.max; a += 1) {
+      g.sunAngle = rad(a);
+      const l = computeLight(g);
+      if (l.sunHidden) night++;
+      if (g.crystals.some((c) => c.lit)) crystals++;
+      if (memOf(g, 'rive').lit) shore++;
+      if (sunLit(l, mirrorOf(g, 'socle'))) socle++;
+    }
+    check(crystals === 0, `le soleil direct n'atteint aucun cristal (${crystals} positions)`);
+    check(shore === 0, `le soleil direct n'atteint jamais le cristal-mémoire de l'autre rive (${shore} positions)`);
+    check(socle === 0, `le soleil direct n'atteint jamais le socle (${socle} positions)`);
+    check(night >= 5, `le soleil peut se coucher (${night}° de nuit au bout de sa course)`);
+  }
+  {
+    // De jour, même avec tout en place, le miroir du socle ne reçoit rien : il faut la nuit.
+    const g = createGame(level);
+    const placed = mirrorOf(g, 'socle');
+    placed.free = true;
+    for (const m of g.memories) m.charge = 1;
+    let lit = 0;
+    for (let a = level.sun.min; a <= 160; a += 2) {
+      g.sunAngle = rad(a);
+      computeLight(g);
+      if (placed.lit) lit++;
+    }
+    check(lit === 0, 'de jour, les cristaux-mémoire ne rendent rien : le miroir du socle reste éteint');
+  }
+  {
+    const g = createGame(level);
+    const village = mirrorOf(g, 'village');
+    const placed = mirrorOf(g, 'socle');
+    const porter = g.walkers[0];
+    const mVillage = memOf(g, 'village');
+    const mShore = memOf(g, 'rive');
+    run(g, 5);
+    check(mVillage.charge >= 0.99 && mShore.charge === 0, 'de jour, le cristal-mémoire du village se charge seul ; pas celui de l’autre rive');
+    check(!porter.done && !porter.moving && g.frosts[0].amount === 0, 'le porteur attend au bord du lac');
+    aimFromSun(g, village, level.memories[1]);
+    run(g, 4);
+    check(mShore.charge >= 0.99, 'le reflet du village charge le cristal-mémoire de l’autre rive');
+    g.sunAngle = rad(NIGHT);
+    run(g, 5);
+    check(g.light.sunHidden && g.frosts[0].amount >= 0.98, 'le soleil couché, le lac gèle');
+    run(g, 9);
+    check(porter.done && placed.free, 'le porteur a traversé et posé son miroir');
+    check(mVillage.charge > 0.5 && mShore.charge > 0.5, `les deux lueurs tiennent encore (${mVillage.charge.toFixed(2)}, ${mShore.charge.toFixed(2)})`);
+    check(placed.lit && village.lit, 'de nuit, chaque miroir reçoit la lueur de son cristal-mémoire');
+    aimFrom(level.memories[1], placed, low);
+    run(g, 2);
+    check(g.crystals[0].lit && !g.temple.lit, 'un seul cristal éclairé : le sanctuaire attend');
+    aimFrom(level.memories[0], village, high);
+    run(g, 3);
+    check(g.temple.lit, 'les deux cristaux ensemble, en pleine nuit : le sanctuaire s’allume');
+    const t1 = tolerance(g, placed, () => g.crystals[0].lit);
+    const t2 = tolerance(g, village, () => g.crystals[1].lit);
+    check(t1 >= 3 && t2 >= 3, `la visée reste confortable (socle ${t1}°, village ${t2}°)`);
+  }
+  {
+    // Les lueurs s'éteignent, mais on peut toujours recommencer la journée.
+    const g = createGame(level);
+    const village = mirrorOf(g, 'village');
+    run(g, 3);
+    aimFromSun(g, village, level.memories[1]);
+    run(g, 4);
+    g.sunAngle = rad(NIGHT);
+    run(g, 100);
+    check(g.memories.every((m) => m.charge === 0) && g.walkers[0].done && !g.temple.lit, 'trop tard : les lueurs se sont éteintes, mais le miroir du porteur est en place');
+    g.sunAngle = rad(70);
+    run(g, 4);
+    aimFromSun(g, village, level.memories[1]);
+    run(g, 4);
+    check(g.memories.every((m) => m.charge >= 0.99), 'un nouveau jour recharge les deux cristaux-mémoire');
+  }
+}
+
+// ── Niveau 9 ──────────────────────────────────────────────────────────
+
+function checkLevel9(level) {
+  const [deep, entry] = level.temple.crystals;
+  /** Règle les jumeaux pour que le premier éclaire le second (la chaîne fait tourner l'autre). */
+  const aimTwins = (g) => {
+    const top = mirrorOf(g, 'haut');
+    const twin = mirrorOf(g, 'bas');
+    turnMirror(g, top, aimMirror(top, unit(sunPosition(g), top), twin) - top.angle);
+  };
+  {
+    // Sans miroirs : le soleil n'atteint jamais le cristal du fond.
+    const g = createGame(level);
+    for (const m of g.mirrors) m.free = false;
+    const r = sweepSky(g, () => g.crystals[0].lit);
+    check(r.hits === 0, `le soleil direct n'atteint jamais le cristal de la grotte (${r.hits} positions)`);
+  }
+  {
+    // Ni le premier jumeau seul, ni le miroir du village n'atteignent le cristal de la grotte.
+    const g = createGame(level);
+    g.ices[0].gone = true;
+    const top = mirrorOf(g, 'haut');
+    const twin = mirrorOf(g, 'bas');
+    const village = mirrorOf(g, 'village');
+    let through = 0;
+    for (const a of [40, 60, 80, 100, 118, 123]) {
+      g.sunAngle = rad(a);
+      twin.free = false;
+      through += sweepMirror(g, top, () => g.crystals[0].lit);
+      twin.free = true;
+      through += sweepMirror(g, village, () => g.crystals[0].lit);
+    }
+    check(through === 0, 'seul le second jumeau atteint le cristal de la grotte');
+  }
+  // Pour quelles positions du soleil la chaîne des jumeaux atteint-elle le cristal du fond ?
+  const working = (melted) => {
+    const g = createGame(level);
+    g.ices[0].gone = melted;
+    const out = [];
+    for (let a = level.sun.min; a <= level.sun.max; a += 0.5) {
+      g.sunAngle = rad(a);
+      aimTwins(g);
+      computeLight(g);
+      if (g.crystals[0].lit) out.push(a);
+    }
+    return out;
+  };
+  const before = working(false);
+  const after = working(true);
+  check(before.length === 0, `tant que la glace est là, les jumeaux n'atteignent jamais le cristal de la grotte (${before.length} positions)`);
+  check(after.length >= 8, `glace fondue : ils l'atteignent quand le soleil est entre ${after[0]}° et ${after[after.length - 1]}°`);
+  {
+    // À ces positions, ni le soleil ni les jumeaux n'éclairent l'autre cristal : il faut le miroir du village.
+    const g = createGame(level);
+    g.ices[0].gone = true;
+    mirrorOf(g, 'village').free = false;
+    let free = 0;
+    for (const a of after) {
+      g.sunAngle = rad(a);
+      aimTwins(g);
+      computeLight(g);
+      if (g.crystals[1].lit) free++;
+    }
+    check(free === 0, 'là, le cristal du fond de la gorge reste éteint sans le miroir du village');
+  }
+  {
+    const g = createGame(level);
+    const top = mirrorOf(g, 'haut');
+    const twin = mirrorOf(g, 'bas');
+    const village = mirrorOf(g, 'village');
+    const sum = top.angle + twin.angle;
+    run(g, 3);
+    check(g.ices[0].melt === 0 && !g.crystals.some((c) => c.lit), 'au départ, rien ne fond et aucun cristal n’est éclairé');
+    const sun = after[Math.floor(after.length / 2)];
+    g.sunAngle = rad(sun);
+    run(g, 1);
+    check(!top.lit, `soleil à ${sun}° : la glace met le premier miroir à l'ombre`);
+    g.sunAngle = rad(45);
+    turnMirror(g, top, aimMirror(top, unit(sunPosition(g), top), centerOf(level.ices[0].points)) - top.angle);
+    run(g, 1);
+    check(g.ices[0].heating, 'soleil ailleurs, premier miroir tourné vers la glace : elle fond');
+    run(g, 5);
+    check(g.ices[0].gone, 'la glace a fondu');
+    g.sunAngle = rad(sun);
+    aimTwins(g);
+    run(g, 2);
+    check(twin.lit && g.crystals[0].lit && !g.temple.lit, 'soleil revenu, jumeaux réglés : le second touche le cristal de la grotte');
+    check(Math.abs(top.angle + twin.angle - sum) < 1e-9, 'la chaîne tient : la somme des angles des jumeaux n’a pas changé');
+    aimFromSun(g, village, entry);
+    run(g, 3);
+    check(g.temple.lit, 'le miroir du village éclaire l’autre cristal : le sanctuaire s’allume');
+    // Le cristal est loin, tout au fond : la visée est fine, mais l'aide à la
+    // visée (settleMirror) rattrape jusqu'à 4° d'écart quand on lâche le miroir.
+    const t = tolerance(g, village, () => g.crystals[1].lit);
+    check(t >= 2, `la visée du village reste jouable (${t}°, plus l'aide à la visée)`);
+  }
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
-const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7 };
+const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9 };
 // `npm run check -- 6` ne vérifie que le niveau 6 (pratique pendant qu'on le construit).
 const only = process.argv[2] ? Number(process.argv[2]) : null;
 for (const level of levels) {

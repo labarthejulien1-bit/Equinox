@@ -139,6 +139,59 @@ function flags(c, P, d, g) {
   });
 }
 
+/**
+ * Pont de corde tendu entre deux points : { x, y, x1, y1, sag }.
+ * (un simple décor : dans ce jeu, seuls les porteurs marchent, et ils ont
+ * leur propre chemin)
+ */
+function bridge(c, P, d) {
+  const sag = d.sag ?? 12;
+  const mx = (d.x + d.x1) / 2;
+  const at = (t, lift) => [
+    (1 - t) * (1 - t) * d.x + 2 * (1 - t) * t * mx + t * t * d.x1,
+    (1 - t) * (1 - t) * (d.y - lift) + 2 * (1 - t) * t * ((d.y + d.y1) / 2 + sag - lift * 0.7) + t * t * (d.y1 - lift),
+  ];
+  c.strokeStyle = P.wood;
+  c.lineCap = 'round';
+  for (const lift of [0, 14]) {
+    c.lineWidth = lift ? 0.8 : 1.2;
+    c.beginPath();
+    for (let i = 0; i <= 20; i++) {
+      const [x, y] = at(i / 20, lift);
+      if (i) c.lineTo(x, y);
+      else c.moveTo(x, y);
+    }
+    c.stroke();
+  }
+  const n = Math.round(Math.abs(d.x1 - d.x) / 6);
+  for (let i = 1; i < n; i++) {
+    const [x, y] = at(i / n, 0);
+    c.lineWidth = 1.6;
+    c.beginPath();
+    c.moveTo(x - 1.8, y);
+    c.lineTo(x + 1.8, y);
+    c.stroke();
+    if (i % 2) {
+      const [hx, hy] = at(i / n, 14);
+      c.lineWidth = 0.5;
+      c.beginPath();
+      c.moveTo(x, y);
+      c.lineTo(hx, hy);
+      c.stroke();
+    }
+  }
+  c.lineWidth = 1.6;
+  for (const [x, y] of [
+    [d.x, d.y],
+    [d.x1, d.y1],
+  ]) {
+    c.beginPath();
+    c.moveTo(x, y);
+    c.lineTo(x, y - 16);
+    c.stroke();
+  }
+}
+
 /** Grand rapace : il plane lentement dans le ciel. */
 function raptor(c, P, d, g) {
   const a = g.time * 0.12 + d.x;
@@ -164,7 +217,9 @@ const DRAW = { ibex, marmots, hare, cairn, bush, raptor };
 
 /** Dessine un décor du niveau. */
 export function drawDecor(c, P, d, g) {
-  if (d.type === 'flags') return flags(c, P, d, g); // lui se décrit par deux points
+  // Fanions et pont de corde se décrivent par deux points.
+  if (d.type === 'flags') return flags(c, P, d, g);
+  if (d.type === 'bridge') return bridge(c, P, d);
   const draw = DRAW[d.type];
   if (!draw) return;
   const s = d.s ?? 1;

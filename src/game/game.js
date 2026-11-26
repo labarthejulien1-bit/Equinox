@@ -351,8 +351,9 @@ export function computeLight(g) {
   // Les lampes : les cristaux-mémoire chargés, et la sortie des conduits dont
   // l'œil d'entrée est éclairé. Un œil pouvant être éclairé par un faisceau,
   // on calcule les faisceaux une première fois, puis une seconde s'il le faut.
+  // (un cristal-mémoire ne brille que dans le noir : de jour, sa lueur se perd)
   const memoryLamps = g.memories
-    .filter((m) => m.charge > 0.12)
+    .filter((m) => m.charge > 0.12 && intensity < 0.35)
     .map((m) => ({ x: m.def.x, y: m.def.y, range: m.def.range || 70, owner: m, power: m.charge }));
   let lamps = memoryLamps;
   let beams = traceBeams(hidden ? null : sun, active, segs, SLICES, biteOf, lamps);
@@ -372,7 +373,8 @@ export function computeLight(g) {
   for (const m of g.memories) m.lit = touchedBy(beams, m);
   const crystalLit = g.crystals.every((c) => c.lit); // le sanctuaire veut tous ses cristaux en même temps
   const waterHits = []; // points où un faisceau se brise dans une cascade
-  for (const ice of g.ices) ice.exposure = ice.active && vis && vis.owners.has(ice) ? 0.5 : 0;
+  // (le plein soleil fait fondre lentement ; une glace `beamOnly` ne cède qu'à un reflet)
+  for (const ice of g.ices) ice.exposure = ice.active && !ice.def.beamOnly && vis && vis.owners.has(ice) ? 0.5 : 0;
   for (const b of beams) {
     for (const s of b.slices) {
       if (!s.lit) continue;

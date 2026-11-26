@@ -1127,7 +1127,9 @@ export function createRenderer(canvas) {
       halo(e.def.x, e.def.y, 11, 0.6);
       halo(e.def.out.x, e.def.out.y, 16 + Math.sin(t * 4) * 1.5, 0.7);
     }
-    for (const m of g.memories) if (m.charge > 0.02) halo(m.def.x, m.def.y, 14 + 22 * m.charge + Math.sin(t * 3) * 1.5, 0.75 * m.charge);
+    // (de jour, un cristal-mémoire chargé scintille à peine ; la nuit, il rayonne)
+    const dark = 1 - smooth(g.light.intensity / 0.35);
+    for (const m of g.memories) if (m.charge > 0.02) halo(m.def.x, m.def.y, 10 + (4 + 22 * dark) * m.charge + Math.sin(t * 3) * 1.5, (0.3 + 0.5 * dark) * m.charge);
 
     // Lueur du temple (découpée par les ombres de la grotte)
     if (g.temple.glow > 0 && g.light.points.length) {
