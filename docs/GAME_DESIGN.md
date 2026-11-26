@@ -234,7 +234,35 @@ clairière en deux ; c'est le milieu où le relief n'est plus seul à cacher le
 soleil. À surveiller : la Forêt de brume est la moins contrastée des trois,
 la frontière ombre / lumière s'y lit moins bien.
 
-### Milieux 4 à 6
+### Milieu 4 — Hauts plateaux de ruines ✅
+
+Trois palettes retenues. Planche : [Grès rose, Lande, Craie](images/palettes-plateaux.jpg).
+
+| | B · Grès rose | C · Lande | D · Craie |
+| --- | --- | --- | --- |
+| Esprit | roche rose et sauge, ombres lie-de-vin | herbe olive et bruyère violette, ciel gris | falaises blanches, gazon vert vif, grand ciel bleu |
+| Ciel (haut) | `#9fc6cf` / `#12202a` | `#9aa9c0` / `#12121e` | `#6fb6e6` / `#0c1a36` |
+| Ciel (milieu) | `#e2ece4` / `#203640` | `#d9dde0` / `#201f32` | `#cfe9f4` / `#172f56` |
+| Horizon | `#ffeedd` / `#3a5258` | `#f4ecd0` / `#383650` | `#fffbe6` / `#2a4c78` |
+| Plateaux lointains 1 | `#f0dcd4` / `#4a4a5a` | `#dcd6e0` / `#3e3856` | `#eef6ee` / `#2f5078` |
+| Plateaux lointains 2 | `#e4bfb4` / `#4a3c4e` | `#c0b0cc` / `#352c4c` | `#d2ead2` / `#27466a` |
+| Plateaux lointains 3 | `#d6a294` / `#422f42` | `#a48bb8` / `#2c2242` | `#b2dab4` / `#1f3b5a` |
+| Sol | `#e8a890` / `#6a3f52` (grès) | `#b9b45a` / `#4a4a38` (herbe) | `#7fc66a` / `#2c5f5a` (gazon) |
+| Herbe, buissons | `#8fae7a` / `#3a5548` (sauge) | `#b06aa8` / `#5a2f5c` (bruyère) | `#4f9f4a` / `#1f4a48` |
+| Taches au sol | `#f6dccf` / `#8a6478` | `#d98ac0` / `#6a3a6c` | `#fbfaf2` / `#5d79a6` |
+| Falaise (liseré) | `#f2c0a0` / `#2a1e30` | `#c9b48a` / `#1c1a2a` | `#fbfaf2` / `#5d79a6` |
+| Corps de la roche | `#1e1626` | `#161522` | `#1a2740` |
+| Eau | `#9fd6d8` / `#2a5a66` | `#9ab8d6` / `#2c3e66` | `#6fd0ea` / `#1f5aa0` |
+| Nuage | `#fff6f0` / `#6f8f98` | `#f4f4f0` / `#6c6e88` | `#ffffff` / `#7494c0` |
+| Pierre ancienne (clair / corps) | `#fff2dc` / `#4a4060` | `#fff6d6` / `#3e3e58` | `#fffdf0` / `#3a4c78` |
+
+Écartée pour ce milieu : « Pierre de lune » (ivoire et lavande).
+
+Propre aux plateaux : c'est le milieu où il y a **le plus d'ombre**, parce que
+les ruines se cachent le soleil les unes aux autres. Le Grès rose étant
+retenu ici, le désert doit partir dans une autre direction de couleur.
+
+### Milieux 5 et 6
 
 À choisir, milieu par milieu.
 
