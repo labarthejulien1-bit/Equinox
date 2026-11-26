@@ -206,7 +206,35 @@ Décor propre aux plaines, apparu sur les planches : un **troupeau** de bêtes
 à bois (la tribu est nomade) et **l'ombre du nuage** qui traverse toute la
 plaine, très lisible sur un terrain plat.
 
-### Milieux 3 à 6
+### Milieu 3 — Forêt ✅
+
+Trois palettes retenues. Planche : [Taïga, Mélèzes d'or, Forêt de brume](images/palettes-foret.jpg).
+
+| | A · Taïga | B · Mélèzes d'or | C · Forêt de brume |
+| --- | --- | --- | --- |
+| Esprit | sapins sous la neige, ombres bleu canard | forêt d'automne, ombres prune | vert-de-gris et mousse, lumière laiteuse |
+| Ciel (haut) | `#8fc0d4` / `#0c1a2a` | `#9fbfd0` / `#141428` | `#b9cfc6` / `#0e1a18` |
+| Ciel (milieu) | `#d2e9e6` / `#16303f` | `#e6e6d6` / `#28223c` | `#dfe9e0` / `#1a2e2a` |
+| Horizon | `#f6f1dc` / `#254a58` | `#ffe9c0` / `#43334f` | `#f4f1e2` / `#2c4a42` |
+| Collines lointaines | `#d5e6e0` / `#2a505c` | `#f0dcb8` / `#4a3a52` | `#dbe6dc` / `#2f4d45` |
+| Lisière 1 | `#9fc2b4` / `#1f3f4a` | `#e0b46a` / `#4a3040` | `#b6cdbc` / `#243e38` |
+| Lisière 2 | `#6f9f90` / `#16303a` | `#c98a3a` / `#3c2434` | `#8fb09a` / `#1a302c` |
+| Sol | `#fbfdf8` / `#5586a0` (neige) | `#e6b45a` / `#6a4050` (feuilles) | `#cfe0c0` / `#3f6a58` (mousse) |
+| Feuillage (clair / moyen / corps) | `#8fd0a0` / `#3f8a72` / `#173a3a` | `#ffd060` / `#d08a2e` / `#5a3030` | `#a6d6b0` / `#4a8068` / `#16302a` |
+| Tronc (clair / corps) | `#d0a070` / `#2a2630` | `#c08a60` / `#2a2030` | `#b8b090` / `#22282a` |
+| Liseré de roche | `#d6c29a` / `#142a36` | `#d98a4a` / `#261a2e` | `#c9c7a4` / `#142622` |
+| Corps de la roche | `#0f1f2b` | `#1a1424` | `#0f1c1a` |
+| Eau | `#8fdcea` / `#1f5a78` | `#9fd4e0` / `#34507a` | `#a9d6cf` / `#1f5550` |
+| Pierre ancienne (clair / corps) | `#fff3d2` / `#35506a` | `#fff0d0` / `#463e60` | `#f6f4dc` / `#30504a` |
+
+Écartée pour ce milieu : « Bouleaux » (troncs blancs, feuillage vert tendre).
+
+Propre à la forêt : **les arbres font de l'ombre.** Un grand sapin coupe une
+clairière en deux ; c'est le milieu où le relief n'est plus seul à cacher le
+soleil. À surveiller : la Forêt de brume est la moins contrastée des trois,
+la frontière ombre / lumière s'y lit moins bien.
+
+### Milieux 4 à 6
 
 À choisir, milieu par milieu.
 
