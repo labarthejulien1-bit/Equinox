@@ -23,6 +23,8 @@ import {
   lampHalos,
 } from './game.js';
 import { drawDecor } from './decor.js';
+import { windAt } from './life.js';
+import { drawLifeSky, drawLifeFar, drawLifeGround, drawLifeFront, drawLifeGlow } from './lifeDraw.js';
 import { sliderBubbles } from './sliders.js';
 
 const SNOW = 7; // épaisseur de la couche de neige
@@ -202,7 +204,9 @@ export function createRenderer(canvas) {
 
     // Montagnes lointaines (trois plans). Chaque niveau a ses propres crêtes.
     const seed = L.id * 3.7;
+    drawLifeSky(c, P, g, view); // longs nuages lointains
     ridge(c, P.far1, 1.3 + seed, 392, 74, 0.0105, true);
+    drawLifeFar(c, P, g, isLit); // vol d'oiseaux, étoile filante
     ridge(c, P.far2, 4.1 + seed, 432, 52, 0.0165, true);
     ridge(c, P.far3, 7.7 + seed, 474, 30, 0.012, false);
 
@@ -237,7 +241,9 @@ export function createRenderer(canvas) {
       const H = v.bottom - v.top;
       for (let i = 0; i < 44; i++) {
         const sp = 7 + hash(i + 3) * 9;
-        const x = v.left - 20 + ((hash(i) * W + t * (2 + hash(i + 9) * 4) + Math.sin(t * 0.7 + i) * 6) % W);
+        // (le vent les pousse : drift grandit plus vite pendant une rafale)
+        const drift = g.life ? g.life.wind.drift : 0;
+        const x = v.left - 20 + ((hash(i) * W + t * (2 + hash(i + 9) * 4) + drift * (0.5 + hash(i + 31)) + Math.sin(t * 0.7 + i) * 6) % W);
         const y = v.top + ((hash(i + 50) * H + t * sp) % H);
         c.beginPath();
         c.arc(x, y, 0.7 + hash(i + 20) * 0.8, 0, TAU);
@@ -299,6 +305,9 @@ export function createRenderer(canvas) {
       c.stroke();
     }
     for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit);
+
+    // Empreintes, fleurs du dégel, éclats sur l'eau (voir lifeDraw.js)
+    drawLifeGround(c, P, g, isLit);
 
     // Eaux calmes qui gèlent : sources et ponts de givre
     for (const f of g.frosts) if (f.def.role !== 'dam') drawFrost(c, P, f, g);
@@ -376,11 +385,19 @@ export function createRenderer(canvas) {
     for (const m of g.mirrors) if (m.raft) drawRaft(c, P, m, g);
 
     // Le petit peuple
-    (L.villagers || []).forEach((p, i) => drawVillager(c, P, p, i, g));
+    // (leur vie — où ils sont, ce qu'ils font — est décidée dans life.js)
+    if (g.life) {
+      for (const f of g.life.folk) {
+        if (f.vis > 0.02) drawVillager(c, P, { x: f.x, y: f.y, s: f.p.s, dir: f.dir, pose: f }, f.i, g, f.moving ? 1 : 0);
+      }
+    } else (L.villagers || []).forEach((p, i) => drawVillager(c, P, p, i, g));
     g.walkers.forEach((w, i) => drawWalker(c, P, w, i, g));
 
     // Nuage
     if (L.cloud) drawCloud(c, P, g);
+
+    // Neige soufflée, embruns, brume, traits de vent
+    drawLifeFront(c, P, g, isLit);
   }
 
   /** Une ligne de crêtes lointaines. */
@@ -866,11 +883,12 @@ export function createRenderer(canvas) {
     c.fillStyle = P.doorway;
     c.fillRect(-dw / 2, -dh, dw, dh + 1);
     const flicker = 0.85 + 0.15 * Math.sin(g.time * 7 + h.x);
-    const warm = c.createRadialGradient(0, -dh * 0.3, 0, 0, -dh * 0.3, dh * (g.temple.glow > 0.6 ? 1.5 : 1));
+    const night = g.life ? g.life.night : 0; // la nuit, la porte éclaire davantage
+    const warm = c.createRadialGradient(0, -dh * 0.3, 0, 0, -dh * 0.3, dh * (g.temple.glow > 0.6 ? 1.5 : 1 + 0.7 * night));
     warm.addColorStop(0, `rgba(255, 220, 140, ${0.75 * flicker})`);
     warm.addColorStop(1, 'rgba(255, 220, 140, 0)');
     c.fillStyle = warm;
-    c.fillRect(-dw, -dh * 1.6, dw * 2, dh * 1.7);
+    c.fillRect(-dw * 2, -dh * 2.2, dw * 4, dh * 2.3);
     c.fillStyle = '#ffcf7a';
     c.fillRect(-dw * 0.3, -dh * 0.62, dw * 0.6, dh * 0.62 + 1);
     c.strokeStyle = P.wood;
@@ -883,13 +901,14 @@ export function createRenderer(canvas) {
       { x: dw / 2 + 1, y: 1 },
     ]);
     c.stroke();
-    // La fumée
+    // La fumée (le vent la couche)
+    const wind = windAt(g.life, h.x);
     c.fillStyle = P.snow;
     for (let i = 0; i < 4; i++) {
       const t = (g.time * 0.22 + i / 4 + h.x * 0.01) % 1;
       c.globalAlpha = 0.6 * (1 - t);
       c.beginPath();
-      c.arc(half * 0.42 + Math.sin(t * 5 + i) * 2.4, -height * 0.9 - t * 22, 1.6 + t * 2.6, 0, TAU);
+      c.arc(half * 0.42 + Math.sin(t * 5 + i) * 2.4 + wind * t * 30, -height * 0.9 - t * (22 - wind * 8), 1.6 + t * 2.6, 0, TAU);
       c.fill();
     }
     c.globalAlpha = 1;
@@ -951,13 +970,28 @@ export function createRenderer(canvas) {
    */
   function drawVillager(c, P, p, i, g, step = 0) {
     const t = g.time;
-    // Ils sautent de joie quand le temple s'allume.
-    const joy = g.temple.lit ? smooth(g.win.t / 0.8) * (1 - smooth((g.win.t - 9) / 3)) : 0;
-    const hop = joy * Math.abs(Math.sin(t * 5.5 + i * 1.3)) * 5 + step * Math.abs(Math.sin(t * 9)) * 1.6;
-    const bob = Math.sin(t * 1.8 + i * 2.1) * 0.5;
+    // Sa pose du moment (voir updateVillager dans life.js) : accroupi au
+    // froid, étiré au soleil, le regard levé ou baissé, sursautant si on le touche.
+    const pose = p.pose || {};
+    const crouch = pose.crouch || 0;
+    const stretch = pose.stretch ? Math.sin(Math.PI * pose.stretch) : 0;
+    const cheer = pose.cheer || 0;
+    const vis = pose.vis ?? 1;
+    // Ils dansent quand le temple s'allume : ils sautent, se balancent et se retournent.
+    const joy = g.temple.lit ? smooth(g.win.t / 0.8) * (1 - smooth((g.win.t - 14) / 4)) : 0;
+    const hop =
+      joy * Math.abs(Math.sin(t * 5.5 + i * 1.3)) * 5 +
+      step * Math.abs(Math.sin(t * 9)) * 1.6 +
+      (pose.hop ? Math.sin(Math.PI * pose.hop) * 5 : 0) +
+      cheer * Math.abs(Math.sin(t * 6 + i)) * 1.2;
+    const bob = Math.sin(t * 1.8 + i * 2.1) * 0.5 - stretch * 1.4;
+    const dir = joy > 0.5 && Math.sin(t * 2.4 + i * 1.7) < 0 ? -p.dir : p.dir;
     c.save();
-    c.translate(p.x, p.y - hop);
-    c.scale(p.s * p.dir, p.s);
+    c.globalAlpha = vis; // il s'efface en rentrant dans sa hutte
+    c.translate(p.x + Math.sin(t * 23 + i) * 0.25 * crouch, p.y - hop); // il grelotte
+    c.rotate(Math.sin(t * 4 + i) * 0.1 * joy);
+    const size = p.s * (0.6 + 0.4 * vis);
+    c.scale(size * dir * (1 + 0.05 * crouch), size * (1 - 0.09 * crouch + 0.09 * stretch));
     // La cape
     c.fillStyle = P.cloak;
     cloakPath(c, bob);
@@ -980,7 +1014,7 @@ export function createRenderer(canvas) {
     }
     // Le masque
     const mx = 0.9;
-    const my = -9.6 + bob;
+    const my = -9.6 + bob + (pose.lookY || 0) * 0.9;
     c.strokeStyle = P.trim;
     c.lineWidth = 0.65;
     c.beginPath();
@@ -1004,16 +1038,19 @@ export function createRenderer(canvas) {
     }
     // La barre de lumière : elle luit plus fort dans l'ombre, et cligne parfois
     const blink = Math.sin(t * 0.9 + i * 3.7) > 0.985 ? 0.25 : 1;
-    const halo = c.createRadialGradient(mx, my - 0.3, 0, mx, my - 0.3, 5.5);
-    halo.addColorStop(0, `rgba(255, 240, 180, ${P.barGlow})`);
+    // (elle s'élargit et rayonne quand un cristal s'allume, ou quand on le touche)
+    const flash = Math.max(cheer, pose.hop || 0);
+    const reach = 5.5 * (1 + 0.6 * flash);
+    const halo = c.createRadialGradient(mx, my - 0.3, 0, mx, my - 0.3, reach);
+    halo.addColorStop(0, `rgba(255, 240, 180, ${Math.min(1, P.barGlow * (1 + flash))})`);
     halo.addColorStop(1, 'rgba(255, 220, 130, 0)');
     c.fillStyle = halo;
     c.beginPath();
-    c.arc(mx, my - 0.3, 5.5, 0, TAU);
+    c.arc(mx, my - 0.3, reach, 0, TAU);
     c.fill();
     c.fillStyle = '#ffeeb4';
     c.beginPath();
-    c.roundRect(mx - 2, my - 0.3 - 0.48 * blink, 4, 0.96 * blink, 0.48 * blink);
+    c.roundRect(mx - 2 - 0.4 * flash, my - 0.3 - 0.48 * blink, 4 + 0.8 * flash, 0.96 * blink, 0.48 * blink);
     c.fill();
     c.restore();
   }
@@ -1198,6 +1235,7 @@ export function createRenderer(canvas) {
       c.arc(p.x, p.y, 0.6 + a * 1.2, 0, TAU);
       c.fill();
     }
+    drawLifeGlow(c, g); // poussières dorées dans les faisceaux
     c.globalCompositeOperation = 'source-over';
 
     // Gouttes de fonte

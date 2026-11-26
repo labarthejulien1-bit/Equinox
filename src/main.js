@@ -6,6 +6,8 @@
 
 import { chapters, levels, LEVELS_PER_CHAPTER } from './levels/index.js';
 import { createGame, update } from './game/game.js';
+import { createLife, updateLife, tapLife } from './game/life.js';
+import { createAudio } from './engine/audio.js';
 import { createRenderer } from './game/render.js';
 import { loadDone, markDone } from './game/progress.js';
 import { attachInput } from './engine/input.js';
@@ -20,11 +22,13 @@ let index = Math.max(
   levels.findIndex((l) => !loadDone().includes(l.id)),
 );
 let game = createGame(levels[index]);
+createLife(game); // animaux, vent, petit peuple : tout ce qui vit autour de l'énigme
 
 /** Lance (ou relance) un niveau. */
 function play(i) {
   index = i;
   game = createGame(levels[i]);
+  createLife(game);
   game.started = true;
   renderer.resize(game.level);
 }
@@ -38,7 +42,20 @@ const ui = createUI({
   onNext: () => play(Math.min(index + 1, levels.length - 1)),
 });
 
-attachInput(canvas, renderer.view, () => game, ui.touch);
+// Un simple toucher (sans glisser) dérange l'animal ou le villageois visé.
+attachInput(canvas, renderer.view, () => game, ui.touch, (p) => tapLife(game, p));
+
+// Le son : il ne peut démarrer qu'après un premier geste du joueur.
+const audio = createAudio();
+// (sur un téléphone, c'est le doigt qui se relève qui compte comme un geste)
+for (const type of ['pointerdown', 'pointerup', 'click']) window.addEventListener(type, () => audio.unlock());
+const soundButton = document.getElementById('sound');
+const showSound = () => soundButton.classList.toggle('off', audio.muted);
+soundButton.addEventListener('click', () => {
+  audio.setMuted(!audio.muted);
+  showSound();
+});
+showSound();
 
 const resize = () => renderer.resize(game.level);
 window.addEventListener('resize', resize);
@@ -50,8 +67,11 @@ function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); // jamais plus de 50 ms d'un coup
   last = now;
   update(game, dt);
+  updateLife(game, dt);
   if (game.events.includes('temple-lit')) markDone(game.level.id);
+  for (const e of game.events) audio.event(e);
   game.events.length = 0;
+  audio.update(game, dt);
   renderer.render(game);
   ui.update(game, index < levels.length - 1);
   requestAnimationFrame(frame);
@@ -66,6 +86,7 @@ window.__equinox = {
     return game;
   },
   play,
+  audio,
 };
 
 // Mode hors-ligne (PWA) : seulement sur le site publié, pas en développement

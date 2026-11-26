@@ -37,6 +37,7 @@ export default {
   id: 8,
   number: '8',
   title: 'La veillée',
+  nightWatch: true, // ce soir, le village ne rentre pas : il veille près du feu
   size: { w: 360, h: 720 },
 
   // max dépasse 180° : le soleil peut descendre derrière la montagne de gauche.

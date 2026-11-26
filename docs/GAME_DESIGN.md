@@ -602,6 +602,61 @@ Règles à ajouter au jeu si on s'en sert : l'eau calme qui reflète la lumière
 et les vagues qui brisent le reflet, la marée qui fait monter et descendre
 l'eau (à décider : ce qui la commande).
 
+## 5 quater. La vie du monde ✅
+
+Le monde paraît vivant quand il **répond à la lumière et à l'ombre**, qui
+sont justement ce que le joueur manipule. Seize idées retenues, plus le son.
+Règle d'or : tout cela reste du décor. Rien ne change l'énigme, rien ne
+bloque la lumière, rien n'est nécessaire pour gagner.
+
+État : ✅ dans le jeu depuis la v0.6, réglé et essayé au **niveau 1**. Les
+animaux des autres niveaux héritent des mêmes règles, mais leurs places
+(chemin du bouquetin, pente du lièvre, perchoir, second terrier, fleurs,
+brume) restent à poser niveau par niveau.
+
+**A. Les animaux réagissent à la lumière et à l'ombre**
+
+| # | Idée | Règle dans le jeu |
+| --- | --- | --- |
+| 1 | Se chauffer au soleil | le bouquetin cherche un endroit ensoleillé de son chemin, s'y couche et rumine ; à l'ombre il se lève et s'ébroue. Les marmottes sortent quand le soleil chauffe leur terrier |
+| 2 | La sentinelle | une marmotte se dresse et siffle quand une ombre arrive (nuage, rapace) ou qu'un reflet la touche ; l'autre plonge |
+| 3 | Le lièvre et le faisceau | touché par un reflet, il s'enfuit en trois bonds, guette, puis revient brouter |
+| 4 | Le rapace et son ombre | il plane d'autant plus haut que le soleil est haut ; son ombre glisse sur le relief ; quand le soleil passe derrière la montagne, il se pose |
+| 5 | La nuit | les animaux dorment ; une chouette vient se poser et hulule ; deux yeux brillent dans une grotte |
+| 6 | Les plantes | les fleurs s'ouvrent à la lumière et se referment à l'ombre ; le buisson plie sous le vent |
+
+**B. Le monde respire**
+
+| # | Idée | Règle dans le jeu |
+| --- | --- | --- |
+| 7 | Le vent en rafales | toutes les dix à quinze secondes, une rafale traverse l'écran : la neige s'envole des crêtes, les fanions, les fleurs et la fumée se couchent |
+| 8 | Les particules | poussières dorées dans les faisceaux, gouttes sous la glace qui fond, embruns au pied des cascades, brume du matin dans les creux |
+| 9 | L'eau qui scintille | éclats de soleil sur l'eau éclairée ; ronds dans l'eau et poisson qui saute dans les lacs |
+| 10 | Le ciel | longs nuages lointains, étoile filante la nuit, vol d'oiseaux en V |
+
+**C. Le petit peuple vit**
+
+| # | Idée | Règle dans le jeu |
+| --- | --- | --- |
+| 11 | Des gestes | à l'ombre ils se serrent près du feu de leur hutte et grelottent ; au soleil ils reviennent à leur place et s'étirent ; ils suivent des yeux le reflet qu'on tourne ; leur barre de lumière rayonne quand un cristal s'allume |
+| 12 | Le jour et la nuit du village | la nuit ils rentrent dans leur hutte, dont la porte éclaire plus fort ; ils sortent un à un au lever du soleil (sauf au niveau 8, où le village veille) |
+| 13 | Les traces | villageois, porteurs et animaux laissent des empreintes dans la neige, qui s'effacent en une vingtaine de secondes |
+
+**D. Des petites scènes**
+
+| # | Idée | Règle dans le jeu |
+| --- | --- | --- |
+| 14 | Des trajets | le bouquetin change de vire et saute d'un rocher à l'autre ; une marmotte court jusqu'à un second terrier ; le lièvre traverse parfois sa pente |
+| 15 | Le toucher | un simple toucher dérange l'animal ou le villageois visé : sifflet, bonds, cri, tintement |
+| 16 | Le monde revient à la vie | quand le sanctuaire s'allume : les animaux sortent et s'approchent, des fleurs poussent le long de l'eau, les villageois dansent, un vol d'oiseaux passe |
+
+**Le son.** Tout est fabriqué par le navigateur, sans aucun fichier : un
+accord de fond qui s'éclaire avec le jour puis avec le dégel, le vent et ses
+rafales, l'eau qui coule, la glace qui craque, la porte de pierre qui gronde,
+les tintements des miroirs et des cristaux, l'arpège du sanctuaire, et la
+voix de chaque animal (sifflet, hululement, cri du rapace). Un bouton ♪ le
+coupe. Tout ce qui tinte est accordé sur une même gamme de cinq notes.
+
 ## 6. Système d'éléments
 
 Le principe : chaque élément ne connaît que ce qu'il **reçoit**.
@@ -1196,12 +1251,16 @@ dans la glace.
 6. ✅ **v0.5** — le chapitre I est complet : niveaux 6 à 10, à plusieurs
    faisceaux (sanctuaires à deux ou trois cristaux, conduit, corniches de
    neige, nuit et cristaux-mémoire, miroirs jumelés).
-7. **À venir, dans un ordre à décider** :
+7. ✅ **v0.6** — la vie du monde (§ 5 quater) et le son, réglés au niveau 1 :
+   animaux qui réagissent à la lumière, vent, village qui dort et se
+   réveille, empreintes, fleurs du dégel.
+8. **À venir, dans un ordre à décider** :
+   - poser la vie du monde dans les niveaux 2 à 10 (chemins, perchoirs,
+     terriers, fleurs, brume) ;
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;
    - premières machines et premiers éléments d'énigme, un par niveau ;
    - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
-   - sons (nappes, tintement du cristal, eau) ;
    - énoncé des dix niveaux de chaque chapitre, en commençant par le I ;
    - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.

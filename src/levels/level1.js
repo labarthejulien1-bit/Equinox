@@ -167,15 +167,62 @@ export default {
     { x: 320, y: 412, s: 1.05, dir: -1 },
     { x: 176, y: 651.5, s: 0.95, dir: 1 },
   ],
-  // Les décors de la haute montagne (voir src/game/decor.js).
+  // Les décors de la haute montagne (voir src/game/decor.js). Les animaux
+  // vivent leur vie (voir src/game/life.js) sans rien changer à l'énigme.
   decor: [
-    { type: 'raptor', layer: 'sky', x: 236, y: 138, r: 34, s: 0.6 },
-    { type: 'ibex', x: 120, y: 273, s: 0.8, dir: -1 },
+    // Le rapace plane le jour ; la nuit il dort sur le cairn du sommet.
+    { type: 'raptor', layer: 'sky', x: 236, y: 138, r: 34, s: 0.6, perch: [30, 140.5] },
+    // Le bouquetin suit sa crête, de vire en vire, à la recherche du soleil.
+    {
+      type: 'ibex',
+      x: 101,
+      y: 264.3,
+      s: 0.8,
+      dir: -1,
+      path: [
+        [43, 174.7],
+        [50, 188, 'rest'],
+        [70, 212, 'rest'],
+        [83, 237, 'hop'],
+        [96, 262],
+        [101, 264.3, 'rest'],
+      ],
+    },
     { type: 'cairn', x: 30, y: 151.5, s: 0.5 },
-    { type: 'marmots', x: 117, y: 647, s: 0.5 },
-    { type: 'hare', x: 139, y: 650, s: 0.5 },
+    // Les marmottes de la vallée : elles ne sortent que si le soleil y descend.
+    { type: 'marmots', x: 117, y: 647, s: 0.5, to: [141, 650] },
+    // Le lièvre broute sur l'épaule de la montagne, là où passent les reflets.
+    {
+      type: 'hare',
+      x: 122,
+      y: 273.8,
+      s: 0.5,
+      range: [
+        [107, 267],
+        [137, 280.6],
+      ],
+    },
     { type: 'bush', x: 226, y: 412, s: 0.55 },
+    { type: 'flowers', x: 234, y: 410.6, s: 0.9, n: 3 },
+    { type: 'flowers', x: 131, y: 648.6, s: 0.9, n: 3 },
+    { type: 'flowers', x: 352, y: 407.2, s: 0.9, n: 3 },
     { type: 'flags', x: 281, y: 394, x1: 301, y1: 396.5, sag: 5 },
+    // La nuit seulement : une chouette sur la hutte, deux yeux dans la grotte.
+    { type: 'owl', x: 303, y: 400.3, s: 0.55 },
+    { type: 'eyes', x: 256, y: 600, s: 0.8 },
+  ],
+  // Brume du petit matin, au fond de la vallée.
+  mists: [{ x0: 114, x1: 216, y: 648 }],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [
+      [116, 647],
+      [148, 651],
+    ],
+    [
+      [221, 412],
+      [258, 409],
+    ],
   ],
 
   // Lignes gravées qui s'illuminent du temple jusqu'au village à la victoire.

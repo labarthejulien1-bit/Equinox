@@ -77,7 +77,18 @@ body {
   right: 10px;
 }
 
+#sound {
+  right: 102px;
+}
+
+/* Son coupé : la note est barrée */
+#sound.off {
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: line-through;
+}
+
 #restart,
+#sound,
 #open-levels {
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + 6px);

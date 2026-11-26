@@ -6,10 +6,12 @@ temples d'une civilisation solaire oubliée sous la glace.
 
 ![Aperçu du niveau 1](docs/images/apercu.jpg)
 
-**État actuel : v0.5** — le jeu comptera six chapitres de dix niveaux. Le
+**État actuel : v0.6** — le jeu comptera six chapitres de dix niveaux. Le
 premier chapitre, « La source », est complet : dix niveaux jouables de bout
 en bout. À partir du niveau 6, le sanctuaire a plusieurs cristaux, à éclairer
-en même temps avec plusieurs miroirs.
+en même temps avec plusieurs miroirs. Le monde vit (animaux qui réagissent à
+la lumière, vent, village qui dort et se réveille) et il a du son ; tout cela
+est réglé au niveau 1 pour l'instant.
 
 | | Niveau | Ce qu'on y apprend |
 | --- | --- | --- |
@@ -89,13 +91,16 @@ src/
   style.css             mise en page, écran titre, carte souvenir
   engine/               briques réutilisables d'un niveau à l'autre
     light.js            ★ rayons, zones éclairées, reflets des miroirs
-    input.js            gestes tactiles (soleil, nuage, miroirs, bulles)
+    input.js            gestes tactiles (soleil, nuage, miroirs, bulles, simple toucher)
+    audio.js            le son, fabriqué par le navigateur (aucun fichier)
     vec.js              petites fonctions mathématiques
   game/
     game.js             ★ règles : la glace fond, l'eau gèle, la porte s'ouvre…
     render.js           ★ dessin : palette d'ombre + palette de lumière
     palette.js          toutes les couleurs (ère glaciaire → dégel)
-    decor.js            petits décors : animaux, cairns, buissons, fanions
+    decor.js            dessin des petits décors : animaux, cairns, buissons, fleurs
+    life.js             la vie du monde : ce que font les animaux, le vent, le village
+    lifeDraw.js         dessin du reste de la vie : empreintes, neige soufflée, poussières…
     progress.js         niveaux terminés, gardés sur l'appareil
     sliders.js          bulles du bas de l'écran (soleil et nuage au pouce)
   levels/
@@ -131,7 +136,8 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `eyes` | conduit des anciens : un œil d'entrée, un œil de sortie | l'œil d'entrée éclairé allume l'œil de sortie, qui éclaire les miroirs proches |
 | `memories` | cristaux-mémoire | se chargent à la lumière, puis éclairent les miroirs proches dans le noir |
 | `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
-| `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme |
+| `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fleurs, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme, mais les animaux réagissent à la lumière (voir `life.js`) |
+| `mists`, `blooms` | brume du matin dans un creux ; lignes où les fleurs poussent à la victoire | décor seulement |
 
 ## Comment marche la lumière
 

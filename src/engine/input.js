@@ -7,6 +7,7 @@
 //   - un miroir sur rail suit le doigt le long de son rail ;
 //   - en bas de l'écran, deux bulles permettent de déplacer le soleil et le
 //     nuage au pouce, sans lever la main (voir game/sliders.js).
+// Un simple toucher, sans glisser, sert à déranger un animal (voir life.js).
 
 import { clamp, rad, dist } from './vec.js';
 import { sunPosition, settleMirror, turnMirror } from '../game/game.js';
@@ -15,9 +16,12 @@ import { sliderBubbles, moveSlider } from '../game/sliders.js';
 /**
  * @param onTouch appelée à chaque appui, avec la position du doigt dans la
  *                page (sert à l'interface, par exemple pour effacer l'indice)
+ * @param onTap   appelée après un simple toucher (appui bref, sans glisser),
+ *                avec sa position en unités monde
  */
-export function attachInput(canvas, view, getGame, onTouch = () => {}) {
+export function attachInput(canvas, view, getGame, onTouch = () => {}, onTap = () => {}) {
   let drag = null;
+  let press = null; // le dernier appui, pour reconnaître un simple toucher
 
   // Position du doigt en pixels, par rapport au coin du canvas.
   const toScreen = (e) => {
@@ -47,6 +51,7 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
     const g = getGame();
     if (!g.started || drag) return;
     onTouch(e.clientX, e.clientY);
+    press = { id: e.pointerId, x: e.clientX, y: e.clientY, time: performance.now() };
     const L = g.level;
 
     // 1. Les bulles du bas de l'écran passent avant tout le reste.
@@ -134,6 +139,12 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
   });
 
   const end = (e) => {
+    // Appui bref et sur place : c'est un toucher, pas un glisser.
+    if (press && e.pointerId === press.id) {
+      const still = Math.hypot(e.clientX - press.x, e.clientY - press.y) < 10;
+      if (e.type === 'pointerup' && still && performance.now() - press.time < 350) onTap(toWorld(e));
+      press = null;
+    }
     if (!drag || e.pointerId !== drag.id) return;
     const g = getGame();
     if (g === drag.game && drag.type === 'mirror') settleMirror(g, drag.mirror);

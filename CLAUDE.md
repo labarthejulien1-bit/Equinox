@@ -67,6 +67,27 @@ palette d'ombre, puis en palette de lumière dans les zones éclairées.
   du peuple, idées de niveaux. À consulter avant d'inventer du contenu.
 - `README.md` — installation, publication PWA, étape Capacitor.
 
+## La vie du monde et le son
+
+`src/game/life.js` fait vivre ce qui entoure l'énigme : animaux, vent,
+villageois, empreintes, fleurs. Il ne fait que **regarder** le jeu (où tombe
+la lumière, ce que fait le joueur) et ne doit jamais le modifier : rien de ce
+qui vit ne bloque la lumière ni ne compte pour gagner. Il est appelé par
+`main.js` après `update()`, pas par `game.js` : `npm run check` ne le fait
+donc pas tourner. Comme `game.js`, il ne touche pas au DOM.
+
+- Ce que fait un animal se décide dans `life.js` (une fonction `update…` par
+  espèce) ; comment il se dessine, dans `decor.js`, qui reçoit son état `k`.
+- Le reste se dessine dans `lifeDraw.js`.
+- Ses réglages sont dans le décor du niveau (`path`, `range`, `perch`, `to`…),
+  listés en tête de `decor.js`. Le niveau 1 sert de modèle.
+- Le son est dans `src/engine/audio.js`, sans fichier audio : les nappes
+  suivent l'état du monde dans `update()`, les sons brefs répondent aux
+  événements de `g.events` dans `event()`. Pour un son nouveau : pousser un
+  nom dans `g.events`, puis l'ajouter à `SOUNDS`.
+- Le son ne peut pas être vérifié à l'oreille dans une session cloud : le
+  dire au propriétaire, et vérifier au moins le volume (`__equinox.audio.level()`).
+
 ## Ajouter un décor
 
 Les petits décors (animaux, cairns, buissons…) vivent dans
