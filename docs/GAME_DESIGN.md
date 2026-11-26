@@ -945,16 +945,84 @@ qui l'attend n'est jamais atteint par le soleil direct.
    qu'il est dessus).
 3. Écarter le nuage : miroir du village → miroir du socle → temple.
 
-### Pistes pour la suite du monde I
+### Chapitre I — La source : les dix niveaux ✅
 
-| # | Titre | Nouveauté | Idée |
+Les niveaux 1 à 4 existent (voir ci-dessus). Les niveaux 5 à 10 sont écrits,
+pas encore construits. Chaque niveau n'apporte qu'une nouveauté et réutilise
+celles d'avant.
+
+| # | Titre | Ce qui est nouveau | Palette |
 | --- | --- | --- | --- |
-| 5 | La pluie | nuage + ombre → pluie | Faire grossir le nuage dans l'ombre d'un pic, le pousser au-dessus d'un bassin à sec qui alimente une roue. |
-| 6 | Le lac | reflet de l'eau | Une eau calme est un miroir horizontal : remplir le lac à la bonne hauteur pour renvoyer le soleil sous une arche. |
-| 7 | La graine | lumière → végétation | Faire pousser une liane jusqu'à un miroir trop haut ; trop d'ombre et elle se referme. |
-| 8 | Deux temples | deux cristaux | Un seul faisceau, deux temples : il faut un cristal-relais qui garde la lumière quelques secondes. |
-| 9 | Le veilleur | lanterne portée | De nuit (soleil couché), guider la lumière du premier temple rallumé vers le second. |
-| 10 | Le phare | synthèse | Temple au sommet, toutes les mécaniques du monde I ; l'allumer fait fondre l'horizon. |
+| 1 | Le glacier suspendu ✅ | le miroir, la glace qui fond | Bleu glacier |
+| 2 | Le rideau d'eau ✅ | l'ombre gèle l'eau | Bleu glacier |
+| 3 | La digue de glace ✅ | l'ombre du relief, le miroir sur radeau | Bleu glacier |
+| 4 | Le pont de givre ✅ | le porteur de miroir | Bleu glacier |
+| 5 | L'aiguille | le miroir sur rail | Altitude |
+| 6 | L'œil de pierre | le conduit | Altitude |
+| 7 | La corniche | la neige qui tombe | Minéral |
+| 8 | La veillée | la nuit, le cristal-mémoire | Aurore |
+| 9 | Les jumeaux | les miroirs jumelés | Minéral |
+| 10 | Le grand glacier | le temple à deux cristaux | Bleu glacier |
+
+**5 · L'aiguille.** Présents : le soleil, un miroir sur rail, une aiguille
+rocheuse, le temple sous un surplomb ; pas de nuage. Le miroir ne tourne
+pas : la hauteur du soleil règle la direction du reflet, la place sur le rail
+règle son point de départ, et l'ombre de l'aiguille balaie le rail. Solution :
+la paire soleil / position où le miroir reste au soleil et où le reflet passe
+sous le surplomb. Impossible autrement : le soleil direct n'entre jamais sous
+le surplomb.
+
+**6 · L'œil de pierre.** Présents : le soleil, le nuage, le miroir du
+village, une source et sa cascade, un conduit (un œil au sommet, son jumeau
+près du village), le temple. La cascade brise le faisceau, comme au niveau 2 ;
+mais ici l'ombre du nuage qui gèle la source couvre aussi le miroir.
+Solution : placer le soleil pour qu'il frappe l'œil du sommet ; l'œil jumeau
+éclaire le miroir sous le nuage, et l'on peut viser le temple. Impossible
+autrement : le nuage est trop large pour ombrer la source sans ombrer le
+miroir.
+
+**7 · La corniche.** Présents : le soleil, le nuage, le miroir du village, un
+porteur, une crevasse, deux corniches de neige, un socle, le temple. Une
+corniche chauffée s'effondre : celle du bas comblerait la crevasse, celle du
+haut barrerait le chemin. Solution : garder la corniche du haut à l'ombre du
+nuage, viser celle du bas avec le miroir ; le porteur traverse et pose son
+miroir, qui relaie la lumière vers le temple. Impossible autrement : la
+corniche du bas est sur une face que le soleil n'atteint jamais.
+
+**8 · La veillée.** Présents : le soleil (qui peut se coucher), le miroir du
+village, un torrent, un porteur, un cristal-mémoire et un socle sur l'autre
+rive, le temple, un feu de camp. Sans nuage, seule la nuit peut geler le
+torrent ; mais la nuit, il n'y a plus de lumière à renvoyer. Solution : de
+jour, charger le cristal-mémoire avec le miroir ; coucher le soleil, le
+torrent gèle, le porteur traverse et pose son miroir près du cristal qui
+brille encore ; viser le temple avec cette lueur. Sans pression : si le
+cristal s'éteint, on refait le jour pour le recharger.
+
+**9 · Les jumeaux.** Présents : le soleil, deux miroirs reliés de part et
+d'autre d'une crevasse, un pont de corde, un sérac devant le temple. Tourner
+un miroir fait tourner l'autre à l'envers : pour une position du soleil, un
+seul réglage envoie la lumière du premier au second, et l'angle du second est
+alors imposé. Solution : la position du soleil où le second miroir touche le
+sérac, pour le faire fondre, puis celle où il touche le temple. Impossible
+autrement : le premier miroir ne voit pas le temple.
+
+**10 · Le grand glacier.** Présents : le soleil, le nuage, le miroir du
+village, un miroir sur rail, un conduit, une source et sa cascade, le temple à
+deux cristaux au pied du grand glacier. Il faut éclairer les deux cristaux en
+même temps : l'un derrière un œil de pierre masqué par la cascade, l'autre
+sous un surplomb. Solution : geler la source avec le nuage, viser l'œil avec
+le miroir du village, puis régler le soleil et le rail pour le second cristal
+sans que l'ombre du nuage tombe sur un miroir. Ce que ça déclenche : le grand
+glacier fond, son eau descend vers les plaines. C'est la source du titre, et
+le lien avec le chapitre II.
+
+À construire pour ce chapitre : le miroir sur rail, le conduit, le
+cristal-mémoire et la nuit, les miroirs jumelés, le temple à deux cristaux,
+et une règle venue du décor, la corniche de neige qui s'effondre quand on la
+chauffe.
+
+En cours : le plan de chaque niveau (relief, places des éléments, décors),
+choisi niveau par niveau parmi plusieurs propositions.
 
 ### Gabarit d'un niveau
 
