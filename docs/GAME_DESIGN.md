@@ -1033,9 +1033,14 @@ choisi niveau par niveau parmi plusieurs propositions.
 | 5 · L'aiguille | « La vire » : le rail des anciens suit une corniche du versant, au pied de l'aiguille ; le temple est en face, plus bas, sous un surplomb ; le reflet descend en travers du vallon. Palette Altitude. À régler finement : le surplomb doit arrêter le soleil bas sans arrêter le reflet |
 | 6 · L'œil de pierre | « Les deux bornes » : le village est dans un pré au pied de la chute, presque sous le lac de la source ; la grotte du temple est derrière la chute. Les deux yeux du conduit sont des bornes anciennes : l'une sur la crête de gauche, l'autre dans le pré. Le nuage doit être large |
 | 7 · La corniche | « La rimaye, inversée » : le village est à droite sur une moraine ; un glacier mène au pied d'un contrefort rocheux, à gauche, où s'ouvre la rimaye. La corniche du haut coiffe le rebord du rocher, celle du bas est à l'abri dessous, comme le socle. **Changement par rapport à l'énoncé** : le cristal du temple est au fond d'une cheminée de roche, au-dessus du socle, et non dans une grotte en face. Nuage bas et petit. Palette Minéral |
+| 8 · La veillée | « La veillée au bord du lac » : le torrent de l'énoncé devient un petit lac, que le porteur traverse sur la glace. Le village veille autour du feu sur la rive gauche, sous la grotte du temple ; le cristal-mémoire et le socle sont sur la rive droite, sous une avancée de roche. Le soleil peut descendre sous l'horizon. L'aurore est un décor. Palette Aurore |
 
 ### Gabarit d'un niveau
 
+- **Toute la hauteur de l'écran.** Le jeu est en portrait : l'énigme doit se
+  jouer de haut en bas, avec des éléments à des hauteurs bien différentes,
+  et non dans une bande plate en bas de l'écran. Seule la zone des bulles,
+  tout en bas, reste libre.
 - **Un relief naturel.** Le plan d'un niveau doit ressembler à un vrai
   paysage : des pentes, des épaulements, des crêtes, des vallées en V ou en
   auge, des grottes aux contours irréguliers. Pas de murs verticaux tirés au
