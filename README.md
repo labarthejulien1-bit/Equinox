@@ -98,6 +98,7 @@ src/
     game.js             ★ règles : la glace fond, l'eau gèle, la porte s'ouvre…
     render.js           ★ dessin : palette d'ombre + palette de lumière
     palette.js          toutes les couleurs (ère glaciaire → dégel)
+    machine.js          dessin de la machine à eau : roue, chaîne, contrepoids, porte
     decor.js            dessin des petits décors : animaux, cairns, buissons, fleurs
     life.js             la vie du monde : ce que font les animaux, le vent, le village
     lifeDraw.js         dessin du reste de la vie : empreintes, neige soufflée, poussières…
@@ -130,7 +131,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `frosts` | eaux calmes : source, digue, pont | gèlent à l'ombre, dégèlent à la lumière |
 | `streams` | cours d'eau (tronçons qui coulent ou qui tombent) | coulent si leur source est ouverte ; une cascade peut arrêter la lumière |
 | `basins` | bassins | se remplissent quand leur digue est gelée |
-| `wheels`, `doors` | roues à eau, portes de pierre | l'eau fait tourner la roue, qui ouvre la porte |
+| `wheels`, `doors` | roues à eau, portes de pierre | l'eau fait tourner la roue dans le sens du courant ; par une chaîne sans fin, un contrepoids monte et la porte descend |
 | `walkers` | porteurs | avancent tant que le chemin les porte (pont gelé, crevasse comblée : `gates`), puis posent leur miroir |
 | `temple` | le temple et son cristal, ou ses cristaux (`crystals`) | s'allume quand tous ses cristaux reçoivent de la lumière en même temps |
 | `eyes` | conduit des anciens : un œil d'entrée, un œil de sortie | l'œil d'entrée éclairé allume l'œil de sortie, qui éclaire les miroirs proches |

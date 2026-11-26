@@ -23,6 +23,7 @@ import {
   lampHalos,
 } from './game.js';
 import { drawDecor } from './decor.js';
+import { drawDoor, drawChain, drawWaterWheel, drawDrain, drawMachineGlow } from './machine.js';
 import { windAt } from './life.js';
 import { drawLifeSky, drawLifeFar, drawLifeGround, drawLifeFront, drawLifeGlow } from './lifeDraw.js';
 import { sliderBubbles } from './sliders.js';
@@ -304,6 +305,8 @@ export function createRenderer(canvas) {
       line(c, bed.map(P2));
       c.stroke();
     }
+    // (l'arche par où l'eau s'en va, puis l'eau elle-même)
+    for (const s of g.streams) if (s.def.drain) drawDrain(c, P, s.def.drain);
     for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit);
 
     // Empreintes, fleurs du dégel, éclats sur l'eau (voir lifeDraw.js)
@@ -366,20 +369,8 @@ export function createRenderer(canvas) {
     // Digues de glace
     for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.01) drawDam(c, P, f);
 
-    // Portes de pierre
-    for (const d of g.doors) {
-      if (d.open >= 0.99) continue;
-      const pts = doorPolygon(d);
-      poly(c, pts);
-      c.fillStyle = P.stone;
-      c.fill();
-      c.fillStyle = P.stoneDark;
-      for (let y = pts[0].y + 9; y < d.def.bottom - 4; y += 14) {
-        c.beginPath();
-        c.arc(d.def.x, y, 1.5, 0, TAU);
-        c.fill();
-      }
-    }
+    // Portes de pierre : elles glissent le long de la falaise en s'ouvrant
+    for (const d of g.doors) drawDoor(c, P, d);
 
     // Radeaux
     for (const m of g.mirrors) if (m.raft) drawRaft(c, P, m, g);
@@ -622,54 +613,14 @@ export function createRenderer(canvas) {
     c.globalAlpha = 1;
   }
 
+  /** Une roue à eau, et la chaîne qui la relie à sa porte (voir machine.js). */
   function drawWheel(c, P, wheel, g) {
     const w = wheel.def;
     const door = w.door && g.doors.find((d) => d.def.id === w.door);
-    // Chaîne qui relie la roue à la porte
-    if (door) {
-      const d = door.def;
-      c.strokeStyle = P.bronze;
-      c.lineWidth = 0.9;
-      c.setLineDash([2, 1.6]);
-      line(c, [
-        { x: w.x, y: w.y },
-        { x: d.x - 4.5, y: w.y - 26 },
-        { x: d.x - 4.5, y: d.bottom },
-      ]);
-      c.stroke();
-      c.setLineDash([]);
-    }
-    // Roue à aubes
-    c.save();
-    c.translate(w.x, w.y);
-    c.rotate(wheel.angle);
-    c.strokeStyle = P.wood;
-    c.lineCap = 'round';
-    c.lineWidth = 2;
-    c.beginPath();
-    c.arc(0, 0, w.r - 2, 0, TAU);
-    c.stroke();
-    c.lineWidth = 1.4;
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * TAU;
-      c.beginPath();
-      c.moveTo(0, 0);
-      c.lineTo(Math.cos(a) * w.r, Math.sin(a) * w.r);
-      c.stroke();
-      c.save();
-      c.rotate(a);
-      c.fillStyle = P.wood;
-      c.fillRect(w.r - 3.5, -2.6, 4, 5.2);
-      c.restore();
-    }
-    c.fillStyle = P.bronze;
-    c.beginPath();
-    c.arc(0, 0, 2.6, 0, TAU);
-    c.fill();
-    c.restore();
+    const stream = g.streams.find((k) => k.def.id === w.stream);
+    if (door) drawChain(c, P, wheel, door);
+    drawWaterWheel(c, P, wheel, g, !!stream && stream.on && stream.head >= 1);
   }
-
-  // ── Objets ──
 
   function drawMount(c, P, m) {
     const mt = m.mount || { type: 'none' };
@@ -1237,6 +1188,12 @@ export function createRenderer(canvas) {
     }
     drawLifeGlow(c, g); // poussières dorées dans les faisceaux
     c.globalCompositeOperation = 'source-over';
+
+    // La machine à eau au travail : des éclats dorés montent vers la porte
+    for (const w of g.wheels) {
+      const door = w.def.door && g.doors.find((d) => d.def.id === w.def.door);
+      if (door) drawMachineGlow(c, w, door, g);
+    }
 
     // Gouttes de fonte
     c.fillStyle = '#c9efff';

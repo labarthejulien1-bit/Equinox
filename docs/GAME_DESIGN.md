@@ -972,6 +972,15 @@ d'une grotte fermée par une porte.
 Le soleil direct ne peut atteindre ni le glacier ni le temple (c'est vérifié
 par `npm run check`) : les deux miroirs sont nécessaires.
 
+La machine de la porte ✅ (choisie parmi quatre maquettes : treuil, rouages,
+ligne de lumière, contrepoids) : la roue tourne dans le sens du courant et
+entraîne une **chaîne sans fin** qui monte jusqu'au-dessus de la porte. Un
+contrepoids de pierre est accroché au brin qui monte, la porte au brin qui
+descend : la pierre s'élève, la porte glisse le long de la falaise. Des
+éclats dorés remontent la chaîne pendant qu'elle travaille, pour que tout se
+lise même dans l'ombre. L'eau quitte la vallée par une arche au pied de la
+falaise.
+
 ### Niveau 2 — Le rideau d'eau ✅
 
 Le torrent libéré au niveau 1 tombe devant l'entrée du temple : la cascade

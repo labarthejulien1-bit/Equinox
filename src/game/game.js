@@ -41,6 +41,23 @@ const DAWN_COLOR_ZONE = 105;
 const byId = (list, id) => list.find((e) => e.def.id === id);
 const pt = ([x, y]) => ({ x, y });
 
+/**
+ * Sens dans lequel l'eau fait tourner une roue. Le courant pousse le BAS de
+ * la roue : s'il va vers la droite, la roue tourne à l'envers des aiguilles
+ * d'une montre (-1) ; s'il va vers la gauche, dans leur sens (+1).
+ */
+function wheelSpin(level, def) {
+  const stream = (level.streams || []).find((s) => s.id === def.stream);
+  for (const part of stream ? stream.parts : []) {
+    if (!part.run) continue;
+    const a = part.run[0];
+    const b = part.run[part.run.length - 1];
+    const under = def.x >= Math.min(a[0], b[0]) - 20 && def.x <= Math.max(a[0], b[0]) + 20 && Math.abs(def.y - a[1]) < 40;
+    if (under) return b[0] >= a[0] ? -1 : 1; // c'est ce tronçon qui passe sous la roue
+  }
+  return -1;
+}
+
 /** Crée l'état de départ d'un niveau. */
 export function createGame(level) {
   const L = level;
@@ -79,7 +96,8 @@ export function createGame(level) {
       tail: 0,
     })),
     basins: (L.basins || []).map((def) => ({ def, level: def.low })),
-    wheels: (L.wheels || []).map((def) => ({ def, angle: 0, speed: 0 })),
+    // (spin : le sens où l'eau la fait tourner, voir wheelSpin)
+    wheels: (L.wheels || []).map((def) => ({ def, angle: 0, speed: 0, spin: wheelSpin(L, def) })),
     doors: (L.doors || []).map((def) => ({ def, kind: 'door', open: 0 })),
     walkers: (L.walkers || []).map((def) => ({ def, geo: pathGeometry(def.path.map(pt)), d: 0, moving: false, done: false })),
     temple: { charge: 0, lit: false, glow: 0 },
@@ -557,7 +575,7 @@ export function update(g, dt) {
     const s = byId(g.streams, w.def.stream);
     const flowing = s.on && s.head >= 1;
     w.speed += ((flowing ? 2.4 : 0) - w.speed) * Math.min(1, dt * 2);
-    w.angle += w.speed * dt;
+    w.angle += w.speed * dt * w.spin;
     const door = w.def.door && byId(g.doors, w.def.door);
     if (door && flowing && door.open < 1) {
       door.open = Math.min(1, door.open + dt / 2.8);

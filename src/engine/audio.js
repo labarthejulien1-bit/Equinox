@@ -284,6 +284,8 @@ export function createAudio() {
     // La porte de pierre gronde tant qu'elle bouge.
     const doors = g.doors.reduce((sum, d) => sum + d.open, 0);
     set(beds.rumble.gain.gain, Math.abs(doors - seen.doors) > 1e-5 ? 0.5 : 0, 0.15);
+    // … et sa chaîne cliquette, maillon après maillon.
+    if (Math.floor(doors * 24) !== Math.floor(seen.doors * 24)) tone({ f0: 950, f1: 700, dur: 0.035, gain: 0.022, type: 'triangle', attack: 0.002 });
     seen.doors = doors;
 
     // L'accord de fond : sombre dans l'ombre, il s'éclaire avec le jour, puis avec le dégel.
