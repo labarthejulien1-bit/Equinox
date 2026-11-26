@@ -1030,6 +1030,7 @@ choisi niveau par niveau parmi plusieurs propositions.
 | 2 · Le rideau d'eau | « Le verrou » : un cirque glaciaire, le lac retenu par une barre rocheuse, la grotte du temple derrière la chute, le village en bas sur une moraine. À reconstruire dans le jeu |
 | 3 · La digue de glace | « La proue » : un lac de montagne large et peu profond, un éperon rocheux qui avance au-dessus du déversoir, le village sur l'éperon, la grotte du temple sur la rive gauche. À reconstruire dans le jeu |
 | 4 · Le pont de givre | « Le bloc perché » : un torrent de fond de vallée ; le socle attend à gauche sous un énorme bloc posé sur la pente, le village est sur la rive droite sous la grotte du temple. Le nuage est plus bas et plus petit, pour que son ombre ne couvre que le torrent. À reconstruire dans le jeu |
+| 5 · L'aiguille | « La vire » : le rail des anciens suit une corniche du versant, au pied de l'aiguille ; le temple est en face, plus bas, sous un surplomb ; le reflet descend en travers du vallon. Palette Altitude. À régler finement : le surplomb doit arrêter le soleil bas sans arrêter le reflet |
 
 ### Gabarit d'un niveau
 
