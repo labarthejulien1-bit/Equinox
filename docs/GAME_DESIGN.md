@@ -67,6 +67,40 @@ l'équinoxe. Le dernier temple ne s'allume que ce jour-là.
 Conséquence pour le jeu : ni la lumière ni l'ombre n'est « la bonne ». Chaque
 énigme demande de doser les deux, et le dernier monde les met à égalité.
 
+### Les six chapitres ✅
+
+Le jeu compte **60 niveaux** : six chapitres de dix niveaux, un chapitre par
+milieu. Chaque chapitre fait avancer l'histoire.
+
+| Chapitre | Titre | Milieu | Ce qu'on y apprend des anciens | Ce que le joueur apporte |
+| --- | --- | --- | --- | --- |
+| I | La source | Haute montagne, glaciers | ils guidaient la lumière | la lumière |
+| II | Les grandes ombres | Plaines gelées | ils mesuraient le soleil | la lumière |
+| III | Le peuple de la forêt | Forêt | ils en faisaient de la chaleur | la lumière |
+| IV | Miroir de la vie | Lacs, marais, côtes | ils la confiaient à l'eau | les deux |
+| V | La brûlure | Désert, pierre nue | ils ont connu l'excès inverse | l'ombre |
+| VI | L'Equinox | Hauts plateaux de ruines | ils nous attendaient | l'équilibre |
+
+Pourquoi cet ordre :
+
+- **On suit l'eau.** Le premier temple fait fondre le glacier ; cette eau
+  descend vers la toundra, la forêt, les lacs, puis la mer.
+- **Le monde se réchauffe en avançant** : les palettes passent du blanc-bleu
+  à la paille, au vert, au turquoise, puis à l'or.
+- **Le déséquilibre s'inverse** : trois chapitres où l'on apporte la lumière,
+  un chapitre d'eau où les deux comptent, le désert où l'on apporte l'ombre,
+  puis un dernier chapitre qui demande les deux à égalité.
+- **Les ruines sont pour la fin** : les hauts plateaux sont la ville des
+  anciens, là où l'on comprend que tout était prévu.
+
+Deux idées d'histoire proposées, pas encore validées :
+
+- **Un calendrier.** Le voyage commence au solstice d'hiver et se termine le
+  jour de l'équinoxe ; chaque chapitre rapproche de cette date.
+- **Le désert comme avertissement.** Les anciens y auraient trop appelé le
+  soleil, qui n'est jamais reparti. C'est pour cela qu'ils cherchaient
+  l'équilibre, et non la lumière à tout prix.
+
 ### Ce que rend chaque temple
 
 - un **souvenir** — un fragment de texte, à la manière d'une tradition orale ;
@@ -78,8 +112,8 @@ savaient faire, puis qu'ils ont vu venir l'hiver, enfin qu'ils attendaient
 quelqu'un.
 
 Le tableau ci-dessous donne cet arc en cinq temps. Il a été écrit quand le
-jeu était pensé comme un seul monde gelé ; il faudra le redistribuer sur les
-six milieux (voir § 8) quand la répartition des niveaux sera faite.
+jeu était pensé comme un seul monde gelé ; ses souvenirs restent à
+redistribuer sur les six chapitres ci-dessus.
 
 | Temps du récit | Ambiance d'origine | Ce qu'on y apprend des anciens | Souvenir |
 | --- | --- | --- | --- |
@@ -846,9 +880,9 @@ de lumière.
 
 Encore à décider :
 
-- **La répartition des niveaux.** Le jeu final comptera **60 niveaux** ✅ :
-  six chapitres, un par milieu, de dix niveaux chacun. Chaque chapitre fait
-  avancer l'histoire. L'ordre des chapitres et leurs noms restent à fixer.
+- **La répartition des niveaux** ✅ : 60 niveaux en six chapitres de dix, dans
+  l'ordre donné au § 3. Reste à écrire l'énoncé des dix niveaux de chaque
+  chapitre.
 - **Un signe par tribu** (proposé) : le signe tracé au-dessus de la barre de
   lumière changerait d'une tribu à l'autre (soleil levant, graduations, trait
   vertical…), comme si chacune n'avait gardé qu'un fragment du savoir ancien.
@@ -941,7 +975,8 @@ règles ; ils se passent tous dans la glace.
    de la progression, choix des niveaux, lever de soleil progressif, bulles
    pour jouer au pouce.
 3. ✅ **Conception** — histoire, sens du titre, direction des temples, dix
-   machines, design du petit peuple, six habitations, six milieux, 18
+   machines, design du petit peuple, six habitations, six milieux et six
+   chapitres, 18
    palettes, 139 décors (§ 5 ter), 19 éléments d'énigme (§ 6).
 4. **À venir, dans un ordre à décider** :
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
@@ -949,5 +984,5 @@ règles ; ils se passent tous dans la glace.
    - premières machines et premiers éléments d'énigme, un par niveau ;
    - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
    - sons (nappes, tintement du cristal, eau) ;
-   - ordre et noms des six chapitres, puis énoncé des dix niveaux de chacun ;
+   - énoncé des dix niveaux de chaque chapitre, en commençant par le I ;
    - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.
