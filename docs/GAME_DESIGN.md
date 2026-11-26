@@ -1027,6 +1027,7 @@ choisi niveau par niveau parmi plusieurs propositions.
 | Niveau | Plan retenu |
 | --- | --- |
 | 1 · Le glacier suspendu | le plan actuel, habillé avec le nouveau design (hutte enterrée, capes noires, temple à anneau, décors de la montagne) |
+| 2 · Le rideau d'eau | « Le verrou » : un cirque glaciaire, le lac retenu par une barre rocheuse, la grotte du temple derrière la chute, le village en bas sur une moraine. À reconstruire dans le jeu |
 
 ### Gabarit d'un niveau
 
