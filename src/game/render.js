@@ -11,7 +11,17 @@
 import { TAU, smooth } from '../engine/vec.js';
 import { mirrorGeometry } from '../engine/light.js';
 import { getPalettes, mix } from './palette.js';
-import { hutSize, doorPolygon, crystalPolygon, frostPolygon, streamWet, walkerPosition } from './game.js';
+import {
+  hutSize,
+  doorPolygon,
+  crystalPolygon,
+  memoryPolygon,
+  frostPolygon,
+  streamWet,
+  walkerPosition,
+  templeCrystals,
+  lampHalos,
+} from './game.js';
 import { drawDecor } from './decor.js';
 import { sliderBubbles } from './sliders.js';
 
@@ -119,6 +129,26 @@ export function createRenderer(canvas) {
       ctx.arc(p.x, p.y, p.r, 0, TAU);
       ctx.clip();
       poly(ctx, p.pts);
+      ctx.clip();
+      drawForeground(ctx, pal.lit, g, true);
+      ctx.restore();
+    }
+    // Les lampes (cristaux-mémoire, sorties de conduit) et les faisceaux
+    // qu'elles alimentent éclairent aussi, même en pleine nuit.
+    for (const p of lampHalos(light)) {
+      if (p.pts.length < 3 || p.r < 1) continue;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, TAU);
+      ctx.clip();
+      poly(ctx, p.pts);
+      ctx.clip();
+      drawForeground(ctx, pal.lit, g, true);
+      ctx.restore();
+    }
+    for (const pts of light.lampPolys) {
+      ctx.save();
+      poly(ctx, pts);
       ctx.clip();
       drawForeground(ctx, pal.lit, g, true);
       ctx.restore();
@@ -295,7 +325,7 @@ export function createRenderer(canvas) {
 
     // Miroirs prisonniers de la glace, puis les glaciers eux-mêmes
     for (const ice of g.ices) {
-      if (ice.gone) continue;
+      if (ice.gone || !ice.active) continue;
       for (const m of g.mirrors) {
         if (m.frozen !== ice.def.id) continue;
         const geo = mirrorGeometry(m);
@@ -310,6 +340,19 @@ export function createRenderer(canvas) {
       }
       drawIce(c, P, ice);
     }
+
+    // Neige tombée d'une corniche (elle comble une crevasse)
+    for (const fill of L.fills || []) {
+      const from = g.ices.find((i) => i.def.id === fill.after);
+      if (!from || !from.gone) continue;
+      poly(c, fill.points.map(P2));
+      c.fillStyle = P.snow;
+      c.fill();
+    }
+
+    // Yeux de pierre (conduits) et cristaux-mémoire
+    for (const e of g.eyes) drawEye(c, P, e);
+    for (const m of g.memories) drawMemory(c, P, m);
 
     // Digues de glace
     for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.01) drawDam(c, P, f);
@@ -363,7 +406,12 @@ export function createRenderer(canvas) {
     const T = g.level.temple;
     const x = T.x;
     const y = T.baseY;
-    const cr = T.crystal;
+    // Certains sanctuaires n'ont pas de porte solaire : leurs cristaux sont
+    // enchâssés dans la roche, chacun dans son anneau.
+    if (x === undefined) {
+      for (const cr of templeCrystals(g.level)) drawRing(c, P, cr);
+      return;
+    }
     // Un temple peut être plus petit (scale < 1) quand sa grotte est basse.
     const k = T.scale ?? 1;
     c.save();
@@ -401,7 +449,12 @@ export function createRenderer(canvas) {
     ]);
     c.fill();
     c.restore();
-    // Anneau du soleil autour du cristal
+    // Un anneau gradué autour de chaque cristal
+    for (const cr of templeCrystals(g.level)) drawRing(c, P, cr);
+  }
+
+  /** L'anneau du soleil autour d'un cristal, gradué comme un cadran. */
+  function drawRing(c, P, cr) {
     c.strokeStyle = P.stone;
     c.lineWidth = 2.4;
     c.beginPath();
@@ -669,6 +722,66 @@ export function createRenderer(canvas) {
     }
   }
 
+  /** Un conduit : une borne et son œil d'entrée, une trace gravée, un œil de sortie. */
+  function drawEye(c, P, e) {
+    const d = e.def;
+    // La borne qui porte l'œil d'entrée (si le niveau en veut une)
+    if (d.baseY !== undefined) {
+      c.fillStyle = P.stone;
+      poly(c, [
+        { x: d.x - 5.5, y: d.baseY + 1 },
+        { x: d.x - 4.6, y: d.y - 6 },
+        { x: d.x, y: d.y - 11 },
+        { x: d.x + 4.6, y: d.y - 6 },
+        { x: d.x + 5.5, y: d.baseY + 1 },
+      ]);
+      c.fill();
+    }
+    // … et celle de l'œil de sortie
+    if (d.out.baseY !== undefined) {
+      c.fillStyle = P.stone;
+      poly(c, [
+        { x: d.out.x - 5.5, y: d.out.baseY + 1 },
+        { x: d.out.x - 4.6, y: d.out.y - 6 },
+        { x: d.out.x, y: d.out.y - 11 },
+        { x: d.out.x + 4.6, y: d.out.y - 6 },
+        { x: d.out.x + 5.5, y: d.out.baseY + 1 },
+      ]);
+      c.fill();
+    }
+    for (const p of [d, d.out]) {
+      c.fillStyle = P.doorway;
+      c.beginPath();
+      c.arc(p.x, p.y, 4.4, 0, TAU);
+      c.fill();
+      c.strokeStyle = e.lit ? '#ffe08a' : P.bronze;
+      c.lineWidth = 1.2;
+      c.beginPath();
+      c.arc(p.x, p.y, 3.1, 0, TAU);
+      c.stroke();
+      c.fillStyle = e.lit ? '#fff6c8' : P.bronze;
+      c.beginPath();
+      c.arc(p.x, p.y, 1.2, 0, TAU);
+      c.fill();
+    }
+  }
+
+  /** Un cristal-mémoire : un gros cristal sur un petit socle. */
+  function drawMemory(c, P, m) {
+    const d = m.def;
+    const r = d.r || 8;
+    const base = d.baseY ?? d.y + r * 1.15 + 9;
+    c.fillStyle = P.stoneDark;
+    c.fillRect(d.x - 7, base - 3, 14, 4);
+    c.fillStyle = P.stone;
+    c.fillRect(d.x - 4.5, d.y + r * 1.15 - 1, 9, base - 2 - (d.y + r * 1.15 - 1));
+    c.strokeStyle = P.stone;
+    c.lineWidth = 1.6;
+    c.beginPath();
+    c.arc(d.x, d.y, r + 5, Math.PI * 0.15, Math.PI * 0.85, true);
+    c.stroke();
+  }
+
   function drawPedestal(c, P, p) {
     c.fillStyle = P.stoneDark;
     c.fillRect(p.x - 8, p.baseY - 4, 16, 5);
@@ -797,6 +910,13 @@ export function createRenderer(canvas) {
     const shr = pts.map((p) => ({ x: cx + (p.x - cx) * k, y: cy - 6 * m + (p.y - cy) * k }));
     c.globalAlpha = 0.94 - 0.6 * m;
     poly(c, shr);
+    // Une corniche ou un tas de neige (look: 'snow') : blanc, sans facettes
+    if (ice.def.look === 'snow') {
+      c.fillStyle = P.snow;
+      c.fill();
+      c.globalAlpha = 1;
+      return;
+    }
     c.fillStyle = P.ice;
     c.fill();
     // Facettes
@@ -955,7 +1075,8 @@ export function createRenderer(canvas) {
   function drawOverlay(c, g) {
     const L = g.level;
     const t = g.time;
-    const cr = L.temple.crystal;
+    const crystals = templeCrystals(L);
+    const cr = crystals[0];
 
     // Faisceaux : un voile doré par-dessus tout
     c.fillStyle = `rgba(255, 206, 110, ${0.3 * g.light.intensity})`;
@@ -963,7 +1084,50 @@ export function createRenderer(canvas) {
       poly(c, p);
       c.fill();
     }
+    // Ceux qui viennent d'une lampe se voient aussi la nuit
+    c.fillStyle = 'rgba(255, 214, 130, 0.34)';
+    for (const p of g.light.lampPolys) {
+      poly(c, p);
+      c.fill();
+    }
+
+    // Chaînes entre miroirs jumelés, et traces gravées des conduits
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    for (const m of g.mirrors) {
+      if (!m.chain) continue;
+      c.strokeStyle = 'rgba(255, 224, 138, 0.75)';
+      c.lineWidth = 1.2;
+      c.setLineDash([2.5, 2.5]);
+      line(c, m.chain.map(P2));
+      c.stroke();
+      c.setLineDash([]);
+    }
+    for (const e of g.eyes) {
+      if (!e.def.path) continue;
+      c.strokeStyle = e.lit ? 'rgba(255, 224, 138, 0.95)' : 'rgba(255, 224, 138, 0.22)';
+      c.lineWidth = e.lit ? 1.6 : 1;
+      line(c, e.def.path.map(P2));
+      c.stroke();
+    }
     c.globalCompositeOperation = 'lighter';
+
+    // Halo des yeux de pierre éclairés et des cristaux-mémoire chargés
+    const halo = (x, y, r, a) => {
+      const gl = c.createRadialGradient(x, y, 0, x, y, r);
+      gl.addColorStop(0, `rgba(255,240,180,${a})`);
+      gl.addColorStop(1, 'rgba(255,220,130,0)');
+      c.fillStyle = gl;
+      c.beginPath();
+      c.arc(x, y, r, 0, TAU);
+      c.fill();
+    };
+    for (const e of g.eyes) {
+      if (!e.lit) continue;
+      halo(e.def.x, e.def.y, 11, 0.6);
+      halo(e.def.out.x, e.def.out.y, 16 + Math.sin(t * 4) * 1.5, 0.7);
+    }
+    for (const m of g.memories) if (m.charge > 0.02) halo(m.def.x, m.def.y, 14 + 22 * m.charge + Math.sin(t * 3) * 1.5, 0.75 * m.charge);
 
     // Lueur du temple (découpée par les ombres de la grotte)
     if (g.temple.glow > 0 && g.light.points.length) {
@@ -1014,18 +1178,14 @@ export function createRenderer(canvas) {
       }
     }
 
-    // Halo du cristal qui se charge
+    // Halo des cristaux : chacun brille dès qu'il reçoit de la lumière, mais
+    // le sanctuaire ne se charge (ch) que s'ils la reçoivent tous ensemble.
     const ch = g.temple.lit ? 1 : g.temple.charge;
-    if (ch > 0) {
-      const r = 12 + 12 * ch + Math.sin(t * 5) * 1.2;
-      const gl = c.createRadialGradient(cr.x, cr.y, 0, cr.x, cr.y, r);
-      gl.addColorStop(0, `rgba(255,240,180,${0.6 * ch})`);
-      gl.addColorStop(1, 'rgba(255,220,130,0)');
-      c.fillStyle = gl;
-      c.beginPath();
-      c.arc(cr.x, cr.y, r, 0, TAU);
-      c.fill();
-    }
+    const glowOf = (i) => (g.temple.lit ? 1 : Math.max(ch, g.crystals[i].lit ? 0.45 : 0));
+    crystals.forEach((k, i) => {
+      const a = glowOf(i);
+      if (a > 0) halo(k.x, k.y, 12 + 12 * a + Math.sin(t * 5 + i) * 1.2, 0.6 * a);
+    });
 
     // Étincelles (dorées) et embruns (blancs)
     for (const p of g.particles) {
@@ -1049,20 +1209,24 @@ export function createRenderer(canvas) {
     }
     c.globalAlpha = 1;
 
-    // Cristal du temple
-    poly(c, crystalPolygon(L));
-    const cc = Math.round(ch * 100);
-    c.fillStyle = `color-mix(in srgb, #fff6c8 ${cc}%, #6079bd)`;
-    c.fill();
-    c.strokeStyle = `color-mix(in srgb, #ffffff ${cc}%, #8ea5e0)`;
-    c.lineWidth = 0.9;
-    c.stroke();
-    line(c, [
-      { x: cr.x, y: cr.y - cr.r * 1.15 },
-      { x: cr.x - 2, y: cr.y },
-      { x: cr.x, y: cr.y + cr.r * 1.15 },
-    ]);
-    c.stroke();
+    // Cristaux du sanctuaire, puis cristaux-mémoire
+    const gem = (pts, k, a) => {
+      poly(c, pts);
+      const cc = Math.round(a * 100);
+      c.fillStyle = `color-mix(in srgb, #fff6c8 ${cc}%, #6079bd)`;
+      c.fill();
+      c.strokeStyle = `color-mix(in srgb, #ffffff ${cc}%, #8ea5e0)`;
+      c.lineWidth = 0.9;
+      c.stroke();
+      line(c, [
+        { x: k.x, y: k.y - k.r * 1.15 },
+        { x: k.x - 2, y: k.y },
+        { x: k.x, y: k.y + k.r * 1.15 },
+      ]);
+      c.stroke();
+    };
+    crystals.forEach((k, i) => gem(crystalPolygon(L, i), k, glowOf(i)));
+    for (const m of g.memories) gem(memoryPolygon(m), { x: m.def.x, y: m.def.y, r: m.def.r || 8 }, m.charge);
 
     // Miroirs libres
     for (const m of g.mirrors) {

@@ -386,10 +386,203 @@ function checkLevel5(level) {
   }
 }
 
+// ── Outils pour les sanctuaires à plusieurs cristaux ──────────────────
+
+/** Vrai si un miroir reçoit le soleil lui-même (et pas seulement une lampe). */
+const sunLit = (l, mirror) => l.beams.some((b) => b.mirror === mirror && !b.fromLamp && b.depth === 0);
+/** Oriente un miroir éclairé depuis un point (lampe, cristal-mémoire…) vers une cible. */
+const aimFrom = (from, mirror, target) => {
+  mirror.angle = aimMirror(mirror, unit(from, mirror), target);
+};
+/** Le milieu d'un polygone (pour viser une glace, par exemple). */
+const centerOf = (pts) => ({ x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length });
+/** Fait tourner un miroir sur un tour complet ; vrai si test() l'est au moins une fois. */
+const everByTurning = (g, mirror, test) => sweepMirror(g, mirror, test) > 0;
+
+// ── Niveau 6 ──────────────────────────────────────────────────────────
+
+function checkLevel6(level) {
+  const [entry, back] = level.temple.crystals;
+  const dry = () => {
+    const g = createGame(level);
+    g.frosts[0].amount = 1;
+    g.streams[0].head = 0;
+    return g;
+  };
+  {
+    // Chute tarie, sans miroirs : le soleil n'atteint aucun cristal.
+    const g = dry();
+    for (const m of g.mirrors) m.free = false;
+    const r = sweepSky(g, () => g.crystals.some((c) => c.lit));
+    check(r.hits === 0, `le soleil direct n'atteint aucun cristal (${r.hits}/${r.total})`);
+  }
+  {
+    // Le hameau est sous son rocher : le soleil n'y atteint jamais le miroir.
+    const g = dry();
+    const hamlet = mirrorOf(g, 'hameau');
+    g.cloudX = -500; // nuage hors du monde
+    let lit = 0;
+    for (let a = level.sun.min; a <= level.sun.max; a += 1) {
+      g.sunAngle = rad(a);
+      if (sunLit(computeLight(g), hamlet)) lit++;
+    }
+    check(lit === 0, `le soleil n'atteint jamais le miroir du hameau (${lit} positions)`);
+  }
+  {
+    // Tant que la chute coule, aucun miroir ne passe.
+    const g = createGame(level);
+    let through = 0;
+    for (const a of [40, 70, 100, 130]) {
+      g.sunAngle = rad(a);
+      for (const m of g.mirrors) through += sweepMirror(g, m, () => g.crystals.some((c) => c.lit));
+    }
+    check(through === 0, 'tant que la chute coule, aucun reflet ne passe');
+  }
+  // Un réglage du ciel où le lac est à l'ombre, la borne et la crête au soleil.
+  const sky = (() => {
+    const g = dry();
+    const crete = mirrorOf(g, 'crete');
+    let found = null;
+    const r = sweepSky(g, (l, a, x) => {
+      const ok = !g.frosts[0].lit && g.eyes[0].lit && sunLit(l, crete);
+      if (ok && !found && a >= 60 && a <= 110) found = { a, x };
+      return ok;
+    });
+    check(r.hits > 20, `lac à l'ombre + borne et crête au soleil : ${r.hits} réglages possibles sur ${r.total}`);
+    return found;
+  })();
+  if (!sky) return;
+  {
+    // Un miroir, un cristal.
+    const g = dry();
+    g.sunAngle = rad(sky.a);
+    g.cloudX = sky.x;
+    const hamlet = mirrorOf(g, 'hameau');
+    const crete = mirrorOf(g, 'crete');
+    check(!everByTurning(g, hamlet, () => g.crystals[0].lit), 'le miroir du hameau n’atteint jamais le cristal de l’entrée');
+    check(!everByTurning(g, crete, () => g.crystals[1].lit), 'le miroir de la crête n’atteint jamais le cristal du fond');
+  }
+  {
+    const g = createGame(level);
+    const hamlet = mirrorOf(g, 'hameau');
+    const crete = mirrorOf(g, 'crete');
+    run(g, 1);
+    check(g.streams[0].head >= 1 && !g.temple.lit, 'au départ, la chute coule');
+    g.sunAngle = rad(sky.a);
+    g.cloudX = sky.x;
+    run(g, 6);
+    check(g.frosts[0].amount >= 1 && g.streams[0].head === 0, 'à l’ombre du nuage, le lac gèle et la chute se tarit');
+    check(g.eyes[0].lit && hamlet.lit, 'la borne de la crête éclaire le miroir du hameau, sous son rocher');
+    aimFrom(level.eyes[0].out, hamlet, back);
+    run(g, 2);
+    check(g.crystals[1].lit && !g.temple.lit, 'un seul cristal éclairé : le sanctuaire attend');
+    aimFromSun(g, crete, entry);
+    run(g, 3);
+    check(g.temple.lit, 'les deux cristaux ensemble : le sanctuaire s’allume');
+    const t1 = tolerance(g, hamlet, () => g.crystals[1].lit);
+    const t2 = tolerance(g, crete, () => g.crystals[0].lit);
+    check(t1 >= 3 && t2 >= 3, `la visée reste confortable (hameau ${t1}°, crête ${t2}°)`);
+  }
+}
+
+// ── Niveau 7 ──────────────────────────────────────────────────────────
+
+function checkLevel7(level) {
+  const [chimney, niche] = level.temple.crystals;
+  const iceOf = (g, id) => g.ices.find((i) => i.def.id === id);
+  const noCloud = (g) => {
+    g.cloudX = -500;
+  };
+  {
+    // Le soleil seul : ni les cristaux, ni la corniche du bas, ni le socle.
+    const g = createGame(level);
+    for (const m of g.mirrors) m.free = false;
+    mirrorOf(g, 'socle').free = true;
+    iceOf(g, 'cornicheHaut').gone = true; // cas le plus défavorable : rebord dégagé
+    let crystals = 0;
+    let low = 0;
+    let socle = 0;
+    for (let a = level.sun.min; a <= level.sun.max; a += 1) {
+      g.sunAngle = rad(a);
+      noCloud(g);
+      const l = computeLight(g);
+      if (g.crystals.some((c) => c.lit)) crystals++;
+      if (iceOf(g, 'cornicheBas').exposure > 0) low++;
+      if (sunLit(l, mirrorOf(g, 'socle'))) socle++;
+    }
+    check(crystals === 0, `le soleil direct n'atteint aucun cristal (${crystals} positions)`);
+    check(low === 0, `le soleil direct n'atteint jamais la corniche du bas (${low} positions)`);
+    check(socle === 0, `le soleil direct n'atteint jamais le socle (${socle} positions)`);
+  }
+  {
+    // Ni le miroir du village ni le miroir ancien n'atteignent le cristal de la cheminée.
+    const g = createGame(level);
+    noCloud(g);
+    iceOf(g, 'cornicheHaut').gone = true;
+    iceOf(g, 'cornicheBas').gone = true;
+    mirrorOf(g, 'ancien').free = true;
+    let through = 0;
+    for (const a of [40, 60, 80, 100, 120]) {
+      g.sunAngle = rad(a);
+      for (const id of ['village', 'ancien']) through += sweepMirror(g, mirrorOf(g, id), () => g.crystals[0].lit);
+    }
+    check(through === 0, 'seul le miroir du socle atteint le cristal de la cheminée');
+  }
+  {
+    // Mauvais ordre : la corniche du haut tombe d'abord. On n'est pas bloqué pour autant.
+    const g = createGame(level);
+    const porter = g.walkers[0];
+    noCloud(g);
+    run(g, 9);
+    const heap = iceOf(g, 'tas');
+    check(iceOf(g, 'cornicheHaut').gone && heap.active, 'sans nuage, la corniche du haut tombe et laisse un tas de neige');
+    aimFromSun(g, mirrorOf(g, 'village'), centerOf(level.ices[0].points));
+    run(g, 2);
+    check(!heap.gone && !porter.moving && Math.abs(porter.d - porter.geo.cum[1]) < 1, 'le tas barre le chemin du porteur (et arrête aussi le reflet du village)');
+    run(g, 40);
+    check(heap.gone && iceOf(g, 'cornicheBas').gone && porter.done, 'le tas finit par fondre : le porteur passe, rien n’est perdu');
+  }
+  {
+    const g = createGame(level);
+    const village = mirrorOf(g, 'village');
+    const placed = mirrorOf(g, 'socle');
+    const ancient = mirrorOf(g, 'ancien');
+    const porter = g.walkers[0];
+    run(g, 6);
+    check(iceOf(g, 'cornicheHaut').melt === 0 && !porter.moving && !porter.done, 'au départ, le nuage protège la corniche du haut et le porteur attend');
+    check(village.lit, 'le miroir du village est au soleil');
+    aimFromSun(g, village, centerOf(level.ices[0].points));
+    run(g, 1);
+    check(iceOf(g, 'cornicheBas').heating, 'le reflet du village chauffe la corniche du bas');
+    run(g, 9);
+    check(iceOf(g, 'cornicheBas').gone && porter.done && placed.free, 'la crevasse est comblée, le porteur a posé son miroir');
+    check(!iceOf(g, 'cornicheHaut').gone && !ancient.free, 'la corniche du haut tient toujours');
+    g.cloudX = level.cloud.maxX;
+    run(g, 8);
+    check(iceOf(g, 'cornicheHaut').gone && ancient.free, 'nuage écarté : la corniche du haut tombe et libère le miroir ancien');
+    aimFromSun(g, village, placed);
+    run(g, 0.5);
+    check(placed.lit, 'le miroir du socle reçoit le reflet du village');
+    aimFromMirror(village, placed, chimney);
+    run(g, 2);
+    check(g.crystals[0].lit && !g.temple.lit, 'un seul cristal éclairé : le sanctuaire attend');
+    aimFromSun(g, ancient, niche);
+    run(g, 3);
+    check(g.temple.lit, 'les deux cristaux ensemble : le sanctuaire s’allume');
+    const t1 = tolerance(g, village, () => placed.lit);
+    const t2 = tolerance(g, placed, () => g.crystals[0].lit);
+    const t3 = tolerance(g, ancient, () => g.crystals[1].lit);
+    check(t1 >= 3 && t2 >= 3 && t3 >= 3, `la visée reste confortable (village ${t1}°, socle ${t2}°, ancien ${t3}°)`);
+  }
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
-const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5 };
+const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7 };
+// `npm run check -- 6` ne vérifie que le niveau 6 (pratique pendant qu'on le construit).
+const only = process.argv[2] ? Number(process.argv[2]) : null;
 for (const level of levels) {
+  if (only && level.id !== only) continue;
   console.log(`\nNiveau ${level.id} — ${level.title}`);
   if (checks[level.id]) checks[level.id](level);
   else check(false, 'aucune vérification écrite pour ce niveau');

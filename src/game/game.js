@@ -27,6 +27,9 @@ export const SLICES = 12; // finesse des faisceaux (tranches par miroir)
 const BITE = { rock: 14, cloud: 12, ice: 12, house: 7, door: 2.5 };
 const biteOf = (owner) => BITE[typeof owner === 'string' ? owner : owner.kind] || 0;
 
+/** Les cristaux d'un sanctuaire : un seul (temple.crystal) ou plusieurs (temple.crystals). */
+export const templeCrystals = (level) => level.temple.crystals || [level.temple.crystal];
+
 // Lever et coucher du soleil : la lumière ne s'allume pas d'un coup. Elle
 // monte à mesure que le soleil s'éloigne du relief (sur DAWN_ZONE unités) ou
 // sort du nuage (sur CLOUD_ZONE unités).
@@ -57,8 +60,14 @@ export function createGame(level) {
       free: !m.frozen && !m.carried,
       lit: false,
     })),
-    // Glaciers : fondent à la lumière, une fois pour toutes.
-    ices: (L.ices || []).map((def) => ({ def, kind: 'ice', melt: 0, gone: false, heating: false, exposure: 0 })),
+    // Glaciers et neiges : fondent à la lumière, une fois pour toutes.
+    // (active = la glace existe ; un tas de neige n'existe qu'après la chute
+    // de la corniche dont il vient, voir `after` dans le niveau)
+    ices: (L.ices || []).map((def) => ({ def, kind: 'ice', melt: 0, gone: false, heating: false, exposure: 0, active: !def.after })),
+    // Cristaux du sanctuaire, yeux de pierre et cristaux-mémoire
+    crystals: templeCrystals(L).map((def, index) => ({ def, kind: 'crystal', index, lit: false })),
+    eyes: (L.eyes || []).map((def) => ({ def, kind: 'eye', lit: false })),
+    memories: (L.memories || []).map((def) => ({ def, kind: 'memory', charge: 0, lit: false })),
     // Eaux calmes : gèlent à l'ombre (amount → 1), dégèlent à la lumière (→ 0).
     frosts: (L.frosts || []).map((def) => ({ def, kind: 'ice', amount: def.start || 0, lit: false, held: false })),
     // Cours d'eau : head = jusqu'où l'eau est arrivée, tail = jusqu'où elle s'est retirée.
@@ -150,8 +159,8 @@ export function doorPolygon(door) {
   ];
 }
 
-export function crystalPolygon(level) {
-  const c = level.temple.crystal;
+/** Un petit losange autour d'un point : la forme des cristaux et des yeux de pierre. */
+function diamond(c) {
   return [
     { x: c.x, y: c.y - c.r * 1.15 },
     { x: c.x + c.r * 0.9, y: c.y },
@@ -159,6 +168,13 @@ export function crystalPolygon(level) {
     { x: c.x - c.r * 0.9, y: c.y },
   ];
 }
+
+export function crystalPolygon(level, i = 0) {
+  return diamond(templeCrystals(level)[i]);
+}
+
+export const eyePolygon = (eye) => diamond({ x: eye.def.x, y: eye.def.y, r: eye.def.r || 5 });
+export const memoryPolygon = (mem) => diamond({ x: mem.def.x, y: mem.def.y, r: mem.def.r || 8 });
 
 /** Une digue de glace monte depuis sa base à mesure qu'elle gèle. */
 export function frostPolygon(f) {
@@ -264,7 +280,7 @@ export function buildSegments(g) {
   polygonSegments(L.ground, 'rock', segs);
   if (L.cloud) polygonSegments(cloudPolygon(g), 'cloud', segs);
   for (const h of L.houses || []) polygonSegments(housePolygon(h), 'house', segs);
-  for (const ice of g.ices) if (!ice.gone) polygonSegments(ice.def.points, ice, segs);
+  for (const ice of g.ices) if (ice.active && !ice.gone) polygonSegments(ice.def.points, ice, segs);
   for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.04) polygonSegments(frostPolygon(f), f, segs);
   for (const d of g.doors) if (d.open < 0.97) polygonSegments(doorPolygon(d), d, segs);
   // Une cascade disperse la lumière : elle l'arrête.
@@ -285,7 +301,9 @@ export function buildSegments(g) {
       );
     }
   }
-  polygonSegments(crystalPolygon(L), 'crystal', segs);
+  for (const c of g.crystals) polygonSegments(crystalPolygon(L, c.index), c, segs);
+  for (const e of g.eyes) polygonSegments(eyePolygon(e), e, segs);
+  for (const m of g.memories) polygonSegments(memoryPolygon(m), m, segs);
   for (const m of g.mirrors) {
     if (!m.free) continue;
     const geo = mirrorGeometry(m);
@@ -327,19 +345,38 @@ export function computeLight(g) {
   const dawn = hidden ? 1 : Math.max(low, 1 - smooth(distToPolygon(sun, L.ground) / DAWN_COLOR_ZONE));
 
   const active = g.mirrors.filter((m) => m.free);
-  const beams = traceBeams(hidden ? null : sun, active, segs, SLICES, biteOf);
+  // Un objet reçoit-il de la lumière, du soleil ou d'un faisceau ?
+  const touchedBy = (beams, owner) => !!(vis && vis.owners.has(owner)) || beams.some((b) => b.slices.some((s) => s.lit && s.owner === owner));
+
+  // Les lampes : les cristaux-mémoire chargés, et la sortie des conduits dont
+  // l'œil d'entrée est éclairé. Un œil pouvant être éclairé par un faisceau,
+  // on calcule les faisceaux une première fois, puis une seconde s'il le faut.
+  const memoryLamps = g.memories
+    .filter((m) => m.charge > 0.12)
+    .map((m) => ({ x: m.def.x, y: m.def.y, range: m.def.range || 70, owner: m, power: m.charge }));
+  let lamps = memoryLamps;
+  let beams = traceBeams(hidden ? null : sun, active, segs, SLICES, biteOf, lamps);
+  for (const e of g.eyes) e.lit = touchedBy(beams, e);
+  if (g.eyes.some((e) => e.lit)) {
+    const eyeLamps = g.eyes.filter((e) => e.lit).map((e) => ({ ...e.def.out, range: e.def.out.range || 70, owner: null, power: 1 }));
+    lamps = [...memoryLamps, ...eyeLamps];
+    beams = traceBeams(hidden ? null : sun, active, segs, SLICES, biteOf, lamps);
+    for (const e of g.eyes) e.lit = e.lit || touchedBy(beams, e);
+  }
   for (const m of g.mirrors) m.lit = beams.some((b) => b.mirror === m);
-  const beamPolys = beams.flatMap(beamPolygons);
+  const beamPolys = beams.filter((b) => !b.fromLamp).flatMap(beamPolygons);
+  const lampPolys = beams.filter((b) => b.fromLamp).flatMap(beamPolygons);
 
   // Qui reçoit de la lumière ?
-  let crystalLit = !!(vis && vis.owners.has('crystal'));
+  for (const c of g.crystals) c.lit = touchedBy(beams, c);
+  for (const m of g.memories) m.lit = touchedBy(beams, m);
+  const crystalLit = g.crystals.every((c) => c.lit); // le sanctuaire veut tous ses cristaux en même temps
   const waterHits = []; // points où un faisceau se brise dans une cascade
-  for (const ice of g.ices) ice.exposure = vis && vis.owners.has(ice) ? 0.5 : 0;
+  for (const ice of g.ices) ice.exposure = ice.active && vis && vis.owners.has(ice) ? 0.5 : 0;
   for (const b of beams) {
     for (const s of b.slices) {
       if (!s.lit) continue;
-      if (s.owner === 'crystal') crystalLit = true;
-      else if (s.owner === 'water') waterHits.push({ x: s.p.x + b.dir.x * s.t, y: s.p.y + b.dir.y * s.t });
+      if (s.owner === 'water') waterHits.push({ x: s.p.x + b.dir.x * s.t, y: s.p.y + b.dir.y * s.t });
       else if (s.owner && s.owner.kind === 'ice' && 'exposure' in s.owner) s.owner.exposure += 1.6 / SLICES;
     }
   }
@@ -352,11 +389,12 @@ export function computeLight(g) {
     });
   }
 
-  // Lumières ponctuelles : le temple allumé et les lanternes du village.
+  // Lumières ponctuelles : le temple allumé, les lanternes du village, et
+  // les lampes (qui éclairent leurs alentours, même la nuit).
   const points = [];
   if (g.temple.glow > 0) {
-    const c = L.temple.crystal;
-    const noCrystal = segs.filter((s) => s.owner !== 'crystal');
+    const c = templeCrystals(L)[0];
+    const noCrystal = segs.filter((s) => !s.owner || s.owner.kind !== 'crystal');
     points.push({ x: c.x, y: c.y, r: 190 * g.temple.glow, pts: visibilityPolygon(c.x, c.y, noCrystal, biteOf).points });
     const k = smooth((g.win.t - 2.4) / 1.6);
     if (k > 0) {
@@ -374,10 +412,24 @@ export function computeLight(g) {
     sunPoly: vis ? vis.points : null,
     beams,
     beamPolys,
+    lampPolys,
+    lamps,
+    segs,
     points,
     crystalLit,
     waterHits,
   };
+}
+
+/**
+ * Ce que les lampes éclairent autour d'elles (pour le dessin seulement) :
+ * [{ x, y, r, pts }], pts étant la zone visible depuis la lampe.
+ */
+export function lampHalos(light) {
+  return light.lamps.map((lamp) => {
+    const others = lamp.owner ? light.segs.filter((s) => s.owner !== lamp.owner) : light.segs;
+    return { x: lamp.x, y: lamp.y, r: lamp.range * (0.4 + 0.6 * lamp.power), pts: visibilityPolygon(lamp.x, lamp.y, others, biteOf).points };
+  });
 }
 
 /**
@@ -390,19 +442,22 @@ export function settleMirror(g, mirror) {
   const score = () => {
     const l = computeLight(g);
     return (
-      g.mirrors.filter((m) => m.lit).length + (g.ices.some((i) => !i.gone && i.exposure > 0) ? 1 : 0) + (l.crystalLit ? 2 : 0)
+      g.mirrors.filter((m) => m.lit).length +
+      (g.ices.some((i) => i.active && !i.gone && i.exposure > 0) ? 1 : 0) +
+      g.crystals.filter((c) => c.lit).length +
+      g.memories.filter((m) => m.lit).length +
+      (l.crystalLit ? 2 : 0)
     );
   };
-  const base = mirror.angle;
   const current = score();
   const step = rad(0.5);
   const results = [];
   for (let i = -8; i <= 8; i++) {
-    mirror.angle = base + i * step;
+    turnMirror(g, mirror, i * step);
     results.push({ i, s: score() });
+    turnMirror(g, mirror, -i * step);
   }
   const best = Math.max(...results.map((r) => r.s));
-  mirror.angle = base;
   if (best <= current) return;
   // Parmi les angles gagnants, on prend le milieu de la plage la plus proche.
   const wins = results.filter((r) => r.s === best).map((r) => r.i);
@@ -411,7 +466,19 @@ export function settleMirror(g, mirror) {
   let hi = nearest;
   while (wins.includes(lo - 1)) lo--;
   while (wins.includes(hi + 1)) hi++;
-  mirror.angle = base + ((lo + hi) / 2) * step;
+  turnMirror(g, mirror, ((lo + hi) / 2) * step);
+}
+
+/**
+ * Tourne un miroir de d radians. S'il a un jumeau (m.twin = l'identifiant de
+ * l'autre), celui-ci tourne d'autant, mais à l'envers : une chaîne les relie.
+ */
+export function turnMirror(g, mirror, d) {
+  mirror.angle += d;
+  if (mirror.twin) {
+    const other = g.mirrors.find((m) => m.id === mirror.twin);
+    if (other) other.angle -= d;
+  }
 }
 
 // ───────────────────────────── Évolution ─────────────────────────────
@@ -423,9 +490,11 @@ export function update(g, dt) {
 
   const light = (g.light = computeLight(g));
 
-  // Glaciers : la lumière les fait fondre.
+  // Glaciers et neiges : la lumière les fait fondre. Une neige « after »
+  // n'apparaît que lorsque la glace dont elle vient est tombée.
   for (const ice of g.ices) {
-    if (ice.gone) continue;
+    if (!ice.active && byId(g.ices, ice.def.after).gone) ice.active = true;
+    if (ice.gone || !ice.active) continue;
     const e = Math.min(1.5, ice.exposure);
     ice.heating = e > 0;
     if (e > 0) {
@@ -491,21 +560,29 @@ export function update(g, dt) {
   // Faisceau brisé par une cascade : une gerbe d'étincelles.
   for (const h of light.waterHits) if (Math.random() < dt * 5) spawnSpark(g, h.x, h.y, 10 + Math.random() * 25, 'mist');
 
-  // Temple : le cristal se charge tant qu'il reçoit de la lumière.
+  // Cristaux-mémoire : ils se chargent à la lumière, puis s'éteignent lentement.
+  for (const m of g.memories) {
+    const d = m.def;
+    m.charge = clamp(m.charge + (m.lit ? dt / (d.chargeTime || 2.5) : -dt / (d.hold || 60)), 0, 1);
+  }
+
+  // Temple : il se charge tant que TOUS ses cristaux reçoivent de la lumière.
+  // (un faisceau venu d'une lampe compte autant que le soleil, même la nuit)
   if (!g.temple.lit) {
-    g.temple.charge = clamp(g.temple.charge + (light.crystalLit ? (dt * light.intensity) / 1.4 : -dt / 0.9), 0, 1);
+    const power = Math.max(light.intensity, light.lampPolys.length ? 1 : 0);
+    g.temple.charge = clamp(g.temple.charge + (light.crystalLit ? (dt * power) / 1.4 : -dt / 0.9), 0, 1);
     if (g.temple.charge >= 1) {
       g.temple.lit = true;
       g.events.push('temple-lit');
-      const c = L.temple.crystal;
-      for (let i = 0; i < 40; i++) spawnSpark(g, c.x, c.y, 30 + Math.random() * 70);
+      for (const c of templeCrystals(L)) for (let i = 0; i < 40; i++) spawnSpark(g, c.x, c.y, 30 + Math.random() * 70);
     }
   } else {
     g.win.t += dt;
     g.temple.glow = smooth(g.win.t / 2.2);
     g.thaw = smooth((g.win.t - 1.5) / 7);
     if (Math.random() < dt * 5) {
-      const c = L.temple.crystal;
+      const all = templeCrystals(L);
+      const c = all[Math.floor(Math.random() * all.length)];
       spawnSpark(g, c.x, c.y, 8 + Math.random() * 14);
     }
   }
@@ -540,7 +617,22 @@ function updateWalker(g, w, dt) {
     if (w.d >= dB) frost.held = false;
     return;
   }
-  const limit = w.d < dA ? dA : w.geo.total;
+  // Autres obstacles sur son chemin (voir `gates` dans le niveau) :
+  //   needs: 'id'      il attend que cette glace (ou neige) soit tombée
+  //   blockedBy: 'id'  il attend tant que cette neige est là
+  let limit = w.d < dA ? dA : w.geo.total;
+  for (const gate of d.gates || []) {
+    const at = w.geo.cum[gate.at];
+    if (w.d > at + 0.01) continue; // déjà franchi
+    const ice = byId(g.ices, gate.needs || gate.blockedBy);
+    const open = gate.needs ? ice.gone : !ice.active || ice.gone;
+    if (!open) limit = Math.min(limit, at);
+  }
+  if (w.d >= limit - 0.001 && limit < w.geo.total && limit !== dA) {
+    w.d = limit;
+    w.moving = false;
+    return;
+  }
   w.d = Math.min(limit, w.d + speed * dt);
   if (w.d >= w.geo.total) {
     w.done = true;

@@ -138,20 +138,23 @@ export function mirrorGeometry(m) {
  * @param mirrors miroirs actifs (libres de glace)
  * @param segs    tous les segments qui bloquent la lumière (miroirs inclus,
  *                avec owner === l'objet miroir)
- * @returns liste de faisceaux { mirror, dir, slices: [{lit, t, reach, owner, p}], geo }
+ * @param lamps   petites sources proches [{ x, y, range, owner }] : elles
+ *                n'éclairent que les miroirs à moins de `range` d'elles
+ *                (owner = l'objet qui porte la lampe, s'il bloque la lumière)
+ * @returns liste de faisceaux { mirror, dir, slices: [{lit, t, reach, owner, p}], geo, fromLamp }
  */
-export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null) {
+export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null, lamps = []) {
   const beams = [];
   const done = new Set(); // évite qu'un même miroir soit rallumé en boucle
 
-  function emit(mirror, dIn, isLit, depth) {
+  function emit(mirror, dIn, isLit, depth, fromLamp = false) {
     const geo = mirrorGeometry(mirror);
     const dn = dIn.x * geo.n.x + dIn.y * geo.n.y;
     if (Math.abs(dn) < 0.03) return; // lumière rasante : pas de reflet
     // Loi de la réflexion : d' = d − 2 (d·n) n
     const dir = { x: dIn.x - 2 * dn * geo.n.x, y: dIn.y - 2 * dn * geo.n.y };
 
-    const beam = { mirror, dir, geo, slices: [], depth };
+    const beam = { mirror, dir, geo, slices: [], depth, fromLamp };
     let any = false;
     for (let i = 0; i < slices; i++) {
       const k = ((i + 0.5) / slices) * mirror.len;
@@ -177,7 +180,7 @@ export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null) {
     for (const other of mirrors) {
       if (other === mirror) continue;
       if (!beam.slices.some((s) => s.lit && s.owner === other)) continue;
-      const key = mirrors.indexOf(mirror) + '>' + mirrors.indexOf(other);
+      const key = mirrors.indexOf(mirror) + '>' + mirrors.indexOf(other) + (fromLamp ? 'L' : '');
       if (done.has(key)) continue;
       done.add(key);
       // Une tranche du miroir suivant est éclairée si, en remontant le rayon,
@@ -191,7 +194,7 @@ export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null) {
         const idx = Math.max(0, Math.min(slices - 1, Math.floor(k * slices)));
         return beam.slices[idx].lit;
       };
-      emit(other, dir, litByBeam, depth + 1);
+      emit(other, dir, litByBeam, depth + 1, fromLamp);
     }
   }
 
@@ -202,6 +205,18 @@ export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null) {
       const d = Math.hypot(dx, dy) || 1;
       const litBySun = (p) => !isBlocked(sun.x, sun.y, p.x, p.y, segs, m);
       emit(m, { x: dx / d, y: dy / d }, litBySun, 0);
+    }
+  }
+  // Les lampes : comme le soleil, mais de près seulement.
+  for (const lamp of lamps) {
+    const others = lamp.owner ? segs.filter((s) => s.owner !== lamp.owner) : segs;
+    for (const m of mirrors) {
+      const dx = m.x - lamp.x;
+      const dy = m.y - lamp.y;
+      const d = Math.hypot(dx, dy) || 1;
+      if (d > lamp.range) continue;
+      const litByLamp = (p) => !isBlocked(lamp.x, lamp.y, p.x, p.y, others, m);
+      emit(m, { x: dx / d, y: dy / d }, litByLamp, 0, true);
     }
   }
   return beams;

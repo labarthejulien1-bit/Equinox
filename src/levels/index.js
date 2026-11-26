@@ -8,15 +8,17 @@ import level2 from './level2.js';
 import level3 from './level3.js';
 import level4 from './level4.js';
 import level5 from './level5.js';
+import level6 from './level6.js';
+import level7 from './level7.js';
 
 export const chapters = [
   {
     number: 'I',
     title: 'La source',
     place: 'Haute montagne, glaciers',
-    levels: [level1, level2, level3, level4, level5],
+    levels: [level1, level2, level3, level4, level5, level6, level7],
     // Niveaux écrits mais pas encore construits : ils apparaissent grisés.
-    soon: ['L’œil de pierre', 'La corniche', 'La veillée', 'Les jumeaux', 'Le grand glacier'],
+    soon: ['La veillée', 'Les jumeaux', 'Le grand glacier'],
   },
   { number: 'II', title: 'Les grandes ombres', place: 'Plaines gelées', levels: [], soon: [] },
   { number: 'III', title: 'Le peuple de la forêt', place: 'Forêt', levels: [], soon: [] },

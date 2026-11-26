@@ -9,7 +9,7 @@
 //     nuage au pouce, sans lever la main (voir game/sliders.js).
 
 import { clamp, rad, dist } from './vec.js';
-import { sunPosition, settleMirror } from '../game/game.js';
+import { sunPosition, settleMirror, turnMirror } from '../game/game.js';
 import { sliderBubbles, moveSlider } from '../game/sliders.js';
 
 /**
@@ -125,7 +125,7 @@ export function attachInput(canvas, view, getGame, onTouch = () => {}) {
         let d = a - drag.last;
         if (d > Math.PI) d -= Math.PI * 2;
         if (d < -Math.PI) d += Math.PI * 2;
-        m.angle += d;
+        turnMirror(g, m, d); // (son jumeau, s'il en a un, tourne à l'envers)
         g.touched.mirror = true;
         m.turned = true;
       }
