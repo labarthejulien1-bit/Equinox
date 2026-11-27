@@ -8,7 +8,7 @@
 //      lueurs, miroirs, repères tactiles.
 // La frontière entre 1 et 2 est le bord net ombre / lumière.
 
-import { TAU, smooth } from '../engine/vec.js';
+import { TAU, smooth, clamp } from '../engine/vec.js';
 import { mirrorGeometry } from '../engine/light.js';
 import { getPalettes, mix } from './palette.js';
 import {
@@ -572,55 +572,104 @@ export function createRenderer(canvas) {
   }
 
   /** Une eau calme : liquide quand amount = 0, prise par la glace quand amount = 1. */
+  /**
+   * Une eau calme qui gèle. La glace naît en plaques anguleuses, des rives
+   * vers le milieu, comme une banquise ; au dégel, elles fondent dans l'ordre
+   * inverse. Entre deux plaques, une fente laisse voir l'eau.
+   */
   function drawFrost(c, P, f, g) {
     const r = f.def.rect;
     const w = r.x1 - r.x0;
     const h = r.y1 - r.y0;
+    const k = smooth(f.amount);
+    const mid = r.x0 + w / 2;
+    // L'eau, et ses reflets qui courent (ils ralentissent quand elle gèle)
     c.fillStyle = P.water;
     c.fillRect(r.x0, r.y0, w, h);
-    if (f.amount > 0.01) {
-      // La glace gagne depuis les bords vers le centre.
-      const k = smooth(f.amount);
+    c.fillStyle = P.iceLine;
+    c.globalAlpha = 0.55 * (1 - k);
+    for (let i = 0; i < 5; i++) {
+      const x = r.x0 + ((hash(i + 40) * w + g.time * 9 * (1 - k) + i * 11) % (w - 7));
+      c.fillRect(x, r.y0 + 1.6 + (i % 3) * 1.5, 4 + (i % 2) * 2, 0.7);
+    }
+    c.globalAlpha = 1;
+    if (k <= 0.01) return;
+
+    // Les plaques : une tous les dix pas environ, aux bords un peu irréguliers
+    const n = Math.max(3, Math.round(w / 10));
+    const edge = (i) => r.x0 + (w * (i + (i > 0 && i < n ? (hash(i + 5) - 0.5) * 0.45 : 0))) / n;
+    c.lineJoin = 'round';
+    for (let i = 0; i < n; i++) {
+      const x0 = edge(i);
+      const x1 = edge(i + 1);
+      const cx = (x0 + x1) / 2;
+      const d = 1 - Math.abs((cx - mid) / (w / 2)); // 0 sur la rive, 1 au milieu
+      const s = clamp((k * 1.2 - d * 0.9) / 0.3, 0, 1); // où en est cette plaque
+      if (s <= 0) continue;
+      const half = ((x1 - x0) / 2 - 0.55) * (0.35 + 0.65 * s);
+      const up = (a) => r.y0 - (0.5 + 1.5 * hash(i * 3 + a)) * s; // elle dépasse un peu de l'eau
+      const bottom = r.y0 + h * s;
+      const pts = [
+        { x: cx - half, y: up(1) },
+        { x: cx - half * 0.1, y: up(2) - 0.5 * s },
+        { x: cx + half, y: up(3) },
+        { x: cx + half - 0.25, y: bottom },
+        { x: cx - half + 0.25, y: bottom },
+      ];
+      poly(c, pts);
       c.fillStyle = P.ice;
-      c.fillRect(r.x0, r.y0 - 0.6, (w / 2) * k, h + 0.6);
-      c.fillRect(r.x1 - (w / 2) * k, r.y0 - 0.6, (w / 2) * k, h + 0.6);
-      // Petits cristaux de givre
+      c.fill();
+      // une facette, puis le dessus plus clair
       c.strokeStyle = P.iceLine;
-      c.lineWidth = 0.8;
-      c.globalAlpha = k;
-      const n = Math.max(3, Math.floor(w / 9));
-      for (let i = 0; i < n; i++) {
-        const x = r.x0 + ((i + 0.5) / n) * w;
-        if (Math.abs(x - (r.x0 + w / 2)) > (w / 2) * (1 - k) - 0.01) {
-          c.beginPath();
-          c.moveTo(x - 2.2, r.y0 + 0.4);
-          c.lineTo(x, r.y0 - 2.2 - hash(i) * 1.5);
-          c.lineTo(x + 2.2, r.y0 + 0.4);
-          c.stroke();
-        }
-      }
+      c.lineWidth = 0.6;
+      c.globalAlpha = 0.6 * s;
+      line(c, [pts[1], { x: cx - half * 0.35, y: r.y0 + h * s * 0.7 }]);
+      c.stroke();
+      c.globalAlpha = s;
+      c.lineWidth = 0.9;
+      line(c, [pts[0], pts[1], pts[2]]);
+      c.stroke();
       c.globalAlpha = 1;
     }
   }
 
+  /**
+   * Une digue de glace : le même style, debout. Des blocs anguleux s'empilent
+   * depuis le fond, jusqu'à la hauteur où la glace arrête la lumière et l'eau
+   * (frostPolygon).
+   */
   function drawDam(c, P, f) {
-    const pts = frostPolygon(f);
-    poly(c, pts);
-    c.fillStyle = P.ice;
-    c.fill();
-    c.strokeStyle = P.iceLine;
-    c.lineWidth = 0.8;
-    c.globalAlpha = 0.7;
     const r = f.def.rect;
-    for (let y = r.y1 - 10; y > pts[0].y + 3; y -= 14) {
-      line(c, [
-        { x: r.x0 + 1, y },
-        { x: (r.x0 + r.x1) / 2, y: y - 6 },
-        { x: r.x1 - 1, y: y + 1 },
-      ]);
+    const top = frostPolygon(f)[0].y;
+    const mid = (r.x0 + r.x1) / 2;
+    const size = 11; // hauteur d'un bloc
+    c.lineJoin = 'round';
+    for (let j = 0, base = r.y1; base > top + 0.2; j++, base -= size) {
+      const full = base - size >= top; // le bloc du haut est encore en train de monter
+      const y = Math.max(base - size, top);
+      const tilt = full ? (hash(j + 21) - 0.5) * 2.4 : 0;
+      const pts = [
+        { x: r.x0 + 0.3, y: y + 0.4 + tilt },
+        { x: mid + (hash(j + 31) - 0.5) * 4, y: y + 0.4 - (full ? 0.6 : 0) },
+        { x: r.x1 - 0.3, y: y + 0.4 - tilt },
+        { x: r.x1 - 0.3, y: base - 0.4 },
+        { x: r.x0 + 0.3, y: base - 0.4 },
+      ];
+      poly(c, pts);
+      c.fillStyle = P.ice;
+      c.fill();
+      c.strokeStyle = P.iceLine;
+      c.lineWidth = 0.6;
+      c.globalAlpha = 0.6;
+      if (base - y > 5) {
+        line(c, [pts[1], { x: mid - 2 + hash(j + 41) * 4, y: base - 2 }]);
+        c.stroke();
+      }
+      c.globalAlpha = 1;
+      c.lineWidth = 0.9;
+      line(c, [pts[0], pts[1], pts[2]]);
       c.stroke();
     }
-    c.globalAlpha = 1;
   }
 
   /** Une roue à eau, et la chaîne qui la relie à sa porte (voir machine.js). */

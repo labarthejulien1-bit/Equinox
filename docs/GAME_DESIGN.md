@@ -1352,6 +1352,10 @@ dans la glace.
    falaise.
 9. ✅ **v0.8** — trois objectifs secondaires par niveau et leurs médailles
    (§ 5 quinquies), le menu de la partie et les réglages.
+   v0.8.1 : plus de rayon de soleil derrière les cascades ; le niveau 2 n'a
+   plus d'eau dessinée dans la roche. v0.8.2 : l'eau calme gèle en plaques
+   anguleuses, des rives vers le milieu (choisi parmi trois maquettes :
+   plaques, givre, peau de glace) ; la digue du niveau 3 suit le même style.
 10. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
