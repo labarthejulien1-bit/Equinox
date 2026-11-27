@@ -653,6 +653,22 @@ function checkLevel8(level) {
     check(t1 >= 3 && t2 >= 3, `la visée reste confortable (socle ${t1}°, village ${t2}°)`);
   }
   {
+    // De nuit, tout en place : chaque cristal n'est atteignable que par son miroir.
+    const g = createGame(level);
+    for (const m of g.mirrors) m.free = true;
+    const placed = mirrorOf(g, 'socle');
+    placed.x = level.pedestals[0].x;
+    placed.y = level.pedestals[0].topY - 2;
+    g.walkers[0].done = true;
+    for (const m of g.memories) m.charge = 1;
+    g.sunAngle = rad(NIGHT);
+    run(g, 0.5);
+    const wrongLow = sweepMirror(g, mirrorOf(g, 'village'), () => g.crystals[0].lit);
+    const wrongHigh = sweepMirror(g, placed, () => g.crystals[1].lit);
+    check(wrongLow === 0, `le miroir du village n'atteint jamais le cristal du fond (${wrongLow / 2}°)`);
+    check(wrongHigh === 0, `le miroir du socle n'atteint jamais le cristal de la voûte (${wrongHigh / 2}°)`);
+  }
+  {
     // Les lueurs s'éteignent, mais on peut toujours recommencer la journée.
     const g = createGame(level);
     const village = mirrorOf(g, 'village');
@@ -968,6 +984,49 @@ function checkScenery(level) {
   check(!error, error ? `la vie du monde casse : ${error.message}` : 'la vie du monde tourne sans erreur');
 }
 
+// ── Pas de victoire immédiate ─────────────────────────────────────────
+// Le défaut trouvé au niveau 8 : dès le début, un seul miroir allumait tout
+// le sanctuaire. Pour chaque niveau, on part donc de l'état de départ (rien
+// n'a fondu, rien n'a gelé, personne n'a bougé) et l'on essaie le soleil, le
+// nuage et chaque miroir libre dans toutes les directions : jamais tous les
+// cristaux ne doivent s'allumer ensemble.
+
+// (Au niveau 5, c'est l'énigme elle-même : trouver la bonne hauteur du soleil
+// et la bonne place du miroir sur son rail. Il n'y a rien d'autre à faire.)
+const SOLVED_BY_AIMING = new Set([5]);
+
+function checkNoInstantWin(level) {
+  if (SOLVED_BY_AIMING.has(level.id)) return;
+  const g = createGame(level);
+  const clouds = level.cloud ? [level.cloud.minX, (level.cloud.minX + level.cloud.maxX) / 2, level.cloud.maxX] : [0];
+  const free = g.mirrors.filter((m) => m.free);
+  let wins = 0;
+  let how = '';
+  for (let a = level.sun.min; a <= level.sun.max && !wins; a += 6) {
+    for (const x of clouds) {
+      g.sunAngle = rad(a);
+      g.cloudX = x;
+      // (les miroirs sur rail ne tournent pas : on les promène)
+      for (const m of free) {
+        const base = m.rail ? m.t : m.angle;
+        for (let i = 0; i < (m.rail ? 21 : 360); i++) {
+          if (m.rail) m.t = i / 20;
+          else m.angle = rad(i);
+          if (m.rail) update(g, 0); // (replace le miroir sur son rail)
+          computeLight(g);
+          if (g.crystals.every((c) => c.lit)) {
+            wins++;
+            how = `soleil ${a}°, miroir « ${m.id} »`;
+          }
+        }
+        if (m.rail) m.t = base;
+        else m.angle = base;
+      }
+    }
+  }
+  check(wins === 0, wins ? `raccourci : le sanctuaire s'allume dès le départ (${how})` : 'au départ, aucun miroir ne peut allumer le sanctuaire à lui seul');
+}
+
 // ── Les objectifs secondaires ─────────────────────────────────────────
 // Chaque niveau a trois objectifs (une médaille chacun). On vérifie qu'aucun
 // ne se gagne tout seul, et que chacun est atteignable : sa « recette »
@@ -1067,6 +1126,7 @@ for (const level of levels) {
   if (process.argv[3] !== 'goals') {
     if (checks[level.id]) checks[level.id](level);
     else check(false, 'aucune vérification écrite pour ce niveau');
+    checkNoInstantWin(level);
     checkScenery(level);
   }
   checkGoals(level);

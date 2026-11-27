@@ -4,26 +4,38 @@
 // sanctuaire. Sur l'autre rive, un socle attend sous une avancée de roche.
 // Un porteur de miroir voudrait traverser, mais il n'y a pas de nuage : seule
 // la nuit peut geler le lac. Et la nuit, il n'y a plus de soleil à renvoyer.
-// Nouveautés : le soleil peut se coucher ; le cristal-mémoire garde la
-// lumière du jour et la rend la nuit (de jour, sa lueur ne se voit pas).
-// Il y en a deux : l'un au village, l'autre près du socle.
+// Nouveautés : le soleil peut se coucher ; le cristal-mémoire (une lanterne
+// d'ambre) garde la lumière du jour et la rend la nuit (de jour, sa lueur ne
+// se voit pas). Il y en a deux : l'une au village, l'autre suspendue sous la
+// roche de l'autre rive.
 //
 // Solution prévue :
-//  1. de jour, le cristal-mémoire du village se charge seul au soleil ;
-//  2. viser celui de l'autre rive avec le miroir du village : le soleil ne
-//     l'atteint jamais, seul ce reflet le charge ;
+//  1. de jour, la lanterne du village se remplit seule au soleil ;
+//  2. viser celle de l'autre rive avec le miroir du village : le soleil ne
+//     l'atteint jamais, seul ce reflet la remplit ;
 //  3. coucher le soleil : le lac gèle, le porteur traverse et pose son miroir ;
-//  4. de nuit : miroir du socle → un cristal, avec la lueur de l'autre rive ;
-//     miroir du village → l'autre cristal, avec la lueur du village.
+//  4. de nuit : miroir du socle → le cristal du fond de la grotte, avec la
+//     lueur de l'autre rive ; miroir du village → le cristal de la voûte,
+//     avec la lueur du village.
 // Si une lueur s'éteint avant la fin, on refait le jour pour la recharger.
+//
+// À CHAQUE MIROIR SON CRISTAL. Les deux cristaux sont placés pour qu'aucun
+// miroir ne puisse les éclairer tous les deux :
+//  - celui de la voûte n'est visible que d'en bas (le miroir du village) :
+//    la visière de roche le cache au miroir d'en face ;
+//  - celui du fond n'est visible que de loin, presque à l'horizontale (le
+//    miroir du socle) : le seuil de la grotte le cache au miroir du village.
+// (Avant cela, les deux cristaux étaient côte à côte : en plein jour, le
+// miroir du village les allumait d'un seul reflet et le niveau se gagnait
+// sans la nuit. Le test vérifie maintenant que c'est impossible.)
 
 import { terrain } from './terrain.js';
 
 const relief = terrain([
   { pts: [[-3000, 200], [-40, 200], [-6, 244], [20, 294], [36, 340]], rough: 1, snow: true }, // versant de gauche
   { pts: [[36, 340], [54, 380], [70, 430], [76, 460], [72, 478]] }, // au-dessus de la grotte, en visière
-  { pts: [[72, 478], [56, 446], [30, 436], [8, 444], [0, 470], [6, 500]], cave: true }, // voûte de la grotte
-  { pts: [[6, 500], [30, 500], [52, 506], [70, 512]], cave: true }, // son sol
+  { pts: [[72, 478], [56, 446], [30, 436], [8, 444], [0, 470], [6, 508]], cave: true }, // voûte de la grotte
+  { pts: [[6, 508], [28, 508], [52, 506], [70, 512]], cave: true }, // son sol, qui descend vers le fond
   { pts: [[70, 512], [76, 536], [82, 552]] },
   { pts: [[82, 552], [104, 556], [136, 558]], snow: true }, // la rive du village
   { pts: [[136, 558], [146, 574], [172, 584], [206, 584], [232, 574], [242, 558]] }, // le lit du lac
@@ -52,11 +64,12 @@ export default {
   ],
   pedestals: [{ x: 294, baseY: 555, topY: 536 }],
 
-  // Deux cristaux enchâssés dans la grotte.
+  // Deux cristaux enchâssés dans la grotte : [0] au fond, près du sol (pour le
+  // miroir du socle) ; [1] dans la voûte (pour le miroir du village).
   temple: {
     crystals: [
-      { x: 44, y: 484, r: 7.5 },
-      { x: 22, y: 458, r: 7.5 },
+      { x: 15, y: 502, r: 7 },
+      { x: 40, y: 446, r: 7 },
     ],
   },
 
@@ -64,7 +77,9 @@ export default {
   // secondes avant qu'ils s'éteignent ; range = portée de leur lueur.
   memories: [
     { id: 'village', x: 112, y: 537, r: 7, baseY: 557, chargeTime: 2.5, hold: 75, range: 70 },
-    { id: 'rive', x: 268, y: 536, r: 7, baseY: 556, chargeTime: 2.5, hold: 75, range: 70 },
+    // (celle de l'autre rive pend sous l'avancée de roche : posée au sol, elle
+    // se trouverait sur le trajet du reflet qu'elle allume)
+    { id: 'rive', x: 268, y: 514, r: 7, hang: 504, chargeTime: 2.5, hold: 75, range: 70 },
   ],
 
   basins: [{ id: 'lac', x0: 136, x1: 242, floor: 584, low: 562 }],
@@ -116,7 +131,7 @@ export default {
     { type: 'flowers', x: 60, y: 508.7, s: 0.9, n: 3 },
     { type: 'flowers', x: 312, y: 554.3, s: 0.9, n: 3 },
     { type: 'owl', x: 94, y: 548.8, s: 0.55 },
-    { type: 'eyes', x: 11, y: 496, s: 0.8 },
+    { type: 'eyes', x: 34, y: 500, s: 0.8 },
   ],
   // Brume du petit matin et de la nuit.
   mists: [
@@ -143,13 +158,13 @@ export default {
     if (g.temple.lit) return '';
     if (!porter.done) {
       if (night) return g.frosts[0].amount > 0.05 ? 'La nuit fige le lac…' : 'La nuit tombe…';
-      if (mShore.charge < 0.9) return 'Seule la nuit gèlera le lac. Ces deux cristaux gardent la lumière du jour : charge-les avant de coucher le soleil.';
-      return 'Les deux cristaux ont bu le jour. Couche le soleil, tout à gauche.';
+      if (mShore.charge < 0.9) return 'Seule la nuit gèlera le lac. Les deux lanternes d’ambre gardent la lumière du jour : remplis-les avant de coucher le soleil.';
+      return 'Les deux lanternes sont pleines. Couche le soleil, tout à gauche.';
     }
-    if (!night) return 'Le miroir est posé. Les cristaux ne rendent leur lumière que dans le noir.';
-    if (mShore.charge < 0.15 || mVillage.charge < 0.15) return 'Une lueur s’est éteinte. Refais le jour pour la rallumer : rien n’est perdu.';
-    if (!g.crystals.some((c) => c.lit)) return 'Chaque miroir a sa lueur : guide-les vers les cristaux du sanctuaire';
-    if (!placed.lit || !village.lit) return 'Un miroir attend sa lueur';
+    if (!night) return 'Le miroir est posé. Les lanternes ne rendent leur lumière que dans le noir.';
+    if (mShore.charge < 0.15 || mVillage.charge < 0.15) return 'Une lanterne s’est éteinte. Refais le jour pour la remplir : rien n’est perdu.';
+    if (!placed.lit || !village.lit) return 'Un miroir attend la lueur de sa lanterne';
+    if (!g.crystals.some((c) => c.lit)) return 'À chaque miroir son cristal : celui d’en face vise le fond de la grotte, celui du village vise la voûte';
     return 'Un cristal brille. L’autre miroir, maintenant.';
   },
 

@@ -879,15 +879,35 @@ export function createRenderer(canvas) {
   function drawMemory(c, P, m) {
     const d = m.def;
     const r = d.r || 8;
+    if (d.hang !== undefined) {
+      // Une lanterne suspendue : une chaîne jusqu'au plafond (hang = sa hauteur)
+      c.strokeStyle = P.bronze;
+      c.lineWidth = 1;
+      c.setLineDash([1.6, 1.2]);
+      line(c, [
+        { x: d.x, y: d.hang - 1 },
+        { x: d.x, y: d.y - r },
+      ]);
+      c.stroke();
+      c.setLineDash([]);
+      c.lineWidth = 1.6;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.arc(d.x, d.y, r + 0.8, Math.PI * 1.12, Math.PI * 1.88);
+      c.stroke();
+      return;
+    }
     const base = d.baseY ?? d.y + r * 1.15 + 9;
     c.fillStyle = P.stoneDark;
     c.fillRect(d.x - 7, base - 3, 14, 4);
     c.fillStyle = P.stone;
     c.fillRect(d.x - 4.5, d.y + r * 1.15 - 1, 9, base - 2 - (d.y + r * 1.15 - 1));
-    c.strokeStyle = P.stone;
+    // (la coupe de bronze qui porte la lanterne)
+    c.strokeStyle = P.bronze;
     c.lineWidth = 1.6;
+    c.lineCap = 'round';
     c.beginPath();
-    c.arc(d.x, d.y, r + 5, Math.PI * 0.15, Math.PI * 0.85, true);
+    c.arc(d.x, d.y, r + 0.8, Math.PI * 0.12, Math.PI * 0.88);
     c.stroke();
   }
 
@@ -1373,7 +1393,47 @@ export function createRenderer(canvas) {
       c.stroke();
     };
     crystals.forEach((k, i) => gem(crystalPolygon(L, i), k, glowOf(i)));
-    for (const m of g.memories) gem(memoryPolygon(m), { x: m.def.x, y: m.def.y, r: m.def.r || 8 }, m.charge);
+    // Les cristaux-mémoire ne ressemblent pas à ceux du sanctuaire : ce sont des
+    // lanternes d'ambre, rondes, dont l'anneau se remplit d'or à mesure qu'elles
+    // boivent la lumière du jour. La nuit, elles luisent.
+    for (const m of g.memories) {
+      const d = m.def;
+      const r = (d.r || 8) * 0.95;
+      const a = m.charge;
+      const cc = Math.round(a * 100);
+      if (a > 0.05 && g.light.sunHidden) {
+        const halo = c.createRadialGradient(d.x, d.y, r * 0.5, d.x, d.y, r * 3.4);
+        halo.addColorStop(0, `rgba(255, 214, 110, ${0.45 * a})`);
+        halo.addColorStop(1, 'rgba(255, 214, 110, 0)');
+        c.fillStyle = halo;
+        c.beginPath();
+        c.arc(d.x, d.y, r * 3.4, 0, TAU);
+        c.fill();
+      }
+      c.lineCap = 'round';
+      c.lineWidth = 1.4;
+      c.strokeStyle = 'rgba(217, 170, 82, 0.35)';
+      c.beginPath();
+      c.arc(d.x, d.y, r + 3.2, 0, TAU);
+      c.stroke();
+      if (a > 0.01) {
+        c.strokeStyle = '#ffd76a';
+        c.beginPath();
+        c.arc(d.x, d.y, r + 3.2, -Math.PI / 2, -Math.PI / 2 + TAU * a);
+        c.stroke();
+      }
+      c.fillStyle = `color-mix(in srgb, #ffcf52 ${cc}%, #4f4458)`;
+      c.beginPath();
+      c.arc(d.x, d.y, r, 0, TAU);
+      c.fill();
+      c.strokeStyle = `color-mix(in srgb, #fff3c0 ${cc}%, #8f7c6a)`;
+      c.lineWidth = 0.9;
+      c.stroke();
+      c.fillStyle = `rgba(255, 255, 255, ${0.14 + 0.5 * a})`;
+      c.beginPath();
+      c.arc(d.x - r * 0.25, d.y - r * 0.28, r * 0.38, 0, TAU);
+      c.fill();
+    }
 
     // Miroirs libres
     for (const m of g.mirrors) {

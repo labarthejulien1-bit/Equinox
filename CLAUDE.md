@@ -65,6 +65,17 @@ Un faisceau a deux visages (`traceBeams` dans `engine/light.js`) : les règles
 lisent ses 12 tranches (`slices`), le dessin suit son bout exact (`runs`),
 calculé en visant chaque coin du relief. Un niveau n'a rien à faire pour ça.
 
+Piège connu : deux cristaux côte à côte s'allument d'un seul reflet (un
+faisceau est large comme son miroir). C'est arrivé au niveau 8, qui se
+gagnait en plein jour avec un seul miroir. Écarter les cristaux et jouer sur
+le relief : l'un visible seulement d'en bas, l'autre seulement de loin. Le
+test le contrôle pour tous les niveaux (`checkNoInstantWin`) : au départ,
+aucun miroir ne doit pouvoir allumer tout le sanctuaire à lui seul.
+
+Autre piège : un cristal-mémoire (ou tout objet qui arrête la lumière) posé
+entre un miroir et sa cible coupe le reflet. Au niveau 8, la lanterne de
+l'autre rive est suspendue (`hang`) pour cette raison.
+
 Piège connu : un miroir éclairé renvoie toujours un faisceau, même quand le
 joueur n'y a pas touché. Choisir son angle de départ pour que ce faisceau ne
 vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).

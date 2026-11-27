@@ -141,7 +141,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `walkers` | porteurs | avancent tant que le chemin les porte (pont gelé, crevasse comblée : `gates`), puis posent leur miroir |
 | `temple` | le temple et son cristal, ou ses cristaux (`crystals`) | s'allume quand tous ses cristaux reçoivent de la lumière en même temps |
 | `eyes` | conduit des anciens : un œil d'entrée, un œil de sortie | l'œil d'entrée éclairé allume l'œil de sortie, qui éclaire les miroirs proches |
-| `memories` | cristaux-mémoire | se chargent à la lumière, puis éclairent les miroirs proches dans le noir |
+| `memories` | cristaux-mémoire : des lanternes d'ambre, sur pied ou suspendues (`hang` : hauteur du plafond) | se remplissent à la lumière (leur anneau se dore), puis éclairent les miroirs proches dans le noir |
 | `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
 | `goals` | les trois objectifs secondaires du niveau (voir `src/game/goals.js`) : `{ id, type, title, text }` | une médaille chacun (cuivre, argent, or) ; ils sont à côté de l'énigme et ne la changent pas |
 | `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fleurs, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme, mais les animaux réagissent à la lumière (voir `life.js`) |

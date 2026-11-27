@@ -1171,9 +1171,10 @@ jamais bloqué.
 
 **8 · La veillée** — 2 faisceaux, environ 8 gestes.
 Présents : le soleil (qui peut se coucher), le miroir du village, un lac, un
-porteur, deux cristaux-mémoire (l'un près du feu du village, l'autre sur
-l'autre rive, sous une avancée de roche, à côté du socle), le sanctuaire à
-deux cristaux dans la grotte au-dessus du village, un feu de camp.
+porteur, deux cristaux-mémoire (des lanternes d'ambre : l'une près du feu du
+village, l'autre suspendue sous l'avancée de roche de l'autre rive, près du
+socle), le sanctuaire à deux cristaux dans la grotte au-dessus du village
+(l'un dans la voûte, l'autre tout au fond), un feu de camp.
 
 1. De jour, le cristal-mémoire du village se charge tout seul au soleil.
 2. Viser celui de l'autre rive avec le miroir du village : le soleil ne
@@ -1181,9 +1182,10 @@ deux cristaux dans la grotte au-dessus du village, un feu de camp.
 3. Coucher le soleil : le lac gèle.
 4. Le porteur traverse et pose son miroir sur le socle, près du cristal qui
    brille encore.
-5. Miroir du socle → premier cristal du sanctuaire, avec la lueur de l'autre
-   rive.
-6. Miroir du village → second cristal, avec la lueur du village.
+5. Miroir du socle → le cristal du fond de la grotte, avec la lueur de
+   l'autre rive (lui seul le voit, de loin et presque à l'horizontale).
+6. Miroir du village → le cristal de la voûte, avec la lueur du village
+   (lui seul le voit, d'en bas).
 
 Les lueurs baissent lentement. Si l'une s'éteint avant la fin, on refait le
 jour pour la recharger : le miroir du porteur reste en place, le lac regèlera.
@@ -1363,6 +1365,10 @@ dans la glace.
    goutte, et la digue est une cascade gelée ; au niveau 7, les corniches
    sont des congères posées sur le sol, opaques, qui cachent entièrement le
    miroir ancien.
+   v0.8.4 : le niveau 8 est corrigé (il se gagnait en plein jour avec un
+   seul miroir) : un cristal dans la voûte, l'autre au fond de la grotte, à
+   chaque miroir le sien ; les cristaux-mémoire deviennent des lanternes
+   d'ambre à jauge, pour ne plus les confondre avec ceux du sanctuaire.
 10. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
