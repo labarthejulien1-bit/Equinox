@@ -35,6 +35,12 @@ body {
   background: var(--night);
 }
 
+/* Pendant le film : rien à toucher */
+#film-veil {
+  position: absolute;
+  inset: 0;
+}
+
 #game {
   position: absolute;
   inset: 0;
@@ -434,6 +440,19 @@ button {
 
 .list button.done {
   border-color: rgba(255, 226, 160, 0.45);
+}
+
+/* Le chapitre I, au moment où le film vient de l'ouvrir */
+.list button.fresh {
+  animation: fresh 1.6s ease-in-out 3;
+}
+
+@keyframes fresh {
+  50% {
+    border-color: var(--gold);
+    background: rgba(255, 226, 160, 0.16);
+    box-shadow: 0 0 22px rgba(255, 226, 160, 0.35);
+  }
 }
 
 /* Chapitre ou niveau pas encore disponible */

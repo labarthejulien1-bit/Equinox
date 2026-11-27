@@ -14,6 +14,12 @@ import level8 from './level8.js';
 import level9 from './level9.js';
 import level10 from './level10.js';
 
+/**
+ * Le chapitre 0 n'a pas de niveau : c'est un film (voir src/film/). Il faut
+ * l'avoir regardé en entier pour ouvrir le chapitre I.
+ */
+export const prologue = { number: '0', title: 'Il y a mille ans', place: 'La capitale des anciens' };
+
 export const chapters = [
   {
     number: 'I',
@@ -27,6 +33,7 @@ export const chapters = [
   { number: 'III', title: 'Le peuple de la forêt', place: 'Forêt', levels: [], soon: [] },
   { number: 'IV', title: 'Miroir de la vie', place: 'Lacs, marais, côtes', levels: [], soon: [] },
   { number: 'V', title: 'La brûlure', place: 'Désert, pierre nue', levels: [], soon: [] },
+  // (le dernier chapitre se passe dans la capitale des anciens : la ville du film)
   { number: 'VI', title: 'L’Equinox', place: 'Hauts plateaux de ruines', levels: [], soon: [] },
 ];
 

@@ -19,6 +19,8 @@
     <div id="stage">
       <!-- Le jeu est dessiné ici -->
       <canvas id="game"></canvas>
+      <!-- Pendant le film du chapitre 0 : un voile invisible, pour qu'aucun toucher ne passe -->
+      <div id="film-veil" class="hidden"></div>
 
       <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
       <div id="hud" class="hidden">
@@ -60,11 +62,12 @@
         </div>
       </div>
 
-      <!-- Choix du chapitre : six chapitres, un par milieu -->
+      <!-- Choix du chapitre : le chapitre 0 (un film), puis six chapitres, un par milieu -->
       <div id="chapters" class="overlay menu hidden">
         <div class="card">
           <div class="eyebrow">Le voyage</div>
           <div id="chapter-list" class="list"></div>
+          <div id="chapters-note" class="medal-total"></div>
           <div id="chapters-medals" class="medal-total"></div>
           <div class="actions">
             <button id="chapters-settings" class="ghost">Réglages</button>

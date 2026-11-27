@@ -64,8 +64,11 @@ function row({ num, name, sub, mark, extra, done, disabled, onClick }) {
  * @param onSettings () => les réglages ont changé (à enregistrer)
  * @param onReset    () => effacer la progression
  * @param onSelect   (level) => lance ce niveau
+ * @param prologue   le chapitre 0 (un film) : { number, title, place }
+ * @param filmSeen   () => vrai si le film a été vu en entier
+ * @param onFilm     () => lance le film
  */
-export function createUI({ chapters, perChapter, isDone, goalsOf, settings, sound, version, onSettings, onReset, onRestart, onSelect, onNext }) {
+export function createUI({ chapters, perChapter, isDone, goalsOf, settings, sound, version, onSettings, onReset, onRestart, onSelect, onNext, prologue, filmSeen, onFilm }) {
   const title = $('title');
   const hud = $('hud');
   const hint = $('hint');
@@ -75,6 +78,7 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
   const levelMenu = $('levels');
   const pauseMenu = $('pause');
   const settingsMenu = $('settings');
+  const veil = $('film-veil'); // posé sur le dessin pendant le film : aucun toucher ne passe
   let currentHint = null;
   let memoryShown = false;
   let currentGame = null;
@@ -99,11 +103,30 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
 
   // ── Choix du chapitre ──
 
-  function openChapters() {
+  /** fresh : le chapitre I vient de s'ouvrir (le film se termine), on le fait remarquer. */
+  function openChapters(fresh = false) {
     const list = $('chapter-list');
     list.textContent = '';
     let won = 0;
     let total = 0;
+    // Le chapitre 0 est un film : il faut l'avoir vu pour ouvrir la suite.
+    const seen = filmSeen();
+    list.append(
+      row({
+        num: prologue.number,
+        name: prologue.title,
+        sub: prologue.place,
+        mark: seen ? '✓' : 'à voir',
+        done: seen,
+        onClick: () => {
+          reset();
+          hide(title);
+          hide(hud);
+          show(veil);
+          onFilm();
+        },
+      }),
+    );
     for (const chapter of chapters) {
       const done = chapter.levels.filter((l) => isDone(l.id)).length;
       const open = chapter.levels.length > 0;
@@ -116,18 +139,27 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
           num: chapter.number,
           name: chapter.title,
           sub: chapter.place,
-          mark: open ? `${done}/${perChapter}` : 'bientôt',
-          extra: open && goals.length ? medalCount(medals, goals.length) : null,
+          mark: !open ? 'bientôt' : seen ? `${done}/${perChapter}` : 'fermé',
+          extra: open && seen && goals.length ? medalCount(medals, goals.length) : null,
           done: open && done === perChapter,
-          disabled: !open,
+          disabled: !open || !seen,
           onClick: () => openLevels(chapter),
         }),
       );
+      if (fresh && open && chapter === chapters[0]) list.lastChild.classList.add('fresh');
     }
+    $('chapters-note').textContent = seen ? '' : 'Regarde le chapitre 0 pour ouvrir le voyage.';
     $('chapters-medals').textContent = total ? `${won} médailles sur ${total}` : '';
     $('close-chapters').hidden = !playing; // au tout début, il faut choisir
     hideMenus();
     show(chapterMenu);
+  }
+
+  /** Le film vient de finir : on revient aux chapitres, le chapitre I est ouvert. */
+  function filmEnded() {
+    hide(veil);
+    if (playing) show(hud);
+    openChapters(true);
   }
 
   // ── Choix du niveau, dans un chapitre ──
@@ -220,14 +252,14 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     $('set-toasts').checked = settings.toasts;
     $('reset').textContent = 'Effacer';
     $('reset').classList.remove('armed');
-    $('reset-note').textContent = 'niveaux terminés et médailles';
+    $('reset-note').textContent = 'film, niveaux terminés et médailles';
     $('version').textContent = version ? `Equinox · version ${version}` : '';
     hideMenus();
     show(settingsMenu);
   }
 
   $('pause-settings').addEventListener('click', () => openSettings(openPause));
-  $('chapters-settings').addEventListener('click', () => openSettings(openChapters));
+  $('chapters-settings').addEventListener('click', () => openSettings(() => openChapters()));
   $('close-settings').addEventListener('click', () => (settingsBack ? settingsBack() : hide(settingsMenu)));
   $('set-sound').addEventListener('change', (e) => {
     sound.setMuted(!e.target.checked);
@@ -265,7 +297,7 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     hide(title);
     openChapters();
   });
-  $('back-chapters').addEventListener('click', openChapters);
+  $('back-chapters').addEventListener('click', () => openChapters());
   $('close-chapters').addEventListener('click', () => hide(chapterMenu));
   $('close-levels').addEventListener('click', () => hide(levelMenu));
 
@@ -366,5 +398,5 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 12 && y <= r.bottom + 12) hint.classList.remove('visible');
   }
 
-  return { update, touch, medal };
+  return { update, touch, medal, filmEnded };
 }

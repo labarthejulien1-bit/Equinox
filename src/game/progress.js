@@ -1,5 +1,5 @@
-// Progression du joueur : la liste des niveaux terminés et les médailles
-// gagnées, gardées sur l'appareil.
+// Progression du joueur : le film du chapitre 0 (vu ou non), la liste des
+// niveaux terminés et les médailles gagnées, gardés sur l'appareil.
 // Le stockage peut être indisponible (navigation privée…) : le jeu doit
 // fonctionner quand même, d'où les try/catch.
 
@@ -56,11 +56,32 @@ export function markMedal(levelId, goalId) {
   }
 }
 
-/** Efface toute la progression (niveaux terminés et médailles). */
+// ── Le film du chapitre 0 : il faut l'avoir vu pour ouvrir le chapitre I ──
+
+const FILM_KEY = 'equinox.film';
+
+export function filmSeen() {
+  try {
+    return localStorage.getItem(FILM_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function markFilm() {
+  try {
+    localStorage.setItem(FILM_KEY, '1');
+  } catch {
+    // tant pis : il faudra le revoir la prochaine fois
+  }
+}
+
+/** Efface toute la progression (film vu, niveaux terminés et médailles). */
 export function resetProgress() {
   try {
     localStorage.removeItem(KEY);
     localStorage.removeItem(MEDALS_KEY);
+    localStorage.removeItem(FILM_KEY);
   } catch {
     // rien à effacer
   }

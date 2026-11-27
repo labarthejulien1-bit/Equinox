@@ -82,9 +82,31 @@ vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).
 
 ## Architecture en une phrase
 
+(Le film du chapitre 0 est à part : voir plus bas.)
+
 `main.js` fait tourner la boucle → `game.update()` calcule la lumière
 (`engine/light.js`) puis applique les règles → `render.js` dessine la scène en
 palette d'ombre, puis en palette de lumière dans les zones éclairées.
+
+## Le chapitre 0 : le film
+
+Le jeu s'ouvre sur un film de 29 secondes, sans un mot : « Il y a mille
+ans », la capitale des anciens à son âge d'or, puis éteinte, puis mille ans
+de neige, et le petit peuple qui s'installe dans ses ruines. Il est dessiné
+par le jeu (aucun fichier vidéo) et vit dans `src/film/`.
+
+- `film.js` — le **déroulé** : `filmState(t)` dit où en est chaque chose à
+  l'instant t (entre 0 et 1), et `CUES` liste ses sons brefs. Il ne touche pas
+  au DOM : `npm run check` le fait défiler (`npm run check -- film`).
+- `filmDraw.js` — le **dessin**, d'après cet état. Il ne connaît aucune
+  date : pour changer le moment d'une chose, c'est dans `film.js`.
+- Le film est le chapitre 0 de la liste des chapitres (`prologue` dans
+  `levels/index.js`). Il faut l'avoir vu en entier pour ouvrir le chapitre I
+  (`filmSeen` dans `progress.js`). Décision du propriétaire : on ne peut ni
+  le passer ni le revoir autrement qu'en relançant le chapitre 0.
+- Sa ville est celle du dernier chapitre (VI) : le dernier temple devra
+  retrouver ce cadrage.
+- Pour le regarder à un instant donné : `__equinox.playFilm(20)`.
 
 ## L'onde du réveil
 

@@ -253,6 +253,48 @@ export function createAudio() {
       if (!fresh('step', 0.15)) return;
       puff({ freq: 900, dur: 0.05, gain: 0.02, q: 0.7 });
     },
+    // ── le film du chapitre 0 (voir src/film/film.js) ──
+    'film-open'() {
+      // L'âge d'or : l'arpège du sanctuaire rallumé, doux et lent.
+      [440, 554.37, 659.25, 880, 1108.73].forEach((f, i) => bell(f, 0.045, i * 0.42, 3.2));
+    },
+    'film-fold'() {
+      // Un grand miroir se replie : le bronze qui tourne, puis qui se pose.
+      tone({ f0: 240, f1: 150, dur: 0.7, gain: 0.05, type: 'triangle', attack: 0.05 });
+      tone({ f0: 96, f1: 70, dur: 0.35, gain: 0.12, at: 0.72 });
+      bell(659.25, 0.03, 0.72, 1.4);
+    },
+    'film-dark'() {
+      // Le cœur s'éteint : le même arpège, à l'envers, qui descend et se tait.
+      [1318.5, 1108.73, 880, 659.25, 554.37, 440, 329.63].forEach((f, i) => bell(f, 0.06 - i * 0.005, i * 0.26, 2.4));
+      tone({ f0: 220, f1: 110, dur: 3, gain: 0.07, attack: 0.4 });
+    },
+    'film-crack'() {
+      // La pierre se fend sous la glace.
+      puff({ freq: 1500, dur: 0.22, gain: 0.12, q: 0.9 });
+      puff({ freq: 3400, dur: 0.05, gain: 0.05, type: 'highpass', at: 0.05 });
+      tone({ f0: 130, f1: 55, dur: 0.5, gain: 0.1, at: 0.08 });
+    },
+    'film-fall'() {
+      // Un pan tombe dans la neige : un coup sourd.
+      tone({ f0: 90, f1: 42, dur: 0.6, gain: 0.16 });
+      puff({ freq: 320, dur: 0.4, gain: 0.07, type: 'lowpass' });
+    },
+    'film-hut'() {
+      // Une hutte se monte : deux coups de bois et la note d'un villageois.
+      tone({ f0: 210, f1: 150, dur: 0.07, gain: 0.05, type: 'triangle' });
+      tone({ f0: 250, f1: 170, dur: 0.07, gain: 0.05, type: 'triangle', at: 0.16 });
+      bell(SCALE[seen.wake++ % 5], 0.035, 0.3, 1.2);
+    },
+    'film-turn'() {
+      // Le vieux miroir grince en tournant.
+      tone({ f0: 320, f1: 410, dur: 0.9, gain: 0.03, type: 'triangle', attack: 0.1 });
+    },
+    'film-glint'() {
+      // Le reflet touche le cristal : une seule note, claire, qui dure.
+      bell(1760, 0.07, 0, 3.4);
+      bell(880, 0.04, 0.05, 3.8);
+    },
   };
 
   /** Joue le son d'un événement du jeu (voir g.events). */
@@ -341,6 +383,25 @@ export function createAudio() {
     }
   }
 
+  /**
+   * Les nappes pendant le film du chapitre 0. `p` est l'état du film
+   * (filmState) : l'accord chaud de l'âge d'or, puis le vent des mille ans.
+   */
+  function film(p) {
+    if (!ctx || ctx.state !== 'running') return;
+    const t = ctx.currentTime;
+    const set = (param, value, lag = 0.4) => param.setTargetAtTime(value, t, lag);
+    const quiet = 1 - p.veil; // les fondus du début et de la fin
+    set(beds.wind.gain.gain, (0.02 + 0.14 * p.wind) * quiet);
+    set(beds.wind.filter.frequency, 360 + 520 * p.wind);
+    set(beds.water.gain.gain, 0, 0.5);
+    set(beds.rumble.gain.gain, 0, 0.2);
+    set(beds.night.gain.gain, (0.03 + 0.03 * (1 - p.warm)) * quiet, 1);
+    set(beds.day.gain.gain, 0.035 * Math.max(p.warm, p.dawn * 0.6) * quiet, 1);
+    set(beds.thaw.gain.gain, 0.03 * p.power * quiet, 0.8); // l'accord de la cité en marche
+    set(beds.shimmer.gain.gain, 0.02 * p.glint * quiet, 0.2);
+  }
+
   /** Volume en sortie, entre 0 et 1 (sert aux essais automatiques). */
   function level() {
     if (!analyser) return 0;
@@ -352,6 +413,7 @@ export function createAudio() {
   return {
     unlock,
     update,
+    film,
     event,
     setMuted,
     setVolume,

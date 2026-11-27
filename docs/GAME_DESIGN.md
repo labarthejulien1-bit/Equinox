@@ -58,6 +58,42 @@ Au dernier temple, on découvre que tout avait été prévu pour ce retour : le
 culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
 était une étape du plan des anciens.
 
+### Le chapitre 0 : le film ✅
+
+Le jeu s'ouvre sur un film de 29 secondes, **sans un mot**, en un seul
+cadrage. Il est le chapitre 0 du voyage, « Il y a mille ans » : il faut
+l'avoir regardé en entier pour ouvrir le chapitre I. On ne peut pas le
+passer ; pour le revoir, on relance le chapitre 0.
+
+Le lieu est la **capitale des anciens**, une tour solaire : deux grands
+miroirs renvoient le soleil sur le cristal de l'aiguille, la lumière
+descend jusqu'au **cœur**, une sphère ardente dans une cage d'anneaux qui
+tournent, et de là court dans toute la ville par les passerelles. Les
+anciens portent de longues robes blanches à capuchon, une ceinture d'or et
+un masque d'or.
+
+| Temps | Ce qu'on voit |
+| --- | --- |
+| 0 à 6 s | L'âge d'or : la cité en pleine lumière, les anciens sur leur terrasse. |
+| 6 à 11 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. |
+| 11 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. |
+| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint, qui répond d'une lueur. |
+| 26 à 29,5 s | L'image reste, puis s'efface : le chapitre I s'ouvre. |
+
+Ce que le film montre et ce qu'il tait : on voit **ce que** les anciens ont
+fait (ils ont replié leurs miroirs avant la neige), jamais **pourquoi**. Le
+« pourquoi » reste la révélation du dernier temple.
+
+Cette ville est celle du **dernier chapitre** (VI, les hauts plateaux). Le
+dernier temple devra retrouver ce cadrage : l'onde du réveil passera sur la
+cité gelée et ramènera la première image du film, avec les villageois à la
+place des anciens. C'est le film, joué à l'envers par le joueur.
+
+Choix écartés en cours de route : un prologue jouable, une fresque gravée
+(qui reste une piste pour l'écran des chapitres) ; pour le lieu, une vallée
+de miroirs, un port, une cité-cadran, une cité-arche ; pour la machine, une
+grande roue, un moulin à lumière, des eaux hautes.
+
 ### L'onde du réveil ✅
 
 Le moment où le joueur tient la promesse doit se voir : quand tous les
@@ -1394,7 +1430,10 @@ dans la glace.
    niveaux. Choisie parmi trois maquettes (l'onde ; le réseau de sillons
    gravés qui relie les machines ; la première journée, où le soleil
    repart seul). Les deux autres restent possibles par-dessus.
-11. **À venir, dans un ordre à décider** :
+11. ✅ **v0.10** — le chapitre 0 : un film de 29 secondes qui ouvre le jeu
+   (§ 3), la capitale des anciens de l'âge d'or à aujourd'hui. Il faut
+   l'avoir vu pour ouvrir le chapitre I.
+12. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;

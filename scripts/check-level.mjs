@@ -13,6 +13,7 @@ import { rad, pointInPolygon, distToPolygon } from '../src/engine/vec.js';
 import { createLife, updateLife, tapLife, beamAt } from '../src/game/life.js';
 import { updateGoals, GOAL_TYPES } from '../src/game/goals.js';
 import { RECIPES } from './goal-recipes.mjs';
+import { createFilm, updateFilm, filmState, FILM_LENGTH, T as FILM } from '../src/film/film.js';
 
 let failed = 0;
 const check = (ok, label) => {
@@ -1114,12 +1115,44 @@ function checkGoals(level) {
   }
 }
 
+// ── Le film du chapitre 0 ─────────────────────────────────────────────
+
+/** Fait défiler le déroulé du film (sans le dessiner) et vérifie qu'il raconte bien ce qui est prévu. */
+function checkFilm() {
+  const film = createFilm();
+  const heard = [];
+  let wrong = 0; // valeurs sorties de [0, 1]
+  for (let i = 0; i < 40 * 30 && !film.done; i++) {
+    updateFilm(film, 1 / 30);
+    heard.push(...film.events.splice(0));
+    const p = filmState(film.t);
+    for (const [key, v] of Object.entries(p)) if (typeof v === 'number' && key !== 't' && key !== 'spin' && !(v >= 0 && v <= 1)) wrong++;
+    for (let k = 0; k < 4; k++) if (!(p.folk(k) >= 0 && p.folk(k) <= 1 && p.bridge(k) >= 0 && p.bridge(k) <= 1)) wrong++;
+  }
+  check(film.done && Math.abs(film.t - FILM_LENGTH) < 0.05, `le film se termine (${FILM_LENGTH} secondes)`);
+  check(FILM_LENGTH >= 20 && FILM_LENGTH <= 30, 'il dure entre 20 et 30 secondes');
+  check(wrong === 0, 'son déroulé reste entre 0 et 1 du début à la fin');
+  const start = filmState(3);
+  const end = filmState(FILM.glint + 1);
+  check(start.warm === 1 && start.power === 1 && start.sun === 1 && start.elders === 1 && start.ground === 0, 'au début : l’âge d’or (soleil, cœur allumé, anciens sur leur terrasse, pas de neige)');
+  check(end.warm === 0 && end.power === 0 && end.ground === 1 && end.ruin.rightTall === 1 && end.ice(4) === 1, 'à la fin : la cité éteinte, en ruine, sous la neige et la glace');
+  check([0, 1, 2].every((i) => end.hut(i) === 1) && [0, 1, 2, 3].every((i) => end.folk(i) === 1), 'à la fin : le village est installé au pied des ruines');
+  check(end.turn === 1 && end.beam === 1 && end.glint > 0.9, 'le vieux miroir est tourné, son reflet touche le cristal');
+  const order = ['film-open', 'film-fold', 'film-dark', 'film-crack', 'film-hut', 'film-turn', 'film-glint'].map((name) => heard.indexOf(name));
+  check(order.every((at, i) => at >= 0 && (i === 0 || at > order[i - 1])), 'ses sons arrivent dans l’ordre du récit');
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
 const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9, 10: checkLevel10 };
 // `npm run check -- 6` ne vérifie que le niveau 6 (pratique pendant qu'on le construit).
-const only = process.argv[2] ? Number(process.argv[2]) : null;
-for (const level of levels) {
+// `npm run check -- film` ne vérifie que le film du chapitre 0.
+const only = process.argv[2] && process.argv[2] !== 'film' ? Number(process.argv[2]) : null;
+if (!only) {
+  console.log('\nChapitre 0 — le film');
+  checkFilm();
+}
+for (const level of process.argv[2] === 'film' ? [] : levels) {
   if (only && level.id !== only) continue;
   console.log(`\nNiveau ${level.id} — ${level.title}`);
   // (`npm run check -- 6 goals` ne vérifie que les objectifs du niveau 6)
@@ -1132,5 +1165,5 @@ for (const level of levels) {
   checkGoals(level);
 }
 
-console.log(failed ? `\n${failed} vérification(s) en échec.` : '\nTous les niveaux sont bons.');
+console.log(failed ? `\n${failed} vérification(s) en échec.` : process.argv[2] === 'film' ? '\nLe film est bon.' : '\nTous les niveaux sont bons.');
 process.exit(failed ? 1 : 0);
