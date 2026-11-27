@@ -127,12 +127,6 @@ export default {
     [[84, 552.4], [104, 556], [134, 557.9]],
     [[244, 557.8], [290, 556], [314, 554.2]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // Le lac est nourri par une veine venue de la gauche ; un filet s'en échappe par le fond, vers le bas de l'écran.
-  veins: [
-    { width: 5, path: [[-8, 612], [40, 596], [90, 578], [128, 568], [141, 566]] },
-    { width: 4.5, path: [[229, 576], [250, 600], [290, 640], [330, 690], [372, 732]] },
-  ],
 
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [

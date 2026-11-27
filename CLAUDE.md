@@ -50,9 +50,12 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
    type d'élément réutilisable, jamais comme un cas particulier du niveau.
 5. Vérifier le rendu par captures d'écran (voir plus bas).
 
-Si le niveau a de l'eau, on doit voir d'où elle vient et où elle repart :
-`veins` et `aquifers` (`src/game/underground.js`) la dessinent en coupe dans
-la roche, comme au niveau 1.
+Si le niveau a de l'eau, elle doit venir de quelque chose de naturel et de
+visible en surface : neige qui fond (un filet, `width` dans `streams`, ou un
+goutte-à-goutte, `drips`), reste de glacier (`remnants`), source, lac. Les
+veines et les nappes dessinées dans la roche (`veins`, `aquifers`) ont été
+retirées partout sauf au niveau 1, à la demande du propriétaire : ne pas en
+remettre sans qu'il le demande.
 
 À partir du niveau 6, un sanctuaire a plusieurs cristaux (`temple.crystals`),
 et chaque cristal ne doit être atteignable que par un seul miroir : le

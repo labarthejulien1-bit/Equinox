@@ -1280,10 +1280,12 @@ Les plans des niveaux 6 à 10 ont été choisis avant la réécriture de leurs
 
 ### Gabarit d'un niveau
 
-**L'eau a toujours une origine et une sortie visibles** ✅ : on doit voir
-d'où elle vient (névé, fissure, source, bord de l'écran) et où elle repart
-(nappe, tunnel, bord de l'écran). Fait dans tous les niveaux du chapitre I
-qui ont de l'eau :
+**L'eau vient de quelque chose de naturel, visible en surface** ✅ : la
+neige qui fond, un reste de glacier qui goutte, une source, un lac. Après
+essai, les veines et les nappes dessinées en coupe dans la roche ont été
+retirées partout sauf au niveau 1 (elles chargeaient l'image sans bien
+rendre) : ne plus en ajouter sans que le propriétaire le demande. Où en est
+chaque niveau du chapitre I qui a de l'eau :
 
 | Niveau | D'où vient l'eau | Où elle repart |
 | --- | --- | --- |
@@ -1292,8 +1294,8 @@ qui ont de l'eau :
 | 3 | la neige du versant gauche fond : un filet descend la pente, tombe goutte à goutte du surplomb et rejoint le lac | un petit filet par le ravin, qui gèle en cascade de glace |
 | 4 | une eau calme au fond de la vallée (rien n'est dessiné dans la roche : choix du propriétaire) | — |
 | 6 | la source du replat (rien n'est dessiné dans la roche : choix du propriétaire) | une perte au pied de la cascade |
-| 8 | une veine venue de la gauche, jusqu'au lac | un filet s'échappe par le fond du lac |
-| 10 | l'eau de fonte suinte sous le grand glacier | perte, nappe sous le village, puis filet « vers les plaines » |
+| 8 | un lac de montagne (rien n'est dessiné dans la roche : choix du propriétaire) | — |
+| 10 | la source au pied du grand glacier (rien n'est dessiné dans la roche : choix du propriétaire) | une perte au pied de la cascade |
 
 Les niveaux 5, 7 et 9 n'ont pas d'eau. Quand une source gèle, sa cascade se
 tarit et le filet d'aval aussi ; la nappe, elle, reste pleine.

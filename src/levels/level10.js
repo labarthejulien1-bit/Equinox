@@ -190,15 +190,6 @@ export default {
   blooms: [
     [[106, 582.2], [150, 586], [188, 586]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont : l'eau de fonte suinte sous le grand glacier et nourrit la source.
-  veins: [
-    { width: 3, path: [[300, 330.3], [282, 336], [265, 338.6]] },
-  ],
-  // En aval : l'eau s'enfonce au pied de la cascade, remplit une nappe sous le village, puis repart vers les plaines.
-  aquifers: [
-    { stream: 'torrent', inlet: [[199, 600], [188, 614], [176, 628]], cavern: [[98, 650], [106, 634], [124, 624], [146, 628], [164, 622], [180, 632], [184, 652], [174, 668], [146, 675], [118, 672], [102, 662]], low: 674, high: 643, fillTime: 18, stalactites: [[120, 625.5, 7], [142, 628, 6], [166, 623, 8]], outlet: [[183, 645], [214, 664], [262, 700], [320, 740], [352, 764]] },
-  ],
 
   // Traits gravés qui relient les trois cristaux (ils s'illuminent à la victoire).
   conduits: [
