@@ -327,6 +327,14 @@ export default {
   ],
 
   // Indice affiché en bas de l'écran, selon l'avancement du joueur.
+  // Les objectifs secondaires, du plus simple au plus fin : une médaille chacun
+  // (cuivre, argent, or). Ils sont à côté de l'énigme : voir src/game/goals.js.
+  goals: [
+    { id: 'chouette', type: 'owl', title: 'La chouette a hululé', text: 'Touche la chouette posée sur la hutte' },
+    { id: 'marmottes', type: 'marmots', title: 'Les marmottes sont sorties', text: 'Amène le soleil sur le terrier des marmottes' },
+    { id: 'cairn', type: 'shine', at: [30, 146.5], hold: 0.6, title: 'Le cairn du sommet brille', text: 'Pose un reflet sur le cairn, tout en haut de la montagne' },
+  ],
+
   hint(g) {
     const ice = g.ices[0];
     if (g.temple.lit) return '';

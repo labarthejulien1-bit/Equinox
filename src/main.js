@@ -9,7 +9,9 @@ import { createGame, update } from './game/game.js';
 import { createLife, updateLife, tapLife } from './game/life.js';
 import { createAudio } from './engine/audio.js';
 import { createRenderer } from './game/render.js';
-import { loadDone, markDone } from './game/progress.js';
+import { createGoals, updateGoals, MEDALS } from './game/goals.js';
+import { loadDone, markDone, medalsOf, markMedal, resetProgress } from './game/progress.js';
+import { loadSettings, saveSettings } from './ui/settings.js';
 import { attachInput } from './engine/input.js';
 import { createUI } from './ui/ui.js';
 
@@ -21,22 +23,45 @@ let index = Math.max(
   0,
   levels.findIndex((l) => !loadDone().includes(l.id)),
 );
-let game = createGame(levels[index]);
-createLife(game); // animaux, vent, petit peuple : tout ce qui vit autour de l'énigme
+let game = null;
+
+/** Fabrique le niveau i : son énigme, sa vie, ses objectifs. */
+function build(i) {
+  index = i;
+  game = createGame(levels[i]);
+  createLife(game); // animaux, vent, petit peuple : tout ce qui vit autour de l'énigme
+  createGoals(game, medalsOf(game.level.id)); // les trois médailles du niveau
+}
+build(index);
 
 /** Lance (ou relance) un niveau. */
 function play(i) {
-  index = i;
-  game = createGame(levels[i]);
-  createLife(game);
+  build(i);
   game.started = true;
   renderer.resize(game.level);
 }
+
+// Le son : il ne peut démarrer qu'après un premier geste du joueur.
+const settings = loadSettings();
+const audio = createAudio();
+audio.setVolume(settings.volume);
+// (sur un téléphone, c'est le doigt qui se relève qui compte comme un geste)
+for (const type of ['pointerdown', 'pointerup', 'click']) window.addEventListener(type, () => audio.unlock());
 
 const ui = createUI({
   chapters,
   perChapter: LEVELS_PER_CHAPTER,
   isDone: (id) => loadDone().includes(id),
+  // Les objectifs d'un niveau, avec leur médaille (gagnée ou non)
+  goalsOf: (level) => (level.goals || []).map((def, i) => ({ def, medal: MEDALS[i], done: medalsOf(level.id).includes(def.id) })),
+  settings,
+  sound: audio,
+  version: import.meta.env?.VITE_VERSION || '',
+  onSettings: () => saveSettings(settings),
+  onReset: () => {
+    resetProgress();
+    for (const goal of game.goals) goal.done = false;
+  },
   onRestart: () => play(index),
   onSelect: (level) => play(levels.indexOf(level)),
   onNext: () => play(Math.min(index + 1, levels.length - 1)),
@@ -44,18 +69,6 @@ const ui = createUI({
 
 // Un simple toucher (sans glisser) dérange l'animal ou le villageois visé.
 attachInput(canvas, renderer.view, () => game, ui.touch, (p) => tapLife(game, p));
-
-// Le son : il ne peut démarrer qu'après un premier geste du joueur.
-const audio = createAudio();
-// (sur un téléphone, c'est le doigt qui se relève qui compte comme un geste)
-for (const type of ['pointerdown', 'pointerup', 'click']) window.addEventListener(type, () => audio.unlock());
-const soundButton = document.getElementById('sound');
-const showSound = () => soundButton.classList.toggle('off', audio.muted);
-soundButton.addEventListener('click', () => {
-  audio.setMuted(!audio.muted);
-  showSound();
-});
-showSound();
 
 const resize = () => renderer.resize(game.level);
 window.addEventListener('resize', resize);
@@ -69,6 +82,12 @@ function frame(now) {
   update(game, dt);
   updateLife(game, dt);
   if (game.events.includes('temple-lit')) markDone(game.level.id);
+  // Un objectif secondaire vient d'être atteint : une médaille !
+  for (const goal of updateGoals(game, dt)) {
+    markMedal(game.level.id, goal.def.id);
+    game.events.push('medal' + goal.index);
+    ui.medal(goal);
+  }
   for (const e of game.events) audio.event(e);
   game.events.length = 0;
   audio.update(game, dt);

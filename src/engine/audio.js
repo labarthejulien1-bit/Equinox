@@ -19,6 +19,7 @@ export function createAudio() {
   let analyser = null;
   let noise = null; // deux secondes de souffle, la matière du vent et de l'eau
   let beds = null; // les nappes
+  let volume = 1; // réglage du joueur, de 0 à 1 (voir setVolume)
   let muted = false;
   try {
     muted = localStorage.getItem(MUTE_KEY) === '1';
@@ -39,7 +40,7 @@ export function createAudio() {
     if (!AC) return;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = muted ? 0 : VOLUME;
+    master.gain.value = muted ? 0 : VOLUME * volume;
     // Un limiteur doux : plusieurs sons en même temps ne saturent pas.
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -16;
@@ -116,7 +117,13 @@ export function createAudio() {
     } catch {
       // tant pis
     }
-    if (ctx) master.gain.setTargetAtTime(value ? 0 : VOLUME, ctx.currentTime, 0.05);
+    if (ctx) master.gain.setTargetAtTime(value ? 0 : VOLUME * volume, ctx.currentTime, 0.05);
+  }
+
+  /** Le volume choisi dans les réglages, de 0 à 1 (c'est le menu qui le retient). */
+  function setVolume(value) {
+    volume = Math.max(0, Math.min(1, value));
+    if (ctx && !muted) master.gain.setTargetAtTime(VOLUME * volume, ctx.currentTime, 0.05);
   }
 
   // ───────────────────────────── Briques sonores ─────────────────────────────
@@ -245,6 +252,12 @@ export function createAudio() {
   function event(name) {
     if (!ctx || ctx.state !== 'running') return;
     // Un villageois qu'on touche fait tinter sa note : 'chime0' à 'chime4'.
+    // Une médaille : 'medal0' (cuivre), 'medal1' (argent), 'medal2' (or) — de plus en plus riche.
+    if (name.startsWith('medal')) {
+      const n = Number(name.slice(5)) || 0;
+      [659.25, 880, 1108.73, 1318.5].slice(0, n + 2).forEach((f, i) => bell(f, 0.07, i * 0.11, 1.8));
+      return;
+    }
     if (name.startsWith('chime')) return bell([523.25, 587.33, 659.25, 783.99, 880][Number(name.slice(5)) || 0], 0.06, 0, 1.2);
     if (SOUNDS[name]) SOUNDS[name]();
   }
@@ -333,6 +346,7 @@ export function createAudio() {
     update,
     event,
     setMuted,
+    setVolume,
     level,
     get muted() {
       return muted;

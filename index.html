@@ -23,9 +23,15 @@
       <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
       <div id="hud" class="hidden">
         <div id="level-name"></div>
-        <button id="sound" aria-label="Couper ou remettre le son">♪</button>
-        <button id="open-levels" aria-label="Choisir un niveau">☰</button>
+        <!-- Les trois médailles du niveau (un toucher ouvre le menu) -->
+        <button id="level-medals" class="pips" aria-label="Voir les objectifs du niveau"></button>
+        <button id="open-menu" aria-label="Ouvrir le menu">☰</button>
         <button id="restart" aria-label="Recommencer le niveau">↺</button>
+        <!-- Annonce d'une médaille gagnée -->
+        <div id="toast">
+          <span id="toast-pip" class="pip"></span>
+          <span><b id="toast-medal"></b><span id="toast-text"></span></span>
+        </div>
         <div id="hint"></div>
       </div>
 
@@ -45,6 +51,7 @@
           <p id="memory-text"></p>
           <p id="memory-tech" class="tech"></p>
           <p id="memory-end" class="end" hidden>La suite du voyage arrive bientôt.</p>
+          <div id="memory-medals" class="medal-line"></div>
           <div class="actions">
             <button id="next">Niveau suivant</button>
             <button id="contemplate" class="ghost">Contempler</button>
@@ -58,7 +65,9 @@
         <div class="card">
           <div class="eyebrow">Le voyage</div>
           <div id="chapter-list" class="list"></div>
+          <div id="chapters-medals" class="medal-total"></div>
           <div class="actions">
+            <button id="chapters-settings" class="ghost">Réglages</button>
             <button id="close-chapters" class="ghost">Fermer</button>
           </div>
         </div>
@@ -73,6 +82,55 @@
           <div class="actions">
             <button id="back-chapters" class="ghost">Chapitres</button>
             <button id="close-levels" class="ghost">Fermer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Le menu, pendant la partie : objectifs du niveau, puis les autres écrans -->
+      <div id="pause" class="overlay menu hidden">
+        <div class="card">
+          <div id="pause-level" class="eyebrow"></div>
+          <h2 class="small">Objectifs</h2>
+          <div id="goal-list" class="goals"></div>
+          <p id="goal-note" class="note"></p>
+          <div class="stack">
+            <button id="resume">Reprendre</button>
+            <button id="pause-levels" class="ghost">Choisir un niveau</button>
+            <button id="pause-settings" class="ghost">Réglages</button>
+            <button id="pause-restart" class="ghost">Recommencer le niveau</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Les réglages -->
+      <div id="settings" class="overlay menu hidden">
+        <div class="card">
+          <div class="eyebrow">Réglages</div>
+          <div class="settings">
+            <label class="setting">
+              <span>Son</span>
+              <input id="set-sound" type="checkbox" class="switch" />
+            </label>
+            <label class="setting">
+              <span>Volume</span>
+              <input id="set-volume" type="range" min="0" max="100" step="5" />
+            </label>
+            <label class="setting">
+              <span>Indices<small>les phrases d'aide en bas de l'écran</small></span>
+              <input id="set-hints" type="checkbox" class="switch" />
+            </label>
+            <label class="setting">
+              <span>Annonce des médailles<small>un message quand un objectif est atteint</small></span>
+              <input id="set-toasts" type="checkbox" class="switch" />
+            </label>
+            <div class="setting">
+              <span>Progression<small id="reset-note">niveaux terminés et médailles</small></span>
+              <button id="reset" class="danger">Effacer</button>
+            </div>
+          </div>
+          <p id="version" class="note"></p>
+          <div class="actions">
+            <button id="close-settings" class="ghost">Retour</button>
           </div>
         </div>
       </div>

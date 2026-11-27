@@ -657,8 +657,57 @@ reste debout et change de prise, sans jamais se coucher.
 accord de fond qui s'éclaire avec le jour puis avec le dégel, le vent et ses
 rafales, l'eau qui coule, la glace qui craque, la lourde porte qui gronde,
 les tintements des miroirs et des cristaux, l'arpège du sanctuaire, et la
-voix de chaque animal (sifflet, hululement, cri du rapace). Un bouton ♪ le
-coupe. Tout ce qui tinte est accordé sur une même gamme de cinq notes.
+voix de chaque animal (sifflet, hululement, cri du rapace). Il se règle
+dans le menu (coupé ou non, volume). Tout ce qui tinte est accordé sur une même gamme de cinq notes.
+
+## 5 quinquies. Les objectifs secondaires et les médailles ✅
+
+Chaque niveau propose **trois objectifs à côté de l'énigme** : ils ne
+servent pas à rallumer le sanctuaire, ils invitent à éveiller le milieu ou
+à jouer avec les machines des anciens. Chacun donne une médaille — **cuivre,
+argent, or**, du plus simple au plus fin. Trente médailles pour le
+chapitre I.
+
+Règles de conception :
+- un objectif ne se gagne jamais sans rien faire, et il est toujours
+  atteignable depuis le début du niveau : le test automatique le prouve en
+  rejouant sa « recette » (`scripts/goal-recipes.mjs`, qui sert aussi
+  d'antisèche) ;
+- le cuivre apprend un geste (toucher un animal, faire glisser un rail), l'argent
+  demande de jouer avec le soleil ou le nuage, l'or demande de viser juste
+  avec un miroir ou de réunir plusieurs conditions ;
+- les objectifs d'état (marmottes dehors, fleurs ouvertes, bouquetin
+  couché) ne comptent que tant que le sanctuaire dort : une fois rallumé,
+  le monde s'éveille tout seul.
+
+| Niveau | Cuivre | Argent | Or |
+| --- | --- | --- | --- |
+| 1 | toucher la chouette | amener le soleil sur les marmottes | poser un reflet sur le cairn du sommet |
+| 2 | toucher le rapace en vol | faire siffler la sentinelle d'un reflet | réveiller le buisson à l'ombre avec un reflet |
+| 3 | toucher le lac : un poisson saute | ouvrir toutes les fleurs ensemble | éblouir le rapace avec le reflet du radeau |
+| 4 | toucher le bouquetin | faire de l'ombre aux marmottes | ouvrir la fleur de la rive avec un reflet |
+| 5 | promener le miroir sur son rail | renvoyer la lumière vers le ciel | ouvrir les deux fleurs ensemble |
+| 6 | faire tinter chaque villageois | faire détaler le lièvre d'un reflet | ouvrir la fleur de la crête avec un reflet |
+| 7 | renvoyer la lumière vers le ciel | faire siffler la sentinelle d'un reflet | éblouir le rapace |
+| 8 | coucher le soleil : le rapace se pose | voir une étoile filante | la même nuit, toucher la chouette et les yeux de la grotte |
+| 9 | faire tinter chaque villageois | faire de l'ombre au bouquetin couché | le grand éveil : bouquetin couché et fleurs ouvertes ensemble |
+| 10 | promener le miroir sur son rail | faire passer l'ombre du nuage sur les marmottes | éblouir le rapace |
+
+Trois réactions ont été ajoutées à la vie du monde pour l'occasion : un
+reflet éblouit le rapace en plein vol, un poisson saute quand on touche un
+lac libre de glace, et le jeu retient ce qui a dérangé un animal (l'ombre,
+un reflet, le doigt).
+
+**Où les voir.** Trois pastilles sous le nom du niveau ; le menu ☰ liste les
+trois objectifs et leur médaille ; la liste des niveaux montre les pastilles
+de chacun ; la liste des chapitres donne le total ; la carte souvenir les
+rappelle à la fin du niveau. Une annonce passe en haut de l'écran quand une
+médaille est gagnée, avec un petit carillon (plus riche pour l'or).
+
+**Le menu et les réglages.** Le bouton ☰ ouvre le menu de la partie :
+objectifs, reprendre, choisir un niveau, réglages, recommencer. Les
+réglages : son, volume, indices (les phrases d'aide), annonce des médailles,
+effacer la progression (deux touchers), numéro de version.
 
 ## 6. Système d'éléments
 
@@ -1301,7 +1350,9 @@ dans la glace.
    (plus de marches d'escalier), dans tous les niveaux.
    v0.7.2 : les portes sont en cuivre, pour qu'on les voie à l'ombre de leur
    falaise.
-9. **À venir, dans un ordre à décider** :
+9. ✅ **v0.8** — trois objectifs secondaires par niveau et leurs médailles
+   (§ 5 quinquies), le menu de la partie et les réglages.
+10. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;

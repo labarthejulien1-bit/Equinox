@@ -115,6 +115,13 @@ export default {
     [[178, 528.1], [200, 522], [230, 516], [258, 508.5]],
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'ciel', type: 'sky', hold: 0.5, title: 'Un reflet a rejoint le ciel', text: 'Renvoie la lumière du village vers le ciel, par le haut de l’écran' },
+    { id: 'sentinelle', type: 'whistle', by: 'beam', title: 'La sentinelle a sifflé', text: 'Pose un reflet sur les marmottes : la sentinelle siffle' },
+    { id: 'rapace', type: 'dazzle', title: 'Le rapace est ébloui', text: 'Éblouis le rapace : fais passer un reflet sur lui' },
+  ],
+
   hint(g) {
     const [low, high, heap] = g.ices;
     const porter = g.walkers[0];

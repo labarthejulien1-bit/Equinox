@@ -9,7 +9,7 @@
 //   - le bouquetin cherche le soleil, s'y couche, et se lève quand l'ombre vient ;
 //   - les marmottes sortent au soleil ; la sentinelle siffle quand une ombre passe ;
 //   - le lièvre détale quand le reflet d'un miroir le touche ;
-//   - le rapace plane le jour et se pose quand le soleil disparaît ;
+//   - le rapace plane le jour et se pose quand le soleil disparaît ; un reflet l'éblouit ;
 //   - la chouette ne vient que la nuit ;
 //   - les fleurs s'ouvrent à la lumière.
 
@@ -445,21 +445,23 @@ function updateIbex(k, g, life, dt) {
     k.goal = n.d;
     setState(k, 'walk');
   };
-  const shake = () => {
+  // (by : ce qui le fait se lever — les objectifs du niveau s'en servent)
+  const shake = (by) => {
+    k.shookBy = by;
     setState(k, 'shake');
     g.events.push('snort');
     for (let i = 0; i < 9; i++) addBit(life, { type: 'snow', x: k.x + rnd(-7, 7) * k.s, y: k.y - rnd(8, 16) * k.s, vx: rnd(-22, 22), vy: rnd(-26, -6), max: rnd(0.4, 0.8), r: rnd(0.4, 0.8), fall: 90 });
   };
 
-  if (k.tap && k.state !== 'walk' && k.state !== 'shake') shake();
+  if (k.tap && k.state !== 'walk' && k.state !== 'shake') shake('tap');
 
   if (k.state === 'sleep') {
-    if (!asleep) shake();
+    if (!asleep) shake('dawn');
   } else if (k.state === 'shake') {
     if (k.t > 0.8) setState(k, 'stand');
   } else if (k.state === 'lie') {
     if (asleep) setState(k, 'sleep');
-    else if (g.temple.lit || (!lit && k.t > 0.7)) shake(); // l'ombre arrive : debout !
+    else if (g.temple.lit || (!lit && k.t > 0.7)) shake(g.temple.lit ? 'revive' : 'shade'); // l'ombre arrive : debout !
     else if (path && k.t > k.rest) {
       // De temps en temps, il change de place.
       const others = nodes.filter((n) => n !== here && sunny(n));
@@ -533,7 +535,9 @@ function updateMarmots(k, g, life, dt) {
   k.sunT = want ? k.sunT + dt : 0;
   const bird = life.critters.find((c) => c.type === 'raptor' && c.shadow);
   const birdNear = bird && Math.hypot(bird.shadow.x - k.x, bird.shadow.y - k.y) < 16;
-  const scare = k.tap || (k.beam && !k.wasBeam) || (k.wasSun && !k.sun) || (birdNear && !k.wasBird);
+  // Ce qui l'inquiète (on le retient : les objectifs du niveau s'en servent)
+  const by = k.tap ? 'tap' : k.beam && !k.wasBeam ? 'beam' : k.wasSun && !k.sun ? 'shade' : birdNear && !k.wasBird ? 'bird' : null;
+  const scare = by !== null;
   k.wasSun = k.sun;
   k.wasBeam = k.beam;
   k.wasBird = birdNear;
@@ -548,6 +552,7 @@ function updateMarmots(k, g, life, dt) {
     k.calm += dt;
     if (scare) {
       setState(k, 'alarm');
+      k.alarmBy = by;
       k.calm = 0;
       k.whistle = 0.75;
       g.events.push('whistle');
@@ -614,6 +619,7 @@ function updateHare(k, g, life, dt) {
     if (k.tap && k.state === 'sit') bounds(k.u, 1, 0.3, 'sit');
     else if (threat) {
       // Il file vers le bout le plus éloigné.
+      k.fledBy = k.tap ? 'tap' : 'beam';
       bounds(k.len ? (k.u < 0.5 ? 1 : 0) : k.u, 3, 0.25, 'alert');
       k.back = rnd(3.5, 5.5);
     } else if (asleep) setState(k, 'sleep');
@@ -673,6 +679,14 @@ function updateRaptor(k, g, life, dt) {
     k.flap = 1.4;
     k.loop = 7; // dérangé, il fait un tour avant de se reposer
   }
+  // Un reflet l'éblouit en plein vol : il crie et donne un coup d'aile.
+  k.dazzled = Math.max(0, (k.dazzled || 0) - dt);
+  if (k.beam && !k.wasBeam && k.state === 'soar') {
+    g.events.push('raptor');
+    k.flap = 1.4;
+    k.dazzled = 1.5;
+  }
+  k.wasBeam = k.beam;
   if (k.state === 'soar') {
     k.x = sky.x;
     k.y = sky.y;
@@ -902,16 +916,22 @@ function updateMotes(g, life, dt) {
   life.motes = life.motes.filter((m) => m.life < m.max);
 }
 
+/** Ce bassin est-il vivant en ce moment ? (assez profond, libre de glace, de jour) */
+function waterAwake(g, life, w) {
+  const d = w.b.def;
+  // Sous la glace, rien ne bouge.
+  const frozen = g.frosts.some((f) => f.amount > 0.25 && f.def.rect && f.def.rect.x1 > d.x0 && f.def.rect.x0 < d.x1);
+  const deep = d.floor - w.b.level > 7 && d.x1 - d.x0 > 44;
+  return !frozen && deep && life.night <= 0.5;
+}
+
 /** Bassins : des ronds dans l'eau, et parfois un poisson qui saute. */
 function updateWaters(g, life, dt) {
   for (const w of life.waters) {
     const d = w.b.def;
     for (const r of w.rings) r.t += dt / 1.6;
     w.rings = w.rings.filter((r) => r.t < 1);
-    // Sous la glace, rien ne bouge.
-    const frozen = g.frosts.some((f) => f.amount > 0.25 && f.def.rect && f.def.rect.x1 > d.x0 && f.def.rect.x0 < d.x1);
-    const deep = d.floor - w.b.level > 7 && d.x1 - d.x0 > 44;
-    if (frozen || !deep || life.night > 0.5) continue;
+    if (!waterAwake(g, life, w)) continue;
     w.ringIn -= dt;
     if (w.ringIn <= 0) {
       w.ringIn = rnd(2.5, 6);
@@ -1004,7 +1024,20 @@ export function tapLife(g, p) {
     else consider(k, k.x + (k.type === 'marmots' ? 4 * k.s : 0), k.y - 8 * k.s, 13 + 10 * k.s);
   }
   for (const f of life.folk) if (f.vis > 0.6) consider(f, f.x, f.y - 8 * f.p.s, 16);
-  if (!best) return false;
-  best.who.tap = true;
-  return true;
+  if (best) {
+    best.who.tap = true;
+    return true;
+  }
+  // Personne ? Si le doigt touche un lac libre de glace, un poisson y saute.
+  for (const w of life.waters) {
+    const d = w.b.def;
+    if (!waterAwake(g, life, w) || w.jump) continue;
+    if (p.x < d.x0 + 6 || p.x > d.x1 - 6 || p.y < w.b.level - 8 || p.y > d.floor) continue;
+    const dir = p.x < (d.x0 + d.x1) / 2 ? 1 : -1; // il saute vers le milieu du lac
+    w.jump = { x0: clamp(p.x, d.x0 + 22, d.x1 - 22), dir, t: 0, by: 'tap' };
+    w.rings.push({ x: w.jump.x0, t: 0 });
+    g.events.push('plop');
+    return true;
+  }
+  return false;
 }

@@ -214,6 +214,13 @@ export default {
     ],
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'rail', type: 'rail', title: 'Le miroir a parcouru son rail', text: 'Fais glisser le miroir du haut d’un bout à l’autre de son rail' },
+    { id: 'sentinelle', type: 'whistle', by: 'shade', title: 'La sentinelle a sifflé', text: 'Fais passer l’ombre du nuage sur les marmottes qui prennent le soleil' },
+    { id: 'rapace', type: 'dazzle', title: 'Le rapace est ébloui', text: 'Éblouis le rapace : fais passer un reflet sur lui' },
+  ],
+
   hint(g) {
     const block = g.ices[1];
     const source = g.frosts[0];

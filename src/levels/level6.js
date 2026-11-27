@@ -168,6 +168,13 @@ export default {
     { stream: 'torrent', inlet: [[191.5, 570], [184, 590], [160, 620], [120, 660], [70, 704], [30, 752]] },
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'villageois', type: 'chimes', title: 'Tout le hameau a tinté', text: 'Touche chacun des trois villageois' },
+    { id: 'lievre', type: 'hare', title: 'Le lièvre a détalé', text: 'Fais détaler le lièvre avec un reflet' },
+    { id: 'fleur', type: 'flower', n: 0, title: 'Une fleur s’est ouverte dans l’ombre', text: 'Ouvre la fleur de la crête, tout à gauche, avec un reflet, quand elle est à l’ombre' },
+  ],
+
   hint(g) {
     const source = g.frosts[0];
     const [hamlet, crete] = g.mirrors;

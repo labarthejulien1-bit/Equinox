@@ -9,7 +9,8 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 - `npm run check` — vérifie chaque niveau (résoluble, sans raccourci ; décor
   bien posé : animaux sur le sol, eau souterraine dans la roche). À lancer
   après toute modification de `src/engine/`, `src/game/game.js` ou d'un niveau.
-  Le tour complet prend environ trois minutes ; `npm run check -- 7` ne
+  Il vérifie aussi les trois objectifs secondaires de chaque niveau.
+  Le tour complet prend environ cinq minutes ; `npm run check -- 7` ne
   vérifie que le niveau 7.
 - `npm run build` — build de production dans `dist/`
 
@@ -43,7 +44,8 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 2. L'ajouter à son chapitre dans `src/levels/index.js` (et retirer son titre
    de la liste `soon`).
 3. Écrire sa fonction `checkLevelN` dans `scripts/check-level.mjs` : au moins
-   un raccourci impossible, et la solution prévue de bout en bout.
+   un raccourci impossible, et la solution prévue de bout en bout. Lui donner
+   aussi ses trois objectifs (`goals`) et leurs recettes (voir plus bas).
 4. Si le niveau demande une règle nouvelle, l'ajouter dans `game.js` comme un
    type d'élément réutilisable, jamais comme un cas particulier du niveau.
 5. Vérifier le rendu par captures d'écran (voir plus bas).
@@ -101,6 +103,29 @@ pour s'assurer que rien ne casse.
   nom dans `g.events`, puis l'ajouter à `SOUNDS`.
 - Le son ne peut pas être vérifié à l'oreille dans une session cloud : le
   dire au propriétaire, et vérifier au moins le volume (`__equinox.audio.level()`).
+
+## Objectifs secondaires et médailles
+
+Chaque niveau a une liste `goals` de trois objectifs, du plus simple au plus
+fin (médailles de cuivre, d'argent, d'or). Ils sont **à côté de l'énigme** :
+`src/game/goals.js` ne fait que regarder le jeu, comme `life.js`.
+
+- Un objectif : `{ id, type, title, text }` (+ réglages du type). `type`
+  choisit un test de `goals.js` ; `title` est annoncé quand la médaille est
+  gagnée, `text` est la consigne affichée dans le menu.
+- Ne jamais changer un `id` publié : c'est lui qui retient la médaille sur
+  l'appareil du joueur (`progress.js`).
+- Chaque objectif a sa recette dans `scripts/goal-recipes.mjs`. `npm run
+  check` la rejoue et vérifie aussi que l'objectif ne se gagne pas sans rien
+  faire. `npm run check -- 6 goals` ne vérifie que les objectifs du niveau 6.
+- Pour un objectif d'un genre nouveau : ajouter son test dans `TESTS`
+  (`goals.js`) ; s'il a besoin de savoir pourquoi un animal a réagi, le noter
+  dans `life.js` (comme `alarmBy`, `fledBy`, `shookBy`).
+- Choisir des objectifs visibles à l'écran, et vérifier qu'ils ne sont pas
+  déjà remplis au début du niveau (marmottes déjà au soleil, etc.).
+
+L'interface (menu ☰, réglages, pastilles, annonce) est dans `src/ui/ui.js` ;
+les réglages sont gardés par `src/ui/settings.js`.
 
 ## Ajouter un décor
 

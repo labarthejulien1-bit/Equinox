@@ -75,6 +75,13 @@ export default {
     [[304, 537.8], [322, 536], [342, 537.4]],
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'rail', type: 'rail', title: 'Le miroir a parcouru son rail', text: 'Fais glisser le miroir d’un bout à l’autre de son rail' },
+    { id: 'ciel', type: 'sky', hold: 0.5, title: 'Un reflet a rejoint le ciel', text: 'Renvoie la lumière vers le ciel, par le haut de l’écran' },
+    { id: 'fleurs', type: 'flowers', title: 'Les deux fleurs sont ouvertes', text: 'Trouve l’heure où les deux fleurs s’ouvrent ensemble' },
+  ],
+
   hint(g) {
     const mirror = g.mirrors[0];
     if (g.temple.lit) return '';

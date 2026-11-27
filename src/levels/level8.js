@@ -134,6 +134,13 @@ export default {
     { width: 4.5, path: [[229, 576], [250, 600], [290, 640], [330, 690], [372, 732]] },
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'perchoir', type: 'perch', title: 'Le rapace s’est posé', text: 'Couche le soleil : le rapace rejoint son perchoir' },
+    { id: 'etoile', type: 'star', title: 'Une étoile filante est passée', text: 'Reste dans la nuit jusqu’à voir une étoile filante' },
+    { id: 'nuit', type: 'night', title: 'Les veilleurs de la nuit t’ont vu', text: 'Dans la même nuit, touche la chouette et les yeux qui brillent dans la grotte' },
+  ],
+
   hint(g) {
     const [mVillage, mShore] = g.memories;
     const porter = g.walkers[0];

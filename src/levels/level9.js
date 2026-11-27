@@ -135,6 +135,13 @@ export default {
     [[92, 244.8], [106, 250], [116, 255]],
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'villageois', type: 'chimes', title: 'Tout le village a tinté', text: 'Touche chacun des deux villageois' },
+    { id: 'bouquetin', type: 'ibexUp', title: 'Le bouquetin s’est ébroué', text: 'Laisse le bouquetin se coucher au soleil, puis fais-lui de l’ombre' },
+    { id: 'eveil', type: 'all', of: [{ type: 'ibex' }, { type: 'flowers' }], hold: 1, title: 'Le grand éveil', text: 'Le grand éveil : le bouquetin couché au soleil et toutes les fleurs ouvertes, en même temps' },
+  ],
+
   hint(g) {
     const ice = g.ices[0];
     const [top, twin, village] = g.mirrors;

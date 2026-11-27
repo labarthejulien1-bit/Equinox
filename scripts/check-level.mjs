@@ -3,13 +3,16 @@
 //
 // Pour chaque niveau :
 //  - aucun raccourci (le soleil seul ne peut pas allumer le temple, etc.) ;
-//  - la solution prévue fonctionne de bout en bout.
+//  - la solution prévue fonctionne de bout en bout ;
+//  - le décor est bien posé, et les trois objectifs secondaires sont atteignables.
 
 import { levels } from '../src/levels/index.js';
 import { createGame, update, computeLight, sunPosition, turnMirror } from '../src/game/game.js';
 import { aimMirror } from '../src/engine/light.js';
 import { rad, pointInPolygon, distToPolygon } from '../src/engine/vec.js';
-import { createLife, updateLife } from '../src/game/life.js';
+import { createLife, updateLife, tapLife, beamAt } from '../src/game/life.js';
+import { updateGoals, GOAL_TYPES } from '../src/game/goals.js';
+import { RECIPES } from './goal-recipes.mjs';
 
 let failed = 0;
 const check = (ok, label) => {
@@ -965,6 +968,93 @@ function checkScenery(level) {
   check(!error, error ? `la vie du monde casse : ${error.message}` : 'la vie du monde tourne sans erreur');
 }
 
+// ── Les objectifs secondaires ─────────────────────────────────────────
+// Chaque niveau a trois objectifs (une médaille chacun). On vérifie qu'aucun
+// ne se gagne tout seul, et que chacun est atteignable : sa « recette »
+// (scripts/goal-recipes.mjs) est rejouée comme le ferait un joueur.
+
+/** Où toucher pour déranger tel animal (ou chaque villageois visible). */
+function tapPoints(g, what) {
+  if (what === 'night') return [...tapPoints(g, 'owl'), ...tapPoints(g, 'eyes')];
+  if (what === 'lake') return g.life.waters.map((w) => ({ x: (w.b.def.x0 + w.b.def.x1) / 2, y: w.b.level + 3 }));
+  if (what === 'folk') return g.life.folk.filter((f) => f.vis > 0.6).map((f) => ({ x: f.x, y: f.y - 8 * f.p.s }));
+  const k = g.life.critters.find((c) => c.type === what);
+  if (!k) return [];
+  return [what === 'raptor' ? { x: k.x, y: k.y } : { x: k.x, y: k.y - 8 * k.s }];
+}
+
+/**
+ * Rejoue une recette depuis le début du niveau. Vrai si l'objectif est atteint.
+ * Une recette : { sun, cloud, rail: { id: t }, settle, aim: [miroir, x, y] ou [miroir, 'raptor'],
+ * taps: 'owl' | 'eyes' | 'raptor' | 'folk' | 'lake' | 'night', wait, then: [{ … , wait }] }
+ * — on place le soleil, le nuage et le rail, on attend `settle`, on vise, on
+ * attend `wait` (en touchant `taps` de temps en temps), puis on enchaîne `then`.
+ */
+function playRecipe(level, def, recipe) {
+  const DT = 1 / 20;
+  const g = createGame(level);
+  createLife(g);
+  g.started = true;
+  g.goals = [{ def, done: false, held: 0, memo: {} }];
+  let tapIn = 0.3;
+  let n = 0;
+  const apply = (r) => {
+    if (r.sun != null) g.sunAngle = rad(r.sun);
+    if (r.cloud != null && level.cloud) g.cloudX = r.cloud;
+    for (const [id, t] of Object.entries(r.rail || {})) mirrorOf(g, id).t = t;
+    if (r.aim) {
+      let [id, x, y] = r.aim;
+      const m = mirrorOf(g, id);
+      // (viser un animal : aim: ['village', 'raptor'] le vise là où il est)
+      if (typeof x === 'string') ({ x, y } = g.life.critters.find((k) => k.type === x));
+      update(g, DT);
+      // (on ne vise qu'avec un miroir que le joueur peut tourner et que le soleil éclaire)
+      if (!m || !m.free || !m.lit || m.rail) return false;
+      aimFromSun(g, m, { x, y });
+      g.touched.mirror = true; // (comme quand le joueur tourne un miroir)
+    }
+    return true;
+  };
+  const wait = (seconds, taps) => {
+    for (let t = 0; t < seconds; t += DT) {
+      update(g, DT);
+      if (taps && (tapIn -= DT) <= 0) {
+        tapIn = 0.6;
+        const pts = tapPoints(g, taps);
+        if (pts.length) tapLife(g, pts[n++ % pts.length]);
+      }
+      updateLife(g, DT);
+      if (updateGoals(g, DT).length) return true;
+      g.events.length = 0;
+    }
+    return false;
+  };
+  if (!apply({ ...recipe, aim: null })) return false;
+  if (wait(recipe.settle ?? 0.6, null)) return true;
+  if (recipe.aim && !apply({ aim: recipe.aim })) return false;
+  if (wait(recipe.wait ?? 6, recipe.taps)) return true;
+  for (const then of [].concat(recipe.then || [])) {
+    if (!apply(then)) return false;
+    if (wait(then.wait ?? 5, recipe.taps)) return true;
+  }
+  return false;
+}
+
+function checkGoals(level) {
+  const goals = level.goals || [];
+  const recipes = RECIPES[level.id] || {};
+  const ids = new Set(goals.map((q) => q.id));
+  const wellFormed = goals.length === 3 && ids.size === 3 && goals.every((q) => q.id && q.title && q.text && GOAL_TYPES.includes(q.type));
+  check(wellFormed, wellFormed ? 'trois objectifs secondaires, bien écrits' : 'il faut trois objectifs (id, type connu, title, text), aux ids différents');
+  if (!wellFormed) return;
+  for (const def of goals) {
+    const free = playRecipe(level, def, { wait: 14 });
+    const recipe = recipes[def.id];
+    const reached = !!recipe && playRecipe(level, def, recipe);
+    check(!free && reached, `médaille « ${def.title} » : ${free ? 'elle se gagne sans rien faire' : !recipe ? 'pas de recette dans goal-recipes.mjs' : reached ? 'atteignable, et pas donnée' : 'la recette ne l’atteint pas'}`);
+  }
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
 const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9, 10: checkLevel10 };
@@ -973,9 +1063,13 @@ const only = process.argv[2] ? Number(process.argv[2]) : null;
 for (const level of levels) {
   if (only && level.id !== only) continue;
   console.log(`\nNiveau ${level.id} — ${level.title}`);
-  if (checks[level.id]) checks[level.id](level);
-  else check(false, 'aucune vérification écrite pour ce niveau');
-  checkScenery(level);
+  // (`npm run check -- 6 goals` ne vérifie que les objectifs du niveau 6)
+  if (process.argv[3] !== 'goals') {
+    if (checks[level.id]) checks[level.id](level);
+    else check(false, 'aucune vérification écrite pour ce niveau');
+    checkScenery(level);
+  }
+  checkGoals(level);
 }
 
 console.log(failed ? `\n${failed} vérification(s) en échec.` : '\nTous les niveaux sont bons.');

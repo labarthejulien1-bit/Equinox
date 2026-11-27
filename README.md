@@ -6,12 +6,14 @@ temples d'une civilisation solaire oubliée sous la glace.
 
 ![Aperçu du niveau 1](docs/images/apercu.jpg)
 
-**État actuel : v0.7** — le jeu comptera six chapitres de dix niveaux. Le
+**État actuel : v0.8** — le jeu comptera six chapitres de dix niveaux. Le
 premier chapitre, « La source », est complet : dix niveaux jouables de bout
 en bout. À partir du niveau 6, le sanctuaire a plusieurs cristaux, à éclairer
 en même temps avec plusieurs miroirs. Le monde vit (animaux qui réagissent à
 la lumière, vent, village qui dort et se réveille), il a du son, et l'on voit
-partout d'où vient l'eau et où elle repart.
+partout d'où vient l'eau et où elle repart. Chaque niveau propose en plus trois
+objectifs à côté de l'énigme, récompensés par une médaille (cuivre, argent,
+or) ; un menu donne accès aux objectifs et aux réglages.
 
 | | Niveau | Ce qu'on y apprend |
 | --- | --- | --- |
@@ -103,15 +105,18 @@ src/
     decor.js            dessin des petits décors : animaux, cairns, buissons, fleurs
     life.js             la vie du monde : ce que font les animaux, le vent, le village
     lifeDraw.js         dessin du reste de la vie : empreintes, neige soufflée, poussières…
-    progress.js         niveaux terminés, gardés sur l'appareil
+    goals.js            les objectifs secondaires : trois par niveau, une médaille chacun
+    progress.js         niveaux terminés et médailles, gardés sur l'appareil
     sliders.js          bulles du bas de l'écran (soleil et nuage au pouce)
   levels/
     index.js            les six chapitres et leurs niveaux, dans l'ordre
     terrain.js          outil pour écrire le relief en tronçons nommés
     level1.js … level10.js  un fichier par niveau : formes, positions, textes
-  ui/ui.js              écran titre, choix du chapitre et du niveau, indices, souvenir
+  ui/ui.js              écran titre, chapitres et niveaux, menu (objectifs, médailles), réglages, souvenir
+  ui/settings.js        les réglages du joueur, gardés sur l'appareil
 public/                 icône, manifeste PWA, service worker
 scripts/check-level.mjs test automatique de tous les niveaux
+scripts/goal-recipes.mjs comment gagner chacune des médailles (rejoué par le test)
 docs/GAME_DESIGN.md     le document de conception du jeu
 ```
 
@@ -138,6 +143,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `eyes` | conduit des anciens : un œil d'entrée, un œil de sortie | l'œil d'entrée éclairé allume l'œil de sortie, qui éclaire les miroirs proches |
 | `memories` | cristaux-mémoire | se chargent à la lumière, puis éclairent les miroirs proches dans le noir |
 | `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
+| `goals` | les trois objectifs secondaires du niveau (voir `src/game/goals.js`) : `{ id, type, title, text }` | une médaille chacun (cuivre, argent, or) ; ils sont à côté de l'énigme et ne la changent pas |
 | `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fleurs, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme, mais les animaux réagissent à la lumière (voir `life.js`) |
 | `remnants` | un reste de glace accroché à un plafond, qui goutte une fois son glacier fondu (niveau 1) | décor seulement ; montre d'où vient l'eau |
 | `veins`, `aquifers` | l'eau dans la roche, vue en coupe : veines et filets en amont, nappe ou boyau en aval (et `drain` dans un cours d'eau : le pied de falaise ou la perte par où il s'en va) | décor seulement ; montre d'où vient l'eau et où elle repart |

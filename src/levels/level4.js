@@ -117,6 +117,13 @@ export default {
     { width: 5.5, path: [[229.7, 526], [252, 548], [290, 590], [330, 640], [372, 688]] },
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'bouquetin', type: 'ibexTap', title: 'Le bouquetin s’est ébroué', text: 'Touche le bouquetin sur sa falaise' },
+    { id: 'sentinelle', type: 'whistle', by: 'shade', title: 'La sentinelle a sifflé', text: 'Fais passer une ombre sur les marmottes qui prennent le soleil' },
+    { id: 'fleur', type: 'flower', n: 3, title: 'Une fleur s’est ouverte dans l’ombre', text: 'Ouvre la fleur de la rive droite avec un reflet, quand elle est à l’ombre' },
+  ],
+
   hint(g) {
     const bridge = g.frosts[0];
     const porter = g.walkers[0];

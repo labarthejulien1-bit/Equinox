@@ -137,6 +137,13 @@ export default {
     { stream: 'torrent', inlet: [[205, 619], [196, 632], [184, 645]], cavern: [[128, 664], [136, 650], [152, 643], [170, 647], [184, 642], [194, 652], [196, 668], [186, 680], [164, 685], [142, 682], [131, 674]], low: 684, high: 661, fillTime: 18, stalactites: [[146, 645.5, 7], [166, 646.5, 6], [182, 643, 7]], outlet: [[130, 663], [104, 684], [70, 716], [40, 752]] },
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'rapace', type: 'raptor', title: 'Le rapace a crié', text: 'Touche le rapace en plein vol' },
+    { id: 'sentinelle', type: 'whistle', by: 'beam', title: 'La sentinelle a sifflé', text: 'Pose un reflet sur les marmottes : la sentinelle siffle' },
+    { id: 'buisson', type: 'flower', n: 0, title: 'Le buisson a fleuri dans l’ombre', text: 'Réveille le buisson du bord gauche avec un reflet, quand il est à l’ombre' },
+  ],
+
   hint(g) {
     const source = g.frosts[0];
     const mirror = g.mirrors[0];

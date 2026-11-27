@@ -121,6 +121,13 @@ export default {
     { width: 5, path: [[-8, 548], [24, 532], [56, 512], [84, 502], [95.5, 498.6]] },
   ],
 
+  // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
+  goals: [
+    { id: 'poisson', type: 'fish', title: 'Un poisson a sauté', text: 'Touche le lac : un poisson y saute' },
+    { id: 'fleurs', type: 'flowers', title: 'Toutes les fleurs sont ouvertes', text: 'Trouve l’heure où toutes les fleurs s’ouvrent ensemble' },
+    { id: 'rapace', type: 'dazzle', title: 'Le rapace est ébloui', text: 'Éblouis le rapace : fais passer sur lui le reflet du radeau' },
+  ],
+
   hint(g) {
     const dam = g.frosts[0];
     const mirror = g.mirrors[0];
