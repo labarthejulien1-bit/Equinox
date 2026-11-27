@@ -986,10 +986,11 @@ falaise.
 
 Le trajet de l'eau ✅ (choisi parmi trois maquettes : rivière souterraine,
 nappe, citerne des anciens). Tout est dessiné en coupe dans la roche :
-- **en amont**, la neige du sommet s'infiltre : trois filets fins naissent
-  sous elle et se rejoignent en une fissure prise par la glace, qui descend
-  jusqu'au glacier ; quand le glacier a fondu, tout cela coule ;
-- **en aval**, l'eau s'infiltre par l'arche, remplit en une vingtaine de
+- **en amont**, quand le glacier a fondu, un reste de glace demeure accroché
+  au plafond de sa niche : ses glaçons gouttent et un filet ruisselle le
+  long de la paroi jusqu'au départ du torrent (la source venue du sommet,
+  essayée d'abord, a été écartée) ;
+- **en aval**, l'eau entre dans la roche au pied de la falaise, remplit en une vingtaine de
   secondes une petite nappe sous le temple, puis le trop-plein repart en un
   filet vers le bas de l'écran, à droite.
 
@@ -1237,7 +1238,7 @@ qui ont de l'eau :
 
 | Niveau | D'où vient l'eau | Où elle repart |
 | --- | --- | --- |
-| 1 | la neige du sommet, par trois filets et une fissure gelée | arche, nappe sous le temple, puis filet vers le bas |
+| 1 | un reste du glacier, accroché au plafond de sa niche, qui goutte | boyau au pied de la falaise, nappe sous le temple, puis filet vers le bas |
 | 2 | la neige du versant droit, par des filets qui nourrissent la source | perte au pied de la cascade, nappe sous la pente, puis filet vers le bas |
 | 3 | une veine venue de la gauche, jusqu'au bec qui alimente le lac | le ravin, qui sort de l'écran |
 | 4 | le torrent sort de la roche à gauche | il s'y renfonce à droite et quitte l'écran |

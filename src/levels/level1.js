@@ -139,51 +139,46 @@ export default {
       ],
     },
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont, la neige du sommet s'infiltre : trois filets fins naissent sous
-  // elle et se rejoignent en une fissure, qui descend jusqu'au glacier.
-  veins: [
+  // D'où vient l'eau du torrent (décor : voir src/game/underground.js) : quand
+  // le glacier fond, un reste de glace demeure accroché au plafond de la
+  // niche. Ses glaçons gouttent et un filet ruisselle le long de la paroi.
+  remnants: [
     {
       after: 'glacier',
-      width: 3,
-      path: [
-        [20, 178],
-        [27, 188],
-        [36, 200],
+      // (le plafond de la niche, puis le dessous de la croûte et ses trois glaçons)
+      points: [
+        [166, 326],
+        [140, 312],
+        [116, 316],
+        [107.5, 336],
+        [110, 334],
+        [112.5, 325],
+        [114, 331],
+        [115.5, 323],
+        [118.5, 322],
+        [120, 329],
+        [121.5, 321],
+        [133, 318.5],
+        [147, 320.5],
+        [150.5, 322],
+        [152, 329],
+        [153.5, 323],
+        [160, 325.5],
       ],
-    },
-    {
-      after: 'glacier',
-      width: 3,
-      path: [
-        [30, 163],
-        [33, 180],
-        [36, 200],
+      drips: [
+        [114, 331, 375.5],
+        [120, 329, 379],
+        [152, 329, 430], // celui-ci tombe dans le vide, le long de la cascade
       ],
-    },
-    {
-      after: 'glacier',
-      width: 3,
-      path: [
-        [42, 186],
-        [41, 193],
-        [36, 200],
-      ],
-    },
-    {
-      after: 'glacier',
-      width: 5.5,
-      path: [
-        [36, 200],
-        [36, 214],
-        [56, 246],
-        [70, 262],
-        [78, 292],
-        [98, 312],
-        [110, 331],
+      trickle: [
+        [108, 336],
+        [107, 356],
+        [108.5, 371],
+        [112, 374],
       ],
     },
   ],
+  // L'eau dans la roche, vue en coupe (décor, même fichier).
   // En aval, l'eau s'infiltre au pied de la falaise, remplit une nappe sous
   // le temple, puis le trop-plein repart vers le bas de l'écran.
   aquifers: [

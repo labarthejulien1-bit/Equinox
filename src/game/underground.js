@@ -20,8 +20,16 @@
 //             { stream: 'id du cours d'eau', inlet, cavern, low, high, fillTime,
 //               outlet, stalactites: [[x, y, longueur]…] }
 //
+//   remnants  un reste de glace (à l'air libre, pas dans la roche) : ce qui
+//             demeure d'un glacier une fois fondu, accroché à un plafond. Il
+//             goutte et un filet ruisselle jusqu'au départ du cours d'eau.
+//             { after: 'id de la glace', points: [[x, y]…],
+//               drips: [[x, y du glaçon, y du sol]…], trickle: [[x, y]…] }
+//
 // Tout cela est du décor : rien ici ne bloque la lumière ni ne change
 // l'énigme. Où en est l'eau (remplissage, filets) est tenu par life.js.
+
+import { TAU } from '../engine/vec.js';
 
 const P2 = ([x, y]) => ({ x, y });
 const STREAM_WIDTH = 4.6; // la largeur d'un torrent en surface (voir drawRun dans render.js)
@@ -169,4 +177,67 @@ export function drawUnderground(c, P, g) {
     poly(c, cavern);
     c.stroke();
   });
+}
+
+/**
+ * Les restes de glace (`remnants`). À dessiner avant les glaciers : tant que
+ * le glacier est entier, son reste est caché dedans.
+ */
+export function drawRemnants(c, P, g) {
+  for (const r of g.level.remnants || []) {
+    const ice = g.ices.find((i) => i.def.id === r.after);
+    const melted = !ice || ice.gone;
+    // La croûte de glace et ses glaçons
+    c.fillStyle = P.ice;
+    poly(c, r.points.map(P2));
+    c.fill();
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 0.7;
+    c.lineJoin = 'round';
+    c.globalAlpha = 0.6;
+    c.stroke();
+    c.globalAlpha = 1;
+    if (!melted) continue;
+
+    // Le filet qui ruisselle le long de la paroi
+    if (r.trickle) {
+      c.lineCap = 'round';
+      c.strokeStyle = P.water;
+      c.lineWidth = 1.6;
+      line(c, r.trickle.map(P2));
+      c.stroke();
+      c.strokeStyle = P.iceLine;
+      c.lineWidth = 0.7;
+      c.setLineDash([2, 6]);
+      c.lineDashOffset = -g.time * 14;
+      c.stroke();
+      c.setLineDash([]);
+      c.lineDashOffset = 0;
+    }
+
+    // Les gouttes : chacune se forme au bout de son glaçon, tombe, puis fait
+    // un petit rond en touchant le sol.
+    c.fillStyle = P.iceLine;
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 0.7;
+    (r.drips || []).forEach(([x, top, floor], n) => {
+      const u = (g.time * 0.55 + n * 0.37) % 1;
+      c.beginPath();
+      c.arc(x, top + 0.6, 0.5 + 0.5 * u, 0, TAU);
+      c.fill();
+      if (u < 0.6) {
+        const fall = u / 0.6;
+        c.beginPath();
+        c.ellipse(x, top + (floor - top) * fall * fall, 0.8, 1.5, 0, 0, TAU);
+        c.fill();
+      } else {
+        const v = (u - 0.6) / 0.4;
+        c.globalAlpha = 1 - v;
+        c.beginPath();
+        c.ellipse(x, floor, 1 + v * 3.5, 0.5 + v, 0, 0, TAU);
+        c.stroke();
+        c.globalAlpha = 1;
+      }
+    });
+  }
 }

@@ -23,7 +23,7 @@ import {
   lampHalos,
 } from './game.js';
 import { drawDecor } from './decor.js';
-import { drawUnderground } from './underground.js';
+import { drawUnderground, drawRemnants } from './underground.js';
 import { drawDoor, drawChain, drawWaterWheel, drawDrain, drawMachineGlow } from './machine.js';
 import { windAt } from './life.js';
 import { drawLifeSky, drawLifeFar, drawLifeGround, drawLifeFront, drawLifeGlow } from './lifeDraw.js';
@@ -341,6 +341,9 @@ export function createRenderer(canvas) {
     // Huttes du village, puis les décors posés sur le sol
     for (const h of L.houses || []) drawHouse(c, P, h, g);
     for (const d of L.decor || []) if (d.layer !== 'sky') drawDecor(c, P, d, g);
+
+    // Ce qui restera des glaciers une fois fondus (caché dessous d'ici là)
+    drawRemnants(c, P, g);
 
     // Miroirs prisonniers de la glace, puis les glaciers eux-mêmes
     for (const ice of g.ices) {

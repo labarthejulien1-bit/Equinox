@@ -929,6 +929,9 @@ function checkScenery(level) {
       if (end ? !inRock(p) && edge(p) > 3.5 : !inRock(p) || edge(p) < margin) bad.push(`${what} : le point (${p.x}, ${p.y}) sort de la roche`);
     });
   };
+  for (const r of level.remnants || []) {
+    if (r.after && !(level.ices || []).some((i) => i.id === r.after)) bad.push(`reste de glace : la glace « ${r.after} » n'existe pas`);
+  }
   for (const v of level.veins || []) {
     inside(v.path, 'veine', 1.5);
     if (v.after && !(level.ices || []).some((i) => i.id === v.after)) bad.push(`veine : la glace « ${v.after} » n'existe pas`);
