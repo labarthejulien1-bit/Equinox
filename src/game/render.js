@@ -277,7 +277,9 @@ export function createRenderer(canvas) {
     for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'fall') drawFall(c, P, w, g, isLit, s.def.width);
 
     // Supports des miroirs, socles, pins
-    for (const m of g.mirrors) drawMount(c, P, m);
+    // (un miroir enfoui sous la neige ne montre rien, pas même son support)
+    const buried = (m) => g.ices.some((ice) => ice.def.id === m.frozen && ice.def.look === 'snow' && ice.active && !ice.gone);
+    for (const m of g.mirrors) if (!buried(m)) drawMount(c, P, m);
     for (const p of L.pedestals || []) drawPedestal(c, P, p);
     for (const p of L.pines || []) drawPine(c, P, p);
 
@@ -350,7 +352,8 @@ export function createRenderer(canvas) {
     for (const ice of g.ices) {
       if (ice.gone || !ice.active) continue;
       for (const m of g.mirrors) {
-        if (m.frozen !== ice.def.id) continue;
+        // (on devine un miroir pris dans la glace ; sous la neige, il est caché)
+        if (m.frozen !== ice.def.id || ice.def.look === 'snow') continue;
         const geo = mirrorGeometry(m);
         c.lineCap = 'round';
         c.strokeStyle = P.bronze;
@@ -1014,17 +1017,26 @@ export function createRenderer(canvas) {
       cx += p.x / pts.length;
       cy += p.y / pts.length;
     }
+    const snow = ice.def.look === 'snow';
     const k = 1 - 0.14 * m;
-    const shr = pts.map((p) => ({ x: cx + (p.x - cx) * k, y: cy - 6 * m + (p.y - cy) * k }));
-    c.globalAlpha = 0.94 - 0.6 * m;
+    // (la glace se soulève un peu en fondant ; la neige, elle, se tasse)
+    const shr = pts.map((p) => ({ x: cx + (p.x - cx) * k, y: cy + (snow ? 3 : -6) * m + (p.y - cy) * k }));
     poly(c, shr);
-    // Une corniche ou un tas de neige (look: 'snow') : blanc, sans facettes
-    if (ice.def.look === 'snow') {
+    // Une corniche ou un tas de neige (look: 'snow') : la même neige que celle du
+    // sol, opaque (elle cache ce qu'elle recouvre), avec un bord doux qui déborde
+    // un peu sur le sol pour faire corps avec lui.
+    if (snow) {
+      c.globalAlpha = 1 - 0.65 * m;
       c.fillStyle = P.snow;
       c.fill();
+      c.strokeStyle = P.snow;
+      c.lineJoin = 'round';
+      c.lineWidth = 2.6;
+      c.stroke();
       c.globalAlpha = 1;
       return;
     }
+    c.globalAlpha = 0.94 - 0.6 * m;
     c.fillStyle = P.ice;
     c.fill();
     // Facettes

@@ -31,7 +31,7 @@ const relief = terrain([
   { pts: [[154, 492], [110, 482], [78, 484], [54, 488]] }, // le dessous du rocher
   { pts: [[54, 488], [56, 460], [52, 428], [38, 432], [34, 460], [38, 496]] }, // la cheminée du premier cristal
   { pts: [[38, 496], [34, 516], [44, 540]] },
-  { pts: [[44, 540], [68, 542], [90, 544]] }, // le replat du socle, sous le rocher
+  { pts: [[44, 540], [68, 542], [90, 544]], snow: true }, // le replat du socle, sous le rocher (la neige de la corniche du bas s'y appuie)
   { pts: [[90, 544], [95, 584], [99, 616], [104, 584], [108, 546]], cave: true }, // la rimaye
   { pts: [[108, 546], [132, 540], [164, 532], [200, 522]], snow: true }, // le glacier
   { pts: [[200, 522], [230, 516], [260, 508]], snow: true }, // la moraine du village
@@ -69,9 +69,11 @@ export default {
 
   // Les neiges. `look: 'snow'` les dessine en blanc ; `after` : le tas
   // n'apparaît que lorsque la corniche du haut est tombée.
+  // Ce sont des congères posées sur le sol : leur base suit le relief point par
+  // point. Celle du haut recouvre entièrement le miroir ancien et son support.
   ices: [
-    { id: 'cornicheBas', look: 'snow', points: toPoints([[90, 544], [102, 538], [106, 528], [98, 520], [82, 522], [72, 534], [72, 544]]), meltTime: 2.6 },
-    { id: 'cornicheHaut', look: 'snow', points: toPoints([[124, 458], [142, 464], [158, 474], [168, 488], [162, 470], [150, 458], [132, 448]]), meltTime: 3 },
+    { id: 'cornicheBas', look: 'snow', points: toPoints([[90, 544], [102, 538], [106, 528], [98, 520], [84, 521], [74, 530], [66, 541.8]]), meltTime: 2.6 },
+    { id: 'cornicheHaut', look: 'snow', points: toPoints([[116, 453.4], [124, 458], [146, 474], [154, 492], [160, 486], [170, 488], [166, 472], [160, 455], [150, 443], [136, 438], [124, 444]]), meltTime: 3 },
     { id: 'tas', look: 'snow', after: 'cornicheHaut', points: toPoints([[176, 529.5], [164, 516], [148, 511], [134, 517], [124, 542], [150, 535.5]]), meltTime: 9 },
   ],
   // La neige de la corniche du bas, une fois tombée dans la rimaye.

@@ -1358,6 +1358,11 @@ dans la glace.
    plus d'eau dessinée dans la roche. v0.8.2 : l'eau calme gèle en plaques
    anguleuses, des rives vers le milieu (choisi parmi trois maquettes :
    plaques, givre, peau de glace) ; la digue du niveau 3 suit le même style.
+   v0.8.3 : l'eau ne se dessine plus dans la roche (sauf la nappe du
+   niveau 1) ; au niveau 3, la neige fond en un filet qui tombe goutte à
+   goutte, et la digue est une cascade gelée ; au niveau 7, les corniches
+   sont des congères posées sur le sol, opaques, qui cachent entièrement le
+   miroir ancien.
 10. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
