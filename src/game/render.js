@@ -312,7 +312,7 @@ export function createRenderer(canvas) {
       line(c, bed.map(P2));
       c.stroke();
     }
-    // (l'arche par où l'eau s'en va, puis l'eau elle-même)
+    // (la perte par où l'eau s'en va dans le sol, puis l'eau elle-même)
     for (const s of g.streams) if (s.def.drain) drawDrain(c, P, s.def.drain);
     for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit);
 

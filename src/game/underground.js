@@ -14,6 +14,9 @@
 //             remplit une grotte (cavern, du niveau low au niveau high), puis
 //             le trop-plein repart par un filet (outlet). Sans grotte, c'est
 //             un simple boyau : l'eau s'y enfonce et sort de l'écran.
+//             Si le cours d'eau quitte la surface au pied d'une falaise
+//             (`drain` sans `floor`), commencer `inlet` à cet endroit, à
+//             l'horizontale, puis le courber : le boyau prolonge le torrent.
 //             { stream: 'id du cours d'eau', inlet, cavern, low, high, fillTime,
 //               outlet, stalactites: [[x, y, longueur]…] }
 //
@@ -21,6 +24,7 @@
 // l'énigme. Où en est l'eau (remplissage, filets) est tenu par life.js.
 
 const P2 = ([x, y]) => ({ x, y });
+const STREAM_WIDTH = 4.6; // la largeur d'un torrent en surface (voir drawRun dans render.js)
 
 function line(c, pts) {
   c.beginPath();
@@ -38,9 +42,11 @@ const lengthOf = (pts) => pts.reduce((sum, p, i) => (i ? sum + Math.hypot(p.x - 
  * Un boyau creusé dans la roche, le long de pts.
  * state : 'dry' (vide), 'ice' (pris par la glace) ou 'water'.
  * front : jusqu'où l'eau est arrivée, de 0 à 1.
+ * waterWidth : la largeur du filet d'eau, s'il doit remplir le boyau.
  */
-function gallery(c, P, g, pts, width, state, front = 1) {
-  c.lineCap = 'round';
+function gallery(c, P, g, pts, width, state, front = 1, waterWidth = 0) {
+  // (un boyau qui prolonge un torrent s'ouvre à ras de la falaise : bouts droits)
+  c.lineCap = waterWidth ? 'butt' : 'round';
   c.lineJoin = 'round';
   c.strokeStyle = P.caveBack;
   c.lineWidth = width;
@@ -63,7 +69,7 @@ function gallery(c, P, g, pts, width, state, front = 1) {
     // Le filet d'eau, dessiné seulement jusqu'à son front
     const reach = lengthOf(pts) * front;
     c.strokeStyle = P.water;
-    c.lineWidth = Math.max(1.3, width - 3.5);
+    c.lineWidth = waterWidth || Math.max(1.3, width - 3.5);
     c.lineDashOffset = 0;
     c.setLineDash([reach, 99999]);
     c.stroke();
@@ -122,7 +128,11 @@ export function drawUnderground(c, P, g) {
     c.fillStyle = P.caveBack;
     poly(c, cavern);
     c.fill();
-    gallery(c, P, g, def.inlet.map(P2), 6, a.inlet > 0 ? 'water' : 'dry', a.inlet);
+    // Si le torrent entre par le pied d'une falaise (`drain` sans `floor`), le
+    // boyau le prolonge : même diamètre partout, et l'eau garde sa largeur.
+    const stream = (L.streams || []).find((st) => st.id === def.stream);
+    const mouth = stream && stream.drain && !stream.drain.floor;
+    gallery(c, P, g, def.inlet.map(P2), mouth ? 6.6 : 6, a.inlet > 0 ? 'water' : 'dry', a.inlet, mouth ? STREAM_WIDTH : 0);
 
     // L'eau de la nappe : elle monte de low à high
     if (a.fill > 0) {

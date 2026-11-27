@@ -119,7 +119,7 @@ export default {
     {
       id: 'torrent',
       after: 'glacier',
-      drain: { x: 218.6, y: 653 }, // l'arche par où l'eau quitte la vallée
+      drain: { x: 218, y: 652.5 }, // le pied de la falaise : l'eau y entre dans la roche
       parts: [
         {
           run: [
@@ -189,10 +189,15 @@ export default {
   aquifers: [
     {
       stream: 'torrent',
+      // (le boyau entre à l'horizontale, dans l'élan du torrent, puis plonge)
       inlet: [
-        [219, 654],
-        [232, 664],
-        [244, 679],
+        [218, 652.5],
+        [221.5, 652.5],
+        [225.5, 653.2],
+        [229, 655.4],
+        [231.8, 658.8],
+        [236, 667],
+        [244, 679.5],
       ],
       cavern: [
         [242, 682],
