@@ -655,7 +655,7 @@ reste debout et change de prise, sans jamais se coucher.
 
 **Le son.** Tout est fabriqué par le navigateur, sans aucun fichier : un
 accord de fond qui s'éclaire avec le jour puis avec le dégel, le vent et ses
-rafales, l'eau qui coule, la glace qui craque, la porte de pierre qui gronde,
+rafales, l'eau qui coule, la glace qui craque, la lourde porte qui gronde,
 les tintements des miroirs et des cristaux, l'arpège du sanctuaire, et la
 voix de chaque animal (sifflet, hululement, cri du rapace). Un bouton ♪ le
 coupe. Tout ce qui tinte est accordé sur une même gamme de cinq notes.
@@ -1298,6 +1298,8 @@ dans la glace.
    autres niveaux ; le test automatique vérifie aussi le décor.
    v0.7.1 : le bout d'un faisceau suit exactement la pente qu'il éclaire
    (plus de marches d'escalier), dans tous les niveaux.
+   v0.7.2 : les portes sont en cuivre, pour qu'on les voie à l'ombre de leur
+   falaise.
 9. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,

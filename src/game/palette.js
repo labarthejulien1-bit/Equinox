@@ -42,6 +42,8 @@ const ICE = {
     gold: '#f0c85a',
     stone: '#eedcae',
     stoneDark: '#c9b384',
+    door: '#c8702c', // les portes : du cuivre, pour qu'on les voie même à l'ombre
+    doorDark: '#8c481c',
     bronze: '#d9aa52',
     pine: '#4d8f7c',
     pineSnow: '#fffdf6',
@@ -79,6 +81,8 @@ const ICE = {
     gold: '#7a6c4e',
     stone: '#353f66',
     stoneDark: '#2a3357',
+    door: '#8a5038',
+    doorDark: '#5c3326',
     bronze: '#5c5148',
     pine: '#1a3046',
     pineSnow: '#5a77b0',

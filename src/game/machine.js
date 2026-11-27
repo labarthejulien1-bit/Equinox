@@ -1,5 +1,5 @@
 // La machine à eau : une roue à aubes, une chaîne sans fin, un contrepoids
-// de pierre et la porte qu'ils ouvrent.
+// de pierre et la porte de cuivre qu'ils ouvrent.
 //
 // Comment ça marche (et comment ça doit se LIRE à l'écran) :
 //   1. l'eau pousse le bas de la roue : elle tourne dans le sens du courant ;
@@ -81,15 +81,19 @@ function gear(c, P, x, y, r, angle, teeth = 8) {
   c.restore();
 }
 
-/** La porte de pierre : une dalle qui glisse le long de la falaise, entre deux glissières. */
+/**
+ * La porte : une dalle de cuivre qui glisse le long de la falaise, entre deux
+ * glissières. Fermée, elle est presque toujours à l'ombre de sa falaise : sa
+ * couleur (P.door) est choisie pour ressortir sur la roche sombre.
+ */
 export function drawDoor(c, P, door) {
   const d = door.def;
   const h = d.bottom - d.top;
   const s = doorSink(door);
   const x = d.x - d.w / 2;
-  c.fillStyle = P.stone;
+  c.fillStyle = P.door;
   c.fillRect(x, d.top + s, d.w, h);
-  c.fillStyle = P.stoneDark;
+  c.fillStyle = P.doorDark;
   for (let y = d.top + s + 9; y < d.bottom + s - 4; y += 14) disc(c, d.x, y, 1.5);
   // Les glissières de bronze, scellées dans la roche sous la porte
   c.fillStyle = P.bronze;

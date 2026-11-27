@@ -281,7 +281,7 @@ export function createAudio() {
     }
     set(beds.water.gain.gain, 0.06 * Math.min(1.4, flow), 0.5);
 
-    // La porte de pierre gronde tant qu'elle bouge.
+    // La lourde porte gronde tant qu'elle bouge.
     const doors = g.doors.reduce((sum, d) => sum + d.open, 0);
     set(beds.rumble.gain.gain, Math.abs(doors - seen.doors) > 1e-5 ? 0.5 : 0, 0.15);
     // … et sa chaîne cliquette, maillon après maillon.

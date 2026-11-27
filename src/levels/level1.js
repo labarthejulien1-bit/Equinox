@@ -233,7 +233,7 @@ export default {
     ],
   ],
 
-  // La roue à eau ouvre la porte de pierre qui ferme la grotte : elle entraîne
+  // La roue à eau ouvre la porte de cuivre qui ferme la grotte : elle entraîne
   // une chaîne sans fin, le contrepoids monte, la porte descend (voir machine.js).
   wheels: [{ id: 'roue', x: 199, y: 635, r: 15, stream: 'torrent', door: 'porte' }],
   doors: [{ id: 'porte', x: 216, top: 452, bottom: 541, w: 7 }],
