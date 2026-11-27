@@ -124,19 +124,6 @@ export default {
     [[96, 558.4], [118, 562], [142, 572]],
     [[250, 559.3], [270, 556], [284, 554.3]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont : la neige du versant s'infiltre en filets, qui se rejoignent et nourrissent la source.
-  veins: [
-    { width: 3, path: [[345, 318], [350, 345], [352, 372]] },
-    { width: 3, path: [[366, 338], [352, 372]] },
-    { width: 3, path: [[338, 356], [344, 366], [352, 372]] },
-    { width: 5.5, path: [[352, 372], [336, 398], [316, 424], [293.5, 432.5]] },
-  ],
-  // En aval : l'eau s'enfonce au pied de la cascade, remplit une nappe sous la pente, puis repart vers le bas.
-  aquifers: [
-    { stream: 'torrent', inlet: [[205, 619], [196, 632], [184, 645]], cavern: [[128, 664], [136, 650], [152, 643], [170, 647], [184, 642], [194, 652], [196, 668], [186, 680], [164, 685], [142, 682], [131, 674]], low: 684, high: 661, fillTime: 18, stalactites: [[146, 645.5, 7], [166, 646.5, 6], [182, 643, 7]], outlet: [[130, 663], [104, 684], [70, 716], [40, 752]] },
-  ],
-
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [
     { id: 'rapace', type: 'raptor', title: 'Le rapace a crié', text: 'Touche le rapace en plein vol' },

@@ -303,8 +303,9 @@ export function buildSegments(g) {
   for (const d of g.doors) if (d.open < 0.97) polygonSegments(doorPolygon(d), d, segs);
   // Une cascade disperse la lumière : elle l'arrête.
   for (const s of g.streams) {
-    for (const w of streamWet(s)) {
-      if (!w.blocksLight) continue;
+    const wet = streamWet(s);
+    wet.forEach((w, i) => {
+      if (!w.blocksLight) return;
       const a = w.pts[0];
       const b = w.pts[w.pts.length - 1];
       polygonSegments(
@@ -317,7 +318,23 @@ export function buildSegments(g) {
         'water',
         segs,
       );
-    }
+      // L'eau arrive par le bord d'où elle tombe : entre ce bord et le haut de
+      // la chute, il ne doit pas rester de jour par où un rayon se glisserait.
+      const before = wet[i - 1];
+      const lip = before && before.type === 'run' && before.reachesEnd ? before.pts[before.pts.length - 1] : null;
+      if (lip && Math.hypot(lip.x - a.x, lip.y - a.y) < 10) {
+        polygonSegments(
+          [
+            { x: a.x, y: a.y - 1.6 },
+            { x: lip.x, y: lip.y - 1.6 },
+            { x: lip.x, y: lip.y + 1.6 },
+            { x: a.x, y: a.y + 1.6 },
+          ],
+          'water',
+          segs,
+        );
+      }
+    });
   }
   for (const c of g.crystals) polygonSegments(crystalPolygon(L, c.index), c, segs);
   for (const e of g.eyes) polygonSegments(eyePolygon(e), e, segs);
