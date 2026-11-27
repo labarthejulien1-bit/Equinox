@@ -6,7 +6,9 @@
 //   veins     une veine d'amont : une fissure prise par la glace, qui se met
 //             à couler quand la glace qu'elle nourrit a fondu
 //             { after: 'id de la glace', path: [[x, y]…], width, pocket: [[x, y]…] }
-//             (pocket : la poche de glace d'où part la fissure, un névé par exemple)
+//             (pocket : une poche de glace d'où part la fissure, si l'on veut ;
+//             width 3 donne un filet fin, 5 ou 6 une vraie fissure)
+//             Sans `after`, la veine coule toujours.
 //
 //   aquifers  une nappe d'aval : l'eau d'un cours d'eau s'infiltre (inlet),
 //             remplit une grotte (cavern, du niveau low au niveau high), puis
@@ -45,19 +47,22 @@ function gallery(c, P, g, pts, width, state, front = 1) {
   c.stroke();
   if (state === 'ice') {
     c.strokeStyle = P.ice;
-    c.lineWidth = width - 2.5;
+    c.lineWidth = Math.max(1.4, width - 2.5);
     c.stroke();
-    c.strokeStyle = P.iceLine;
-    c.lineWidth = 0.7;
-    c.setLineDash([3, 7]);
-    c.lineDashOffset = 0;
-    c.stroke();
-    c.setLineDash([]);
+    // (un filet fin n'a pas la place pour des reflets)
+    if (width > 4) {
+      c.strokeStyle = P.iceLine;
+      c.lineWidth = 0.7;
+      c.setLineDash([3, 7]);
+      c.lineDashOffset = 0;
+      c.stroke();
+      c.setLineDash([]);
+    }
   } else if (state === 'water' && front > 0) {
     // Le filet d'eau, dessiné seulement jusqu'à son front
     const reach = lengthOf(pts) * front;
     c.strokeStyle = P.water;
-    c.lineWidth = Math.max(1.6, width - 3.5);
+    c.lineWidth = Math.max(1.3, width - 3.5);
     c.lineDashOffset = 0;
     c.setLineDash([reach, 99999]);
     c.stroke();

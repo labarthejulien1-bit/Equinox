@@ -140,20 +140,41 @@ export default {
     },
   ],
   // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont, le névé du sommet nourrit le glacier par une fissure.
+  // En amont, la neige du sommet s'infiltre : trois filets fins naissent sous
+  // elle et se rejoignent en une fissure, qui descend jusqu'au glacier.
   veins: [
     {
       after: 'glacier',
-      width: 5.5,
-      pocket: [
-        [23, 172],
-        [30, 160],
-        [39, 175],
-        [33, 183],
-      ],
+      width: 3,
       path: [
-        [31, 168],
-        [40, 192],
+        [20, 178],
+        [27, 188],
+        [36, 200],
+      ],
+    },
+    {
+      after: 'glacier',
+      width: 3,
+      path: [
+        [30, 163],
+        [33, 180],
+        [36, 200],
+      ],
+    },
+    {
+      after: 'glacier',
+      width: 3,
+      path: [
+        [42, 186],
+        [41, 193],
+        [36, 200],
+      ],
+    },
+    {
+      after: 'glacier',
+      width: 5.5,
+      path: [
+        [36, 200],
         [36, 214],
         [56, 246],
         [70, 262],

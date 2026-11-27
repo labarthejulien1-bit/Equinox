@@ -983,8 +983,9 @@ falaise.
 
 Le trajet de l'eau ✅ (choisi parmi trois maquettes : rivière souterraine,
 nappe, citerne des anciens). Tout est dessiné en coupe dans la roche :
-- **en amont**, le névé du sommet nourrit le glacier par une fissure prise
-  par la glace ; quand le glacier a fondu, la fissure coule ;
+- **en amont**, la neige du sommet s'infiltre : trois filets fins naissent
+  sous elle et se rejoignent en une fissure prise par la glace, qui descend
+  jusqu'au glacier ; quand le glacier a fondu, tout cela coule ;
 - **en aval**, l'eau s'infiltre par l'arche, remplit en une vingtaine de
   secondes une petite nappe sous le temple, puis le trop-plein repart en un
   filet vers le bas de l'écran, à droite.
