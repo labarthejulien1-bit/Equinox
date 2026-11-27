@@ -53,6 +53,9 @@ function line(c, pts) {
 
 const P2 = ([x, y]) => ({ x, y });
 
+/** La hauteur du milieu d'un nuage (sa forme monte plus haut qu'elle ne descend). */
+const cloudMid = (cl) => cl.y - cl.h * 0.07;
+
 export function createRenderer(canvas) {
   const ctx = canvas.getContext('2d');
   const litCanvas = document.createElement('canvas');
@@ -1351,10 +1354,19 @@ export function createRenderer(canvas) {
     const cl = L.cloud;
     if (cl) {
       c.strokeStyle = `rgba(255,255,255,${drag && drag.type === 'cloud' ? 0.5 : 0.22})`;
+      // Les pointillés passent par le milieu du nuage, et s'effacent derrière lui
+      const y = cloudMid(cl);
+      const half = cl.w * 0.5 + 3;
+      c.save();
       c.beginPath();
-      c.moveTo(cl.minX - cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
-      c.lineTo(cl.maxX + cl.w * 0.45, cl.y + cl.h * 0.5 + 5);
+      c.rect(view.left, y - 4, g.cloudX - half - view.left, 8);
+      c.rect(g.cloudX + half, y - 4, view.right - g.cloudX - half, 8);
+      c.clip();
+      c.beginPath();
+      c.moveTo(cl.minX - cl.w * 0.45, y);
+      c.lineTo(cl.maxX + cl.w * 0.45, y);
       c.stroke();
+      c.restore();
     }
     c.setLineDash([]);
 
@@ -1376,9 +1388,10 @@ export function createRenderer(canvas) {
       for (const d of [-1, 1]) {
         const x = g.cloudX + d * (cl.w * 0.5 + 9 + pulse * 3);
         c.beginPath();
-        c.moveTo(x - d * 3, cl.y + 2);
-        c.lineTo(x + d * 2, cl.y + 7);
-        c.lineTo(x - d * 3, cl.y + 12);
+        const y = cloudMid(cl);
+        c.moveTo(x - d * 3, y - 5);
+        c.lineTo(x + d * 2, y);
+        c.lineTo(x - d * 3, y + 5);
         c.stroke();
       }
     }
