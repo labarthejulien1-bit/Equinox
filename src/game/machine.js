@@ -197,10 +197,20 @@ export function drawWaterWheel(c, P, wheel, g, flowing) {
   }
 }
 
-/** Une arche au pied de la falaise, par où l'eau s'en va (`drain` dans un cours d'eau). */
+/**
+ * Par où l'eau s'en va (`drain` dans un cours d'eau) : une arche au pied
+ * d'une falaise, ou une perte dans le sol (`floor: true`).
+ */
 export function drawDrain(c, P, drain) {
-  const side = drain.side ?? -1; // -1 : l'arche s'ouvre vers la gauche
   c.fillStyle = P.caveBack;
+  if (drain.floor) {
+    // Une perte : une fente sombre où l'eau s'enfonce dans le sol
+    c.beginPath();
+    c.ellipse(drain.x, drain.y, 5, 1.8, 0, 0, TAU);
+    c.fill();
+    return;
+  }
+  const side = drain.side ?? -1; // -1 : l'arche s'ouvre vers la gauche
   c.beginPath();
   if (side < 0) c.ellipse(drain.x, drain.y, 4.2, 6.5, 0, Math.PI * 0.5, Math.PI * 1.5);
   else c.ellipse(drain.x, drain.y, 4.2, 6.5, 0, -Math.PI * 0.5, Math.PI * 0.5);

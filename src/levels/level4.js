@@ -90,11 +90,31 @@ export default {
     { x: 110, y: 510, s: 1.0, dir: 1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 220, y: 240, r: 30, s: 0.6 },
-    { type: 'ibex', x: 350, y: 218, s: 0.65, dir: -1 },
+    { type: 'raptor', layer: 'sky', x: 220, y: 240, r: 30, s: 0.6, perch: [150, 502.2] },
+    { type: 'ibex', x: 347.9, y: 228.8, s: 0.65, dir: -1, path: [[334.8, 252], [340, 240], [347.9, 228.8], [354.7, 216.9]] },
     { type: 'cairn', x: 150, y: 511, s: 0.4 },
-    { type: 'marmots', x: 14, y: 344, s: 0.45 },
+    { type: 'marmots', x: 128, y: 509.9, s: 0.45, to: [160, 510.5] },
     { type: 'bush', x: 88, y: 407, s: 0.5 },
+    { type: 'flowers', x: 99, y: 408.9, s: 0.9, n: 3 },
+    { type: 'flowers', x: 77, y: 404.2, s: 0.9, n: 3 },
+    { type: 'flowers', x: 266, y: 509.3, s: 0.9, n: 3 },
+    { type: 'owl', x: 250, y: 501.7, s: 0.55 },
+    { type: 'eyes', x: 306, y: 423, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 173, x1: 232, y: 516 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[238, 510.8], [252, 510], [270, 509], [288, 504]],
+    [[100, 510], [140, 510], [168, 510.9]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // Le torrent sort de la roche à gauche, traverse le fond de la vallée, puis s'y renfonce à droite et quitte l'écran.
+  veins: [
+    { width: 5.5, path: [[-8, 598], [40, 580], [96, 556], [146, 538], [174.5, 527]] },
+    { width: 5.5, path: [[229.7, 526], [252, 548], [290, 590], [330, 640], [372, 688]] },
   ],
 
   hint(g) {

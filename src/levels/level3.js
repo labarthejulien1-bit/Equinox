@@ -100,11 +100,25 @@ export default {
     { x: 362, y: 240, s: 0.8, dir: -1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 170, y: 290, r: 30, s: 0.6 },
-    { type: 'ibex', x: 22, y: 272, s: 0.7 },
+    { type: 'raptor', layer: 'sky', x: 170, y: 290, r: 30, s: 0.6, perch: [286, 279.1] },
+    { type: 'ibex', x: 22.3, y: 273.6, s: 0.7, path: [[7.9, 248.3], [14.6, 261.2], [22.3, 273.6], [30, 286], [35.8, 297.4], [40.2, 309.4]] },
     { type: 'cairn', x: 286, y: 289, s: 0.45 },
     { type: 'bush', x: 60, y: 350, s: 0.5 },
     { type: 'hare', x: 4, y: 240, s: 0.45 },
+    { type: 'flowers', x: 60, y: 477.3, s: 0.8, n: 3 },
+    { type: 'flowers', x: 309.5, y: 262.2, s: 0.8, n: 3 },
+    { type: 'flowers', x: 356.5, y: 243.3, s: 0.8, n: 3 },
+    { type: 'owl', x: 338, y: 236.4, s: 0.55 },
+    { type: 'eyes', x: 15, y: 474.5, s: 0.8 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[320, 254.7], [326, 250], [338.8, 247], [352, 246], [361, 240.7]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // En amont : une veine d'eau traverse la roche et alimente le lac par le bec de la rive gauche. (En aval, l'eau quitte l'écran par le ravin.)
+  veins: [
+    { width: 5, path: [[-8, 548], [24, 532], [56, 512], [84, 502], [95.5, 498.6]] },
   ],
 
   hint(g) {

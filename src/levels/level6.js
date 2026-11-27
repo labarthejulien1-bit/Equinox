@@ -99,6 +99,7 @@ export default {
   streams: [
     {
       id: 'torrent',
+      drain: { x: 191.5, y: 568.5, floor: true }, // la perte où l'eau s'enfonce
       spring: 'source',
       startFull: true,
       speed: 260,
@@ -135,11 +136,36 @@ export default {
     { x: 300, y: 388, s: 1.0, dir: -1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 120, y: 250, r: 30, s: 0.6 },
-    { type: 'ibex', x: 340, y: 362, s: 0.65, dir: -1 },
+    { type: 'raptor', layer: 'sky', x: 120, y: 250, r: 30, s: 0.6, perch: [4, 348.2] },
+    { type: 'ibex', x: 100, y: 422, s: 0.65, path: [[60, 365.6], [78, 391], [100, 422, 'rest'], [125, 447], [150, 472, 'rest']] },
     { type: 'cairn', x: 4, y: 357, s: 0.4 },
-    { type: 'marmots', x: 96, y: 416, s: 0.4 },
-    { type: 'hare', x: 318, y: 378, s: 0.45, dir: -1 },
+    { type: 'marmots', x: 276, y: 398.2, s: 0.4, to: [291, 392.4] },
+    { type: 'hare', x: 314, y: 380, s: 0.45, dir: -1, range: [[307.5, 383.3], [321, 376.5]] },
+    { type: 'flowers', x: 34, y: 354.3, s: 0.9, n: 3 },
+    { type: 'flowers', x: 117, y: 548, s: 0.9, n: 3 },
+    { type: 'flowers', x: 280, y: 549.5, s: 0.9, n: 3 },
+    { type: 'owl', x: 140, y: 544.3, s: 0.55 },
+    { type: 'eyes', x: 336, y: 531, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 218, x1: 262, y: 403 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[106, 546.3], [130, 550], [160, 552], [182, 555.7]],
+    [[269, 400.7], [292, 392], [322, 376]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // En amont : la neige du versant s'infiltre en filets et rejoint une veine venue de plus loin, qui nourrit la source.
+  veins: [
+    { width: 3, path: [[318, 384.5], [322, 404], [340, 420]] },
+    { width: 3, path: [[346, 366.5], [344, 392], [340, 420]] },
+    { width: 5.5, path: [[372, 404], [340, 420], [300, 426], [272, 416], [264.5, 407.6]] },
+  ],
+  // En aval : l'eau s'enfonce au pied de la cascade et suit un boyau qui sort de l'écran.
+  aquifers: [
+    { stream: 'torrent', inlet: [[191.5, 570], [184, 590], [160, 620], [120, 660], [70, 704], [30, 752]] },
   ],
 
   hint(g) {

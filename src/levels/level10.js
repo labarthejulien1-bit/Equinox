@@ -137,6 +137,7 @@ export default {
   streams: [
     {
       id: 'torrent',
+      drain: { x: 198.5, y: 598.4, floor: true }, // la perte où l'eau s'enfonce
       spring: 'source',
       startFull: true,
       speed: 300,
@@ -172,10 +173,31 @@ export default {
     { x: 56, y: 362, s: 1.0, dir: 1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 130, y: 250, r: 30, s: 0.6 },
+    { type: 'raptor', layer: 'sky', x: 130, y: 250, r: 30, s: 0.6, perch: [8, 347.7] },
     { type: 'ibex', x: -4, y: 262, s: 0.6 },
-    { type: 'marmots', x: 84, y: 430, s: 0.4 },
+    { type: 'marmots', x: 158, y: 586, s: 0.4 },
     { type: 'cairn', x: 8, y: 356.5, s: 0.4 },
+    { type: 'flowers', x: 232, y: 587.3, s: 0.9, n: 3 },
+    { type: 'flowers', x: 270, y: 582.9, s: 0.9, n: 3 },
+    { type: 'owl', x: 126, y: 577.3, s: 0.55 },
+    { type: 'eyes', x: 234, y: 496, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 220, x1: 262, y: 335 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[106, 582.2], [150, 586], [188, 586]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // En amont : l'eau de fonte suinte sous le grand glacier et nourrit la source.
+  veins: [
+    { width: 3, path: [[300, 330.3], [282, 336], [265, 338.6]] },
+  ],
+  // En aval : l'eau s'enfonce au pied de la cascade, remplit une nappe sous le village, puis repart vers les plaines.
+  aquifers: [
+    { stream: 'torrent', inlet: [[199, 600], [188, 614], [176, 628]], cavern: [[98, 650], [106, 634], [124, 624], [146, 628], [164, 622], [180, 632], [184, 652], [174, 668], [146, 675], [118, 672], [102, 662]], low: 674, high: 643, fillTime: 18, stalactites: [[120, 625.5, 7], [142, 628, 6], [166, 623, 8]], outlet: [[183, 645], [214, 664], [262, 700], [320, 740], [352, 764]] },
   ],
 
   // Traits gravés qui relient les trois cristaux (ils s'illuminent à la victoire).

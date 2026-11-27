@@ -65,6 +65,7 @@ export default {
   streams: [
     {
       id: 'torrent',
+      drain: { x: 205, y: 617.6, floor: true }, // la perte où l'eau s'enfonce
       spring: 'source', // il s'arrête quand le lac est gelé
       startFull: true,
       speed: 260,
@@ -101,12 +102,39 @@ export default {
     { x: 270, y: 428, s: 1.0, dir: 1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 110, y: 330, r: 30, s: 0.6 },
-    { type: 'ibex', x: 343, y: 322, s: 0.7, dir: -1 },
-    { type: 'cairn', x: 52, y: 551, s: 0.45 },
-    { type: 'marmots', x: 162, y: 590, s: 0.45 },
-    { type: 'hare', x: 310, y: 416, s: 0.5, dir: -1 },
-    { type: 'bush', x: 30, y: 528, s: 0.55 },
+    { type: 'raptor', layer: 'sky', x: 110, y: 330, r: 30, s: 0.6, perch: [57, 541.2] },
+    { type: 'ibex', x: 37.1, y: 539.1, s: 0.7, path: [[12.6, 492.7], [20, 510, 'hop'], [26.4, 519.3], [31.2, 529.5], [37.1, 539.1], [43.5, 547.4, 'rest']] },
+    { type: 'cairn', x: 57, y: 551.1, s: 0.45 },
+    { type: 'marmots', x: 164, y: 592, s: 0.45, to: [186, 608] },
+    { type: 'hare', x: 308, y: 416.1, s: 0.5, dir: -1, range: [[297.5, 425.5], [314, 412]] },
+    { type: 'bush', x: 9, y: 482.3, s: 0.55 },
+    { type: 'flowers', x: 108.5, y: 560.4, s: 0.9, n: 3 },
+    { type: 'flowers', x: 140, y: 571, s: 0.9, n: 3 },
+    { type: 'flowers', x: 272, y: 555.7, s: 0.9, n: 3 },
+    { type: 'owl', x: 76, y: 544.4, s: 0.55 },
+    { type: 'eyes', x: 254, y: 553.5, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 244, x1: 290, y: 429 },
+    { x0: 198, x1: 238, y: 620 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[96, 558.4], [118, 562], [142, 572]],
+    [[250, 559.3], [270, 556], [284, 554.3]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // En amont : la neige du versant s'infiltre en filets, qui se rejoignent et nourrissent la source.
+  veins: [
+    { width: 3, path: [[345, 318], [350, 345], [352, 372]] },
+    { width: 3, path: [[366, 338], [352, 372]] },
+    { width: 3, path: [[338, 356], [344, 366], [352, 372]] },
+    { width: 5.5, path: [[352, 372], [336, 398], [316, 424], [293.5, 432.5]] },
+  ],
+  // En aval : l'eau s'enfonce au pied de la cascade, remplit une nappe sous la pente, puis repart vers le bas.
+  aquifers: [
+    { stream: 'torrent', inlet: [[205, 619], [196, 632], [184, 645]], cavern: [[128, 664], [136, 650], [152, 643], [170, 647], [184, 642], [194, 652], [196, 668], [186, 680], [164, 685], [142, 682], [131, 674]], low: 684, high: 661, fillTime: 18, stalactites: [[146, 645.5, 7], [166, 646.5, 6], [182, 643, 7]], outlet: [[130, 663], [104, 684], [70, 716], [40, 752]] },
   ],
 
   hint(g) {

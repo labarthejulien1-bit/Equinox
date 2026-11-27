@@ -6,7 +6,8 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
 ## Commandes
 
 - `npm run dev` — serveur de développement (Vite)
-- `npm run check` — vérifie chaque niveau (résoluble, sans raccourci). À lancer
+- `npm run check` — vérifie chaque niveau (résoluble, sans raccourci ; décor
+  bien posé : animaux sur le sol, eau souterraine dans la roche). À lancer
   après toute modification de `src/engine/`, `src/game/game.js` ou d'un niveau.
   Le tour complet prend environ trois minutes ; `npm run check -- 7` ne
   vérifie que le niveau 7.
@@ -77,14 +78,19 @@ palette d'ombre, puis en palette de lumière dans les zones éclairées.
 villageois, empreintes, fleurs. Il ne fait que **regarder** le jeu (où tombe
 la lumière, ce que fait le joueur) et ne doit jamais le modifier : rien de ce
 qui vit ne bloque la lumière ni ne compte pour gagner. Il est appelé par
-`main.js` après `update()`, pas par `game.js` : `npm run check` ne le fait
-donc pas tourner. Comme `game.js`, il ne touche pas au DOM.
+`main.js` après `update()`, pas par `game.js`. Comme `game.js`, il ne touche
+pas au DOM : `npm run check` le fait tourner une journée dans chaque niveau,
+pour s'assurer que rien ne casse.
 
 - Ce que fait un animal se décide dans `life.js` (une fonction `update…` par
   espèce) ; comment il se dessine, dans `decor.js`, qui reçoit son état `k`.
 - Le reste se dessine dans `lifeDraw.js`.
 - Ses réglages sont dans le décor du niveau (`path`, `range`, `perch`, `to`…),
   listés en tête de `decor.js`. Le niveau 1 sert de modèle.
+- Un animal a besoin d'un endroit où vivre : chemin du bouquetin sur des
+  pentes de moins de 70°, avec si possible un replat (`'rest'`) ; terriers et
+  lièvre sur des pentes douces. Poser chaque point exactement sur le sol
+  (les sommets du relief conviennent) : le test le vérifie.
 - Le son est dans `src/engine/audio.js`, sans fichier audio : les nappes
   suivent l'état du monde dans `update()`, les sons brefs répondent aux
   événements de `g.events` dans `event()`. Pour un son nouveau : pousser un

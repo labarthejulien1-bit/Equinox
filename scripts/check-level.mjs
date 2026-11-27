@@ -8,7 +8,8 @@
 import { levels } from '../src/levels/index.js';
 import { createGame, update, computeLight, sunPosition, turnMirror } from '../src/game/game.js';
 import { aimMirror } from '../src/engine/light.js';
-import { rad } from '../src/engine/vec.js';
+import { rad, pointInPolygon, distToPolygon } from '../src/engine/vec.js';
+import { createLife, updateLife } from '../src/game/life.js';
 
 let failed = 0;
 const check = (ok, label) => {
@@ -896,6 +897,71 @@ function checkLevel10(level) {
   }
 }
 
+// ── Le décor vivant et l'eau dans la roche (tous les niveaux) ─────────────
+//
+// Rien de tout cela ne change l'énigme, mais des coordonnées fausses se
+// voient tout de suite à l'écran : un bouquetin qui flotte, une veine d'eau
+// qui sort de la roche. On vérifie donc la géométrie, puis on fait tourner
+// la vie du monde quelques secondes pour s'assurer que rien ne casse.
+
+function checkScenery(level) {
+  const G = level.ground;
+  const pt = ([x, y]) => ({ x, y });
+  const inRock = (p) => pointInPolygon(p, G);
+  const edge = (p) => distToPolygon(p, G); // distance au bord de la roche
+  const bad = [];
+
+  // Les animaux et les plantes sont posés sur le sol.
+  const onGround = (p, what) => {
+    if (edge(p) > 2.5) bad.push(`${what} (${p.x}, ${p.y}) est à ${edge(p).toFixed(1)} du sol`);
+  };
+  for (const d of level.decor || []) {
+    if (['ibex', 'marmots', 'hare', 'flowers', 'bush', 'cairn'].includes(d.type) && d.x > 0 && d.x < level.size.w) onGround(d, d.type);
+    for (const q of d.path || []) onGround(pt(q), 'chemin du bouquetin');
+    for (const q of d.range || []) onGround(pt(q), 'pente du lièvre');
+    if (d.to) onGround(pt(d.to), 'second terrier');
+  }
+  // L'eau souterraine reste dans la roche : ses bouts touchent la surface, le reste est dedans.
+  const inside = (points, what, margin = 0) => {
+    points.forEach((q, i) => {
+      const p = pt(q);
+      const end = i === 0 || i === points.length - 1;
+      if (end ? !inRock(p) && edge(p) > 3.5 : !inRock(p) || edge(p) < margin) bad.push(`${what} : le point (${p.x}, ${p.y}) sort de la roche`);
+    });
+  };
+  for (const v of level.veins || []) {
+    inside(v.path, 'veine', 1.5);
+    if (v.after && !(level.ices || []).some((i) => i.id === v.after)) bad.push(`veine : la glace « ${v.after} » n'existe pas`);
+  }
+  for (const a of level.aquifers || []) {
+    if (!(level.streams || []).some((s) => s.id === a.stream)) bad.push(`nappe : le cours d'eau « ${a.stream} » n'existe pas`);
+    inside(a.inlet, 'arrivée de la nappe', 1.5);
+    if (a.outlet) inside(a.outlet, 'sortie de la nappe', 1.5);
+    for (const q of a.cavern || []) if (!inRock(pt(q)) || edge(pt(q)) < 4) bad.push(`nappe : la grotte sort de la roche en (${q})`);
+  }
+  check(bad.length === 0, bad.length ? `décor mal posé : ${bad.join(' ; ')}` : 'les animaux sont sur le sol, l’eau souterraine reste dans la roche');
+
+  // La vie du monde tourne sans erreur : une journée entière, soleil et nuage en mouvement.
+  let error = null;
+  try {
+    const g = createGame(level);
+    createLife(g);
+    g.started = true;
+    const { min, max } = level.sun;
+    for (let i = 0; i < 1500; i++) {
+      g.sunAngle = rad(min + ((max - min) * (i % 500)) / 500);
+      if (level.cloud) g.cloudX = level.cloud.minX + ((level.cloud.maxX - level.cloud.minX) * ((i * 3) % 500)) / 500;
+      update(g, 1 / 30);
+      updateLife(g, 1 / 30);
+      g.events.length = 0;
+      for (const k of g.life.critters) if (!Number.isFinite(k.x) || !Number.isFinite(k.y)) throw new Error(`${k.type} s'est perdu`);
+    }
+  } catch (e) {
+    error = e;
+  }
+  check(!error, error ? `la vie du monde casse : ${error.message}` : 'la vie du monde tourne sans erreur');
+}
+
 // ── Lancement ─────────────────────────────────────────────────────────
 
 const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9, 10: checkLevel10 };
@@ -906,6 +972,7 @@ for (const level of levels) {
   console.log(`\nNiveau ${level.id} — ${level.title}`);
   if (checks[level.id]) checks[level.id](level);
   else check(false, 'aucune vérification écrite pour ce niveau');
+  checkScenery(level);
 }
 
 console.log(failed ? `\n${failed} vérification(s) en échec.` : '\nTous les niveaux sont bons.');

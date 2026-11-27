@@ -108,10 +108,30 @@ export default {
     { x: 306, y: 555, s: 1.0, dir: -1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 200, y: 230, r: 30, s: 0.6 },
-    { type: 'ibex', x: 330, y: 348, s: 0.6, dir: -1 },
+    { type: 'raptor', layer: 'sky', x: 200, y: 230, r: 30, s: 0.6, perch: [252, 548.7] },
+    { type: 'ibex', x: 259.2, y: 462.7, s: 0.6, dir: -1, path: [[240, 484, 'rest'], [246.8, 477.3], [252.5, 469.5], [259.2, 462.7, 'rest'], [266, 456], [272.9, 446.2]] },
     { type: 'cairn', x: 252, y: 557.5, s: 0.4 },
     { type: 'bush', x: 22, y: 298, s: 0.5 },
+    { type: 'flowers', x: 260, y: 556.4, s: 0.9, n: 3 },
+    { type: 'flowers', x: 60, y: 508.7, s: 0.9, n: 3 },
+    { type: 'flowers', x: 312, y: 554.3, s: 0.9, n: 3 },
+    { type: 'owl', x: 94, y: 548.8, s: 0.55 },
+    { type: 'eyes', x: 11, y: 496, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 139, x1: 239, y: 562 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[84, 552.4], [104, 556], [134, 557.9]],
+    [[244, 557.8], [290, 556], [314, 554.2]],
+  ],
+  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
+  // Le lac est nourri par une veine venue de la gauche ; un filet s'en échappe par le fond, vers le bas de l'écran.
+  veins: [
+    { width: 5, path: [[-8, 612], [40, 596], [90, 578], [128, 568], [141, 566]] },
+    { width: 4.5, path: [[229, 576], [250, 600], [290, 640], [330, 690], [372, 732]] },
   ],
 
   hint(g) {

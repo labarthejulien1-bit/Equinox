@@ -12,7 +12,8 @@
 //
 //   aquifers  une nappe d'aval : l'eau d'un cours d'eau s'infiltre (inlet),
 //             remplit une grotte (cavern, du niveau low au niveau high), puis
-//             le trop-plein repart par un filet (outlet)
+//             le trop-plein repart par un filet (outlet). Sans grotte, c'est
+//             un simple boyau : l'eau s'y enfonce et sort de l'écran.
 //             { stream: 'id du cours d'eau', inlet, cavern, low, high, fillTime,
 //               outlet, stalactites: [[x, y, longueur]…] }
 //
@@ -106,6 +107,11 @@ export function drawUnderground(c, P, g) {
   (L.aquifers || []).forEach((def, i) => {
     // (sans life.js, par exemple dans un test, la nappe reste vide)
     const a = (g.life && g.life.aquifers[i]) || { inlet: 0, fill: 0, outlet: 0 };
+    if (!def.cavern) {
+      // Pas de grotte : l'eau suit son boyau et quitte l'écran
+      gallery(c, P, g, def.inlet.map(P2), 6, a.inlet > 0 ? 'water' : 'dry', a.inlet);
+      return;
+    }
     const cavern = def.cavern.map(P2);
     const xs = cavern.map((p) => p.x);
     const x0 = Math.min(...xs);

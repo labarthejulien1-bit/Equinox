@@ -609,10 +609,13 @@ sont justement ce que le joueur manipule. Seize idées retenues, plus le son.
 Règle d'or : tout cela reste du décor. Rien ne change l'énigme, rien ne
 bloque la lumière, rien n'est nécessaire pour gagner.
 
-État : ✅ dans le jeu depuis la v0.6, réglé et essayé au **niveau 1**. Les
-animaux des autres niveaux héritent des mêmes règles, mais leurs places
-(chemin du bouquetin, pente du lièvre, perchoir, second terrier, fleurs,
-brume) restent à poser niveau par niveau.
+État : ✅ dans le jeu. Réglé et essayé au niveau 1 (v0.6), puis posé dans
+les neuf autres niveaux (v0.7) : chaque bouquetin a son chemin, chaque lièvre
+sa pente, chaque rapace son perchoir ; fleurs, brume, chouette et yeux dans
+la nuit sont placés d'après le relief de chaque niveau. Quelques animaux ont
+changé de place pour avoir un endroit où vivre (une marmotte ne creuse pas
+dans une falaise). Là où le relief n'offre que des parois, le bouquetin
+reste debout et change de prise, sans jamais se coucher.
 
 **A. Les animaux réagissent à la lumière et à l'ombre**
 
@@ -1229,8 +1232,21 @@ Les plans des niveaux 6 à 10 ont été choisis avant la réécriture de leurs
 
 **L'eau a toujours une origine et une sortie visibles** ✅ : on doit voir
 d'où elle vient (névé, fissure, source, bord de l'écran) et où elle repart
-(nappe, tunnel, bord de l'écran). Fait au niveau 1 ; à poser dans les autres
-niveaux qui ont de l'eau.
+(nappe, tunnel, bord de l'écran). Fait dans tous les niveaux du chapitre I
+qui ont de l'eau :
+
+| Niveau | D'où vient l'eau | Où elle repart |
+| --- | --- | --- |
+| 1 | la neige du sommet, par trois filets et une fissure gelée | arche, nappe sous le temple, puis filet vers le bas |
+| 2 | la neige du versant droit, par des filets qui nourrissent la source | perte au pied de la cascade, nappe sous la pente, puis filet vers le bas |
+| 3 | une veine venue de la gauche, jusqu'au bec qui alimente le lac | le ravin, qui sort de l'écran |
+| 4 | le torrent sort de la roche à gauche | il s'y renfonce à droite et quitte l'écran |
+| 6 | la neige du versant et une veine venue de la droite, jusqu'à la source | perte au pied de la cascade, boyau vers le bas |
+| 8 | une veine venue de la gauche, jusqu'au lac | un filet s'échappe par le fond du lac |
+| 10 | l'eau de fonte suinte sous le grand glacier | perte, nappe sous le village, puis filet « vers les plaines » |
+
+Les niveaux 5, 7 et 9 n'ont pas d'eau. Quand une source gèle, sa cascade se
+tarit et le filet d'aval aussi ; la nappe, elle, reste pleine.
 
 - **Toute la hauteur de l'écran.** Le jeu est en portrait : l'énigme doit se
   jouer de haut en bas, avec des éléments à des hauteurs bien différentes,
@@ -1276,10 +1292,11 @@ dans la glace.
    neige, nuit et cristaux-mémoire, miroirs jumelés).
 7. ✅ **v0.6** — la vie du monde (§ 5 quater) et le son, réglés au niveau 1 :
    animaux qui réagissent à la lumière, vent, village qui dort et se
-   réveille, empreintes, fleurs du dégel.
-8. **À venir, dans un ordre à décider** :
-   - poser la vie du monde dans les niveaux 2 à 10 (chemins, perchoirs,
-     terriers, fleurs, brume) ;
+   réveille, empreintes, fleurs du dégel ; machine de la porte et trajet de
+   l'eau du niveau 1.
+8. ✅ **v0.7** — la vie du monde et le trajet de l'eau posés dans les neuf
+   autres niveaux ; le test automatique vérifie aussi le décor.
+9. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;

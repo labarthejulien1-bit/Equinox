@@ -116,9 +116,23 @@ export default {
   ],
   decor: [
     { type: 'bridge', x: 118, y: 256, x1: 240, y1: 290, sag: 12 },
-    { type: 'raptor', layer: 'sky', x: 190, y: 190, r: 28, s: 0.6 },
-    { type: 'ibex', x: 334, y: 204, s: 0.6, dir: -1 },
+    { type: 'raptor', layer: 'sky', x: 190, y: 190, r: 28, s: 0.6, perch: [40, 168.2] },
+    { type: 'ibex', x: 58.7, y: 186.5, s: 0.6, path: [[10.2, 157.8, 'rest'], [19.8, 164.3], [29.9, 170.1], [49.6, 180.8, 'rest'], [58.7, 186.5], [68.4, 191.2, 'rest']] },
     { type: 'cairn', x: 40, y: 177, s: 0.4 },
+    { type: 'flowers', x: 255, y: 288, s: 0.9, n: 3 },
+    { type: 'flowers', x: 299, y: 280.2, s: 0.9, n: 3 },
+    { type: 'flowers', x: 97, y: 246.6, s: 0.9, n: 3 },
+    { type: 'owl', x: 284, y: 277.3, s: 0.55 },
+    { type: 'eyes', x: 120, y: 596.5, s: 0.8 },
+  ],
+  // Brume du petit matin et de la nuit.
+  mists: [
+    { x0: 152, x1: 198, y: 637 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[242, 289.7], [270, 286], [298, 280.4]],
+    [[92, 244.8], [106, 250], [116, 255]],
   ],
 
   hint(g) {

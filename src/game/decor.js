@@ -100,7 +100,8 @@ function marmots(c, P, k, g, d) {
   // Les trous
   c.fillStyle = P.doorway;
   ellipse(c, 0, 0.4, 5.6, 1.7);
-  ellipse(c, 17, 0.4, 5.6, 1.7);
+  if (k) ellipse(c, ...local(k.home2.x, k.home2.y + 0.4 * s), 5.6, 1.7);
+  else ellipse(c, 17, 0.4, 5.6, 1.7);
   if (d.to) ellipse(c, ...local(d.to[0], d.to[1] + 0.4 * s), 5.6, 1.7);
 
   // La sentinelle sort de son trou (out va de 0 à 1)

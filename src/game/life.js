@@ -94,7 +94,11 @@ export function createLife(g) {
     waters: [], // poissons et ronds dans l'eau, un par bassin
     // Nappes sous la roche (voir underground.js) : où en sont le filet qui
     // arrive (inlet), le remplissage (fill) et le filet qui repart (outlet)
-    aquifers: (L.aquifers || []).map((def) => ({ def, inlet: 0, fill: 0, outlet: 0 })),
+    // (si le cours d'eau coule depuis toujours, la nappe est déjà pleine)
+    aquifers: (L.aquifers || []).map((def) => {
+      const full = (L.streams || []).some((s) => s.id === def.stream && s.startFull) ? 1 : 0;
+      return { def, inlet: full, fill: full, outlet: full };
+    }),
     sky: { star: null, starIn: rnd(3, 6), flock: null, flockIn: rnd(9, 14) },
     focus: null, // ce que les villageois regardent
     focusT: 0,
@@ -189,6 +193,7 @@ export function createLife(g) {
     const path = makePath(line);
     for (let d = 3; d < path.total - 2 && life.blooms.length < 48; d += rnd(6, 9)) {
       const p = pathAt(path, d);
+      if (Math.abs(Math.sin(p.slope)) > 0.6) continue; // pas de fleurs sur une pente raide ou le long d'un ravin
       life.blooms.push({ x: p.x, y: p.y + 1, h: rnd(4, 7), color: life.blooms.length % 3, delay: life.blooms.length * 0.16 + rnd(0, 0.5), grow: 0 });
     }
   }
@@ -237,7 +242,8 @@ function makeCritter(d, g, life) {
       k.whistle = 0;
       k.wasSun = false;
       k.wasBeam = false;
-      k.home2 = { x: d.x + 17 * k.s * k.dir, y: d.y };
+      // (la seconde marmotte se tient à côté, posée sur le sol même s'il penche)
+      k.home2 = { x: d.x + 17 * k.s * k.dir, y: groundBelow(life, d.x + 17 * k.s * k.dir, d.y) };
       k.x2 = k.home2.x;
       k.y2 = k.home2.y;
       k.state = 'in';
@@ -474,6 +480,16 @@ function updateIbex(k, g, life, dt) {
       else if (!lit) {
         const any = nodes.filter(sunny);
         if (any.length) go(nearest(any));
+      } else {
+        // Au soleil, mais sur une paroi sans replat où se coucher : il reste
+        // debout et change de prise de temps en temps.
+        k.stood = (k.stood || 0) + 0.9;
+        const others = nodes.filter((n) => n !== here && sunny(n));
+        if (k.stood > k.rest && others.length) {
+          k.stood = 0;
+          k.rest = rnd(9, 16);
+          go(others[Math.floor(Math.random() * others.length)]);
+        }
       }
       if (k.state === 'stand') k.t = 0.4; // rien de mieux à faire : il attend un peu
     }

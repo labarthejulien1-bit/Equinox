@@ -61,10 +61,18 @@ export default {
     { x: 288, y: 632, s: 0.8, dir: -1 },
   ],
   decor: [
-    { type: 'raptor', layer: 'sky', x: 230, y: 250, r: 30, s: 0.6 },
-    { type: 'ibex', x: 8, y: 334, s: 0.7 },
+    { type: 'raptor', layer: 'sky', x: 230, y: 250, r: 30, s: 0.6, perch: [222, 475.2] },
+    { type: 'ibex', x: 11.5, y: 351.2, s: 0.7, path: [[6.4, 336.3], [11.5, 351.2], [17.8, 365.6], [24, 380]] },
     { type: 'cairn', x: 222, y: 484, s: 0.4 },
-    { type: 'hare', x: 338, y: 360, s: 0.45, dir: -1 },
+    { type: 'hare', x: 338, y: 357.7, s: 0.45, dir: -1 },
+    { type: 'flowers', x: 294, y: 628.9, s: 0.9, n: 3 },
+    { type: 'flowers', x: 306, y: 537.6, s: 0.9, n: 3 },
+    { type: 'eyes', x: 347, y: 532, s: 0.8 },
+  ],
+  // Où les fleurs poussent quand le monde revient à la vie (en plus du bord de l'eau).
+  blooms: [
+    [[268, 627], [282, 634], [296, 628]],
+    [[304, 537.8], [322, 536], [342, 537.4]],
   ],
 
   hint(g) {
