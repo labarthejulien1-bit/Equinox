@@ -20,6 +20,10 @@
 //             { stream: 'id du cours d'eau', inlet, cavern, low, high, fillTime,
 //               outlet, stalactites: [[x, y, longueur]…] }
 //
+//   drips     un goutte-à-goutte (à l'air libre) : l'eau tombe goutte à goutte
+//             d'un surplomb, sans rien cacher derrière elle
+//             [[x, y d'où elle tombe, y du sol]…]
+//
 //   remnants  un reste de glace (à l'air libre, pas dans la roche) : ce qui
 //             demeure d'un glacier une fois fondu, accroché à un plafond. Il
 //             goutte et un filet ruisselle jusqu'au départ du cours d'eau.
@@ -215,29 +219,40 @@ export function drawRemnants(c, P, g) {
       c.lineDashOffset = 0;
     }
 
-    // Les gouttes : chacune se forme au bout de son glaçon, tombe, puis fait
-    // un petit rond en touchant le sol.
-    c.fillStyle = P.iceLine;
-    c.strokeStyle = P.iceLine;
-    c.lineWidth = 0.7;
-    (r.drips || []).forEach(([x, top, floor], n) => {
-      const u = (g.time * 0.55 + n * 0.37) % 1;
-      c.beginPath();
-      c.arc(x, top + 0.6, 0.5 + 0.5 * u, 0, TAU);
-      c.fill();
-      if (u < 0.6) {
-        const fall = u / 0.6;
-        c.beginPath();
-        c.ellipse(x, top + (floor - top) * fall * fall, 0.8, 1.5, 0, 0, TAU);
-        c.fill();
-      } else {
-        const v = (u - 0.6) / 0.4;
-        c.globalAlpha = 1 - v;
-        c.beginPath();
-        c.ellipse(x, floor, 1 + v * 3.5, 0.5 + v, 0, 0, TAU);
-        c.stroke();
-        c.globalAlpha = 1;
-      }
-    });
+    dripping(c, P, g, r.drips || []);
   }
+}
+
+/**
+ * Des gouttes qui tombent, l'une après l'autre : chacune se forme en haut,
+ * tombe, puis fait un petit rond en touchant le sol. list : [[x, haut, sol]…]
+ */
+function dripping(c, P, g, list) {
+  c.fillStyle = P.iceLine;
+  c.strokeStyle = P.iceLine;
+  c.lineWidth = 0.7;
+  list.forEach(([x, top, floor], n) => {
+    const u = (g.time * 0.55 + n * 0.37) % 1;
+    c.beginPath();
+    c.arc(x, top + 0.6, 0.5 + 0.5 * u, 0, TAU);
+    c.fill();
+    if (u < 0.6) {
+      const fall = u / 0.6;
+      c.beginPath();
+      c.ellipse(x, top + (floor - top) * fall * fall, 0.8, 1.5, 0, 0, TAU);
+      c.fill();
+    } else {
+      const v = (u - 0.6) / 0.4;
+      c.globalAlpha = 1 - v;
+      c.beginPath();
+      c.ellipse(x, floor, 1 + v * 3.5, 0.5 + v, 0, 0, TAU);
+      c.stroke();
+      c.globalAlpha = 1;
+    }
+  });
+}
+
+/** Le goutte-à-goutte d'un niveau (`drips`) : de l'eau qui tombe sans rien cacher. */
+export function drawDrips(c, P, g) {
+  dripping(c, P, g, g.level.drips || []);
 }

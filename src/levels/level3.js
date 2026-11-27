@@ -78,6 +78,7 @@ export default {
       frozenAt: 0.12,
       startFull: true,
       speed: 320,
+      width: 2.4, // un petit filet : c'est lui qui gèle en cascade de glace
       parts: [
         {
           run: [
@@ -92,8 +93,8 @@ export default {
       ],
     },
     // D'où vient l'eau du lac : la neige du versant fond, et un filet descend
-    // la pente, tombe du surplomb et rejoint la rive (décor : il coule toujours
-    // et n'arrête pas la lumière).
+    // la pente. Au surplomb, il tombe goutte à goutte (voir `drips`), pour ne
+    // pas cacher l'entrée de la grotte ; puis il rejoint la rive.
     {
       id: 'fonte',
       startFull: true,
@@ -110,7 +111,6 @@ export default {
             [88, 418],
           ],
         },
-        { fall: { x: 88.6, top: 418, bottom: 482 } },
         {
           run: [
             [88.6, 482.5],
@@ -144,6 +144,12 @@ export default {
   blooms: [
     [[320, 254.7], [326, 250], [338.8, 247], [352, 246], [361, 240.7]],
   ],
+  // Le goutte-à-goutte du surplomb : [x, d'où ça tombe, le sol] (décor).
+  drips: [
+    [88.2, 418.5, 481.5],
+    [89, 418.5, 482.5],
+  ],
+
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [
     { id: 'poisson', type: 'fish', title: 'Un poisson a sauté', text: 'Touche le lac : un poisson y saute' },

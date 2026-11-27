@@ -145,6 +145,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `sun.max` au-delà de 180 | la nuit | le soleil passe sous l'horizon : tout est à l'ombre, l'eau calme gèle |
 | `goals` | les trois objectifs secondaires du niveau (voir `src/game/goals.js`) : `{ id, type, title, text }` | une médaille chacun (cuivre, argent, or) ; ils sont à côté de l'énigme et ne la changent pas |
 | `houses`, `decor` | huttes du village ; animaux, cairns, buissons, fleurs, fanions | les huttes font de l'ombre ; les décors ne changent rien à l'énigme, mais les animaux réagissent à la lumière (voir `life.js`) |
+| `drips` | un goutte-à-goutte qui tombe d'un surplomb : `[x, haut, sol]` (niveau 3) | décor seulement ; ne cache rien |
 | `remnants` | un reste de glace accroché à un plafond, qui goutte une fois son glacier fondu (niveau 1) | décor seulement ; montre d'où vient l'eau |
 | `veins`, `aquifers` | l'eau dans la roche, vue en coupe : veines et filets en amont, nappe ou boyau en aval (et `drain` dans un cours d'eau : le pied de falaise ou la perte par où il s'en va) | décor seulement ; montre d'où vient l'eau et où elle repart |
 | `mists`, `blooms` | brume du matin dans un creux ; lignes où les fleurs poussent à la victoire | décor seulement |

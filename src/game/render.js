@@ -23,7 +23,7 @@ import {
   lampHalos,
 } from './game.js';
 import { drawDecor } from './decor.js';
-import { drawUnderground, drawRemnants } from './underground.js';
+import { drawUnderground, drawRemnants, drawDrips } from './underground.js';
 import { drawDoor, drawChain, drawWaterWheel, drawDrain, drawMachineGlow } from './machine.js';
 import { windAt } from './life.js';
 import { drawLifeSky, drawLifeFar, drawLifeGround, drawLifeFront, drawLifeGlow } from './lifeDraw.js';
@@ -315,6 +315,7 @@ export function createRenderer(canvas) {
     // (la perte par où l'eau s'en va dans le sol, puis l'eau elle-même)
     for (const s of g.streams) if (s.def.drain) drawDrain(c, P, s.def.drain);
     for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit, s.def.width);
+    drawDrips(c, P, g); // (l'eau qui tombe goutte à goutte d'un surplomb)
 
     // Empreintes, fleurs du dégel, éclats sur l'eau (voir lifeDraw.js)
     drawLifeGround(c, P, g, isLit);
@@ -377,7 +378,7 @@ export function createRenderer(canvas) {
     for (const m of g.memories) drawMemory(c, P, m);
 
     // Digues de glace
-    for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.01) drawDam(c, P, f);
+    for (const f of g.frosts) if (f.def.role === 'dam' && f.amount > 0.01) drawDam(c, P, f, g);
 
     // Portes de pierre : elles glissent le long de la falaise en s'ouvrant
     for (const d of g.doors) drawDoor(c, P, d);
@@ -659,42 +660,95 @@ export function createRenderer(canvas) {
   }
 
   /**
-   * Une digue de glace : le même style, debout. Des blocs anguleux s'empilent
-   * depuis le fond, jusqu'à la hauteur où la glace arrête la lumière et l'eau
-   * (frostPolygon).
+   * Une digue de glace : une cascade gelée. L'eau qui s'échappe du lac gèle
+   * sur place : la chute se fige dans le ravin, et la glace s'accumule couche
+   * après couche à la sortie, large à la base, avec des glaçons côté vide.
+   * (Ce qui arrête la lumière et l'eau reste le rectangle de frostPolygon.)
    */
-  function drawDam(c, P, f) {
+  function drawDam(c, P, f, g) {
     const r = f.def.rect;
     const top = frostPolygon(f)[0].y;
+    const k = f.amount;
     const mid = (r.x0 + r.x1) / 2;
-    const size = 11; // hauteur d'un bloc
     c.lineJoin = 'round';
-    for (let j = 0, base = r.y1; base > top + 0.2; j++, base -= size) {
-      const full = base - size >= top; // le bloc du haut est encore en train de monter
-      const y = Math.max(base - size, top);
-      const tilt = full ? (hash(j + 21) - 0.5) * 2.4 : 0;
-      const pts = [
-        { x: r.x0 + 0.3, y: y + 0.4 + tilt },
-        { x: mid + (hash(j + 31) - 0.5) * 4, y: y + 0.4 - (full ? 0.6 : 0) },
-        { x: r.x1 - 0.3, y: y + 0.4 - tilt },
-        { x: r.x1 - 0.3, y: base - 0.4 },
-        { x: r.x0 + 0.3, y: base - 0.4 },
-      ];
-      poly(c, pts);
+    c.lineCap = 'round';
+
+    // La chute figée : le cours d'eau que cette digue arrête, pris par la glace
+    const stream = g.streams.find((s) => s.def.spring === f.def.id);
+    const frozenAt = stream ? stream.def.frozenAt || 0.5 : 1;
+    if (stream && k >= frozenAt) {
+      const pts = [{ x: r.x1 + 0.5, y: r.y1 + 1 }];
+      for (const part of stream.def.parts) for (const q of part.run || []) if (q[0] > r.x1 + 2) pts.push(P2(q));
+      c.globalAlpha = clamp((k - frozenAt) / 0.15, 0, 1);
+      c.strokeStyle = P.ice;
+      c.lineWidth = (stream.def.width || 4.6) + 1.6;
+      line(c, pts);
+      c.stroke();
+      // des glaçons, tout le long
       c.fillStyle = P.ice;
-      c.fill();
-      c.strokeStyle = P.iceLine;
-      c.lineWidth = 0.6;
-      c.globalAlpha = 0.6;
-      if (base - y > 5) {
-        line(c, [pts[1], { x: mid - 2 + hash(j + 41) * 4, y: base - 2 }]);
-        c.stroke();
+      let n = 0;
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1];
+        const b = pts[i];
+        const len = Math.hypot(b.x - a.x, b.y - a.y);
+        for (let d = 7; d < len; d += 14, n++) {
+          const x = a.x + ((b.x - a.x) * d) / len + 2;
+          const y = a.y + ((b.y - a.y) * d) / len;
+          if (y > view.bottom) break;
+          poly(c, [
+            { x: x - 1.6, y },
+            { x: x + 1.6, y },
+            { x: x + 0.4, y: y + 7 + hash(n + 3) * 5 },
+          ]);
+          c.fill();
+        }
       }
       c.globalAlpha = 1;
-      c.lineWidth = 0.9;
-      line(c, [pts[0], pts[1], pts[2]]);
+    }
+    if (k <= 0.01) return;
+
+    // Le massif de glace : plus large au pied qu'en haut
+    const lean = (y) => (r.y1 - y) / (r.y1 - r.y0); // 0 au pied, 1 en haut
+    const left = (y) => r.x0 - 8 * (1 - lean(y));
+    const right = (y) => r.x1 + 3 * (1 - lean(y));
+    c.fillStyle = P.ice;
+    c.beginPath();
+    c.moveTo(left(r.y1), r.y1 + 2);
+    for (let y = r.y1; y > top; y -= 6) c.lineTo(left(y) + Math.sin(y * 0.6) * 0.8, y);
+    c.quadraticCurveTo(mid, top - 3.5, right(top), top + 1);
+    for (let y = top + 1; y < r.y1; y += 6) c.lineTo(right(y) + Math.sin(y * 0.8) * 0.9, y);
+    c.lineTo(right(r.y1), r.y1 + 2);
+    c.closePath();
+    c.fill();
+    // les couches, l'une sur l'autre
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 0.6;
+    c.globalAlpha = 0.55;
+    for (let y = r.y1 - 6; y > top + 3; y -= 7) {
+      c.beginPath();
+      c.moveTo(left(y) + 1, y);
+      c.quadraticCurveTo(mid, y - 2.2, right(y) - 1, y + 0.6);
       c.stroke();
     }
+    c.globalAlpha = 1;
+    // des glaçons sur la face du ravin
+    c.fillStyle = P.ice;
+    for (let y = r.y1 - 9, i = 0; y > top + 4; y -= 13, i++) {
+      const x = right(y);
+      poly(c, [
+        { x: x - 1.5, y: y - 1 },
+        { x: x + 2.2, y },
+        { x: x + 1.2, y: y + 6 + hash(i) * 4 },
+      ]);
+      c.fill();
+    }
+    // le dessus, arrondi et plus clair
+    c.strokeStyle = P.iceLine;
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(left(top) + 0.5, top + 0.6);
+    c.quadraticCurveTo(mid, top - 3.5, right(top), top + 1);
+    c.stroke();
   }
 
   /** Une roue à eau, et la chaîne qui la relie à sa porte (voir machine.js). */
