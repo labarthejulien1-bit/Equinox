@@ -129,10 +129,47 @@ export function mirrorGeometry(m) {
 }
 
 /**
+ * Le bout exact d'un faisceau, entre les positions k0 et k1 le long du miroir :
+ * la liste des points où la lumière s'arrête, de k0 vers k1.
+ * Même idée que visibilityPolygon() : on vise chaque coin d'obstacle (et juste
+ * à côté). Entre deux coins, la lumière s'arrête sur un bord droit : il suffit
+ * donc de relier les points pour suivre exactement une pente.
+ */
+function beamEnd(geo, dir, k0, k1, segs, mirror, depthOf) {
+  const E = 1e-3;
+  const den = geo.u.x * dir.y - geo.u.y * dir.x; // jamais nul : pas de reflet rasant
+  const ks = [k0, k1];
+  for (let i = 0; i < segs.length; i++) {
+    const s = segs[i];
+    if (s.owner === mirror) continue;
+    for (const v of [s.a, s.b]) {
+      // Quel rayon du faisceau passe par ce coin ?  a + u·k + dir·t = v
+      const wx = v.x - geo.a.x;
+      const wy = v.y - geo.a.y;
+      const k = (wx * dir.y - wy * dir.x) / den;
+      const t = (geo.u.x * wy - geo.u.y * wx) / den;
+      if (t > 0 && k > k0 + E && k < k1 - E) ks.push(k - E, k + E);
+    }
+  }
+  ks.sort((a, b) => a - b);
+  const points = [];
+  for (const k of ks) {
+    const x = geo.a.x + geo.u.x * k;
+    const y = geo.a.y + geo.u.y * k;
+    const h = castRay(x, y, dir.x, dir.y, segs, mirror);
+    const t = Math.min(h.t + bite(x, y, dir.x, dir.y, h, segs, depthOf), 5000);
+    points.push({ x: x + dir.x * t, y: y + dir.y * t });
+  }
+  return points;
+}
+
+/**
  * Calcule tous les faisceaux renvoyés par les miroirs.
  *
  * Chaque miroir est découpé en `slices` tranches. Une tranche éclairée renvoie
  * un rayon ; cela permet des faisceaux partiellement coupés par une ombre.
+ * Les règles du jeu lisent ces tranches ; le dessin, lui, suit le bout exact
+ * du faisceau (`runs`), pour ne pas faire de marches d'escalier sur une pente.
  *
  * @param sun     position du soleil {x, y}, ou null s'il est caché
  * @param mirrors miroirs actifs (libres de glace)
@@ -141,7 +178,7 @@ export function mirrorGeometry(m) {
  * @param lamps   petites sources proches [{ x, y, range, owner }] : elles
  *                n'éclairent que les miroirs à moins de `range` d'elles
  *                (owner = l'objet qui porte la lampe, s'il bloque la lumière)
- * @returns liste de faisceaux { mirror, dir, slices: [{lit, t, reach, owner, p}], geo, fromLamp }
+ * @returns liste de faisceaux { mirror, dir, slices: [{lit, t, reach, owner, p}], runs, geo, fromLamp }
  */
 export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null, lamps = []) {
   const beams = [];
@@ -173,6 +210,16 @@ export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null, lamp
       beam.slices.push({ lit, t, reach, owner, p });
     }
     if (!any) return;
+    // Chaque groupe de tranches éclairées voisines donne un polygone à dessiner
+    const w = mirror.len / slices;
+    beam.runs = [];
+    for (let i = 0; i < slices; i++) {
+      if (!beam.slices[i].lit) continue;
+      let j = i;
+      while (j + 1 < slices && beam.slices[j + 1].lit) j++;
+      beam.runs.push({ from: w * i, to: w * (j + 1), end: beamEnd(geo, dir, w * i, w * (j + 1), segs, mirror, depthOf) });
+      i = j;
+    }
     beams.push(beam);
 
     // Ce faisceau touche-t-il d'autres miroirs ? Si oui, ils renvoient à leur tour.
@@ -224,38 +271,15 @@ export function traceBeams(sun, mirrors, segs, slices = 12, depthOf = null, lamp
 
 /**
  * Transforme un faisceau en polygones à dessiner (un par groupe de tranches
- * éclairées voisines).
+ * éclairées voisines) : le bord du miroir, puis le bout exact du faisceau.
  */
 export function beamPolygons(beam) {
-  const polys = [];
-  const n = beam.slices.length;
-  const w = beam.mirror.len / n;
   const { a, u } = beam.geo;
-  const d = beam.dir;
-  let i = 0;
-  while (i < n) {
-    if (!beam.slices[i].lit) {
-      i++;
-      continue;
-    }
-    let j = i;
-    while (j + 1 < n && beam.slices[j + 1].lit) j++;
-    const pts = [];
-    pts.push({ x: a.x + u.x * w * i, y: a.y + u.y * w * i });
-    pts.push({ x: a.x + u.x * w * (j + 1), y: a.y + u.y * w * (j + 1) });
-    for (let k = j; k >= i; k--) {
-      const t = Math.min(beam.slices[k].reach, 5000);
-      const x1 = a.x + u.x * w * (k + 1);
-      const y1 = a.y + u.y * w * (k + 1);
-      const x0 = a.x + u.x * w * k;
-      const y0 = a.y + u.y * w * k;
-      pts.push({ x: x1 + d.x * t, y: y1 + d.y * t });
-      pts.push({ x: x0 + d.x * t, y: y0 + d.y * t });
-    }
-    polys.push(pts);
-    i = j + 1;
-  }
-  return polys;
+  return beam.runs.map((run) => [
+    { x: a.x + u.x * run.from, y: a.y + u.y * run.from },
+    { x: a.x + u.x * run.to, y: a.y + u.y * run.to },
+    ...run.end.slice().reverse(),
+  ]);
 }
 
 /** Angle à donner à un miroir pour renvoyer une lumière venant de `from` vers `to`. */

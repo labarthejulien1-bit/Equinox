@@ -56,6 +56,10 @@ la roche, comme au niveau 1.
 et chaque cristal ne doit être atteignable que par un seul miroir : le
 vérifier dans le test, cristal par cristal.
 
+Un faisceau a deux visages (`traceBeams` dans `engine/light.js`) : les règles
+lisent ses 12 tranches (`slices`), le dessin suit son bout exact (`runs`),
+calculé en visant chaque coin du relief. Un niveau n'a rien à faire pour ça.
+
 Piège connu : un miroir éclairé renvoie toujours un faisceau, même quand le
 joueur n'y a pas touché. Choisir son angle de départ pour que ce faisceau ne
 vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).

@@ -1296,6 +1296,8 @@ dans la glace.
    l'eau du niveau 1.
 8. ✅ **v0.7** — la vie du monde et le trajet de l'eau posés dans les neuf
    autres niveaux ; le test automatique vérifie aussi le décor.
+   v0.7.1 : le bout d'un faisceau suit exactement la pente qu'il éclaire
+   (plus de marches d'escalier), dans tous les niveaux.
 9. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
