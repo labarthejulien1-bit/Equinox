@@ -1369,6 +1369,8 @@ dans la glace.
    seul miroir) : un cristal dans la voûte, l'autre au fond de la grotte, à
    chaque miroir le sien ; les cristaux-mémoire deviennent des lanternes
    d'ambre à jauge, pour ne plus les confondre avec ceux du sanctuaire.
+   v0.8.5 : un faisceau qui arrive sous un nuage l'éclaire proprement (le
+   contour du nuage avait des dents dans son ventre).
 10. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,

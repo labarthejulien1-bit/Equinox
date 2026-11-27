@@ -134,6 +134,11 @@ function makeCloudShape(w, h) {
       const p = { x: c.x + Math.cos(a) * c.r, y: c.y + Math.sin(a) * c.r };
       if (p.y > bottom) continue;
       if (circles.some((o) => o !== c && Math.hypot(p.x - o.x, p.y - o.y) < o.r - 0.01)) continue;
+      // Le ventre du nuage est plein (un rectangle relie les deux bouts) : un
+      // point de cercle qui s'y trouve n'est pas sur le contour. Le garder
+      // creuserait des dents dans le dessous, et un faisceau venu d'en bas y
+      // dessinerait des éclats.
+      if (p.y > 0 && p.x > circles[0].x && p.x < circles[4].x) continue;
       outline.push(p);
     }
   }
