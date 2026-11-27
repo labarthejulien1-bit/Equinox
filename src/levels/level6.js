@@ -156,17 +156,6 @@ export default {
     [[106, 546.3], [130, 550], [160, 552], [182, 555.7]],
     [[269, 400.7], [292, 392], [322, 376]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont : la neige du versant s'infiltre en filets et rejoint une veine venue de plus loin, qui nourrit la source.
-  veins: [
-    { width: 3, path: [[318, 384.5], [322, 404], [340, 420]] },
-    { width: 3, path: [[346, 366.5], [344, 392], [340, 420]] },
-    { width: 5.5, path: [[372, 404], [340, 420], [300, 426], [272, 416], [264.5, 407.6]] },
-  ],
-  // En aval : l'eau s'enfonce au pied de la cascade et suit un boyau qui sort de l'écran.
-  aquifers: [
-    { stream: 'torrent', inlet: [[191.5, 570], [184, 590], [160, 620], [120, 660], [70, 704], [30, 752]] },
-  ],
 
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [
