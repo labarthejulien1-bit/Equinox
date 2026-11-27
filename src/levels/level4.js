@@ -110,12 +110,6 @@ export default {
     [[238, 510.8], [252, 510], [270, 509], [288, 504]],
     [[100, 510], [140, 510], [168, 510.9]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // Le torrent sort de la roche à gauche, traverse le fond de la vallée, puis s'y renfonce à droite et quitte l'écran.
-  veins: [
-    { width: 5.5, path: [[-8, 598], [40, 580], [96, 556], [146, 538], [174.5, 527]] },
-    { width: 5.5, path: [[229.7, 526], [252, 548], [290, 590], [330, 640], [372, 688]] },
-  ],
 
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [

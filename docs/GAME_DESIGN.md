@@ -1290,7 +1290,7 @@ qui ont de l'eau :
 | 1 | un reste du glacier, accroché au plafond de sa niche, qui goutte | boyau au pied de la falaise, nappe sous le temple, puis filet vers le bas |
 | 2 | la source du replat (rien n'est dessiné dans la roche : choix du propriétaire) | une perte au pied de la cascade |
 | 3 | la neige du versant gauche fond : un filet descend la pente, tombe goutte à goutte du surplomb et rejoint le lac | un petit filet par le ravin, qui gèle en cascade de glace |
-| 4 | le torrent sort de la roche à gauche | il s'y renfonce à droite et quitte l'écran |
+| 4 | une eau calme au fond de la vallée (rien n'est dessiné dans la roche : choix du propriétaire) | — |
 | 6 | la neige du versant et une veine venue de la droite, jusqu'à la source | perte au pied de la cascade, boyau vers le bas |
 | 8 | une veine venue de la gauche, jusqu'au lac | un filet s'échappe par le fond du lac |
 | 10 | l'eau de fonte suinte sous le grand glacier | perte, nappe sous le village, puis filet « vers les plaines » |
