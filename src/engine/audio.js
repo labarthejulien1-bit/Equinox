@@ -27,7 +27,7 @@ export function createAudio() {
     // stockage indisponible : le son reste allumé
   }
   const last = {}; // dernière fois qu'un son bref a été joué (pour ne pas les empiler)
-  const seen = { mirrors: new Map(), crystals: new Map(), wheels: new Map(), doors: 0, game: null, melt: 0, bloom: 0 };
+  const seen = { mirrors: new Map(), crystals: new Map(), wheels: new Map(), doors: 0, game: null, melt: 0, bloom: 0, wake: 0 };
 
   // ───────────────────────────── Mise en route ─────────────────────────────
 
@@ -211,6 +211,13 @@ export function createAudio() {
       tone({ f0: 110, dur: 4, gain: 0.09, attack: 0.6 });
       tone({ f0: 220, dur: 4, gain: 0.05, attack: 0.9 });
     },
+    wake() {
+      // Une machine des anciens se rallume au passage de l'onde : une note
+      // de cloche, chaque fois un peu plus haute.
+      if (!fresh('wake', 0.06)) return;
+      bell(SCALE[seen.wake++ % SCALE.length] * 2, 0.05, 0, 1.8);
+      tone({ f0: 196, dur: 0.5, gain: 0.03, attack: 0.02 });
+    },
     bloom() {
       if (!fresh('bloom', 0.08)) return;
       tone({ f0: SCALE[seen.bloom++ % SCALE.length], dur: 0.4, gain: 0.03, type: 'triangle', attack: 0.004 });
@@ -279,6 +286,7 @@ export function createAudio() {
       seen.wheels.clear();
       seen.doors = 0;
       seen.bloom = 0;
+      seen.wake = 0;
     }
 
     // Le vent : toujours un fond, et la rafale qui passe.

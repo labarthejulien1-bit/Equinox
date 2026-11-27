@@ -58,6 +58,24 @@ Au dernier temple, on découvre que tout avait été prévu pour ce retour : le
 culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
 était une étape du plan des anciens.
 
+### L'onde du réveil ✅
+
+Le moment où le joueur tient la promesse doit se voir : quand tous les
+cristaux sont allumés, un **cercle d'or** part du sanctuaire et traverse
+tout l'écran en cinq secondes environ. Ce qu'il touche se réveille à cet
+instant, et pas avant :
+
+- la neige fond, l'herbe revient, il cesse de neiger (le monde est dégelé
+  à l'intérieur du cercle, encore gelé au-dehors) ;
+- chaque **machine des anciens** (miroir, roue et son treuil, œil de pierre)
+  jette un éclat, sonne une note, et garde un **anneau gradué d'or** qui
+  tourne lentement, comme celui du cristal : c'est la marque d'une machine
+  réveillée ;
+- les lanternes du village s'allument, les villageois se mettent à danser,
+  les fleurs poussent, les bêtes se lèvent, les grands glaciers fondent.
+
+La carte du souvenir attend que l'onde soit sortie de l'écran.
+
 ### Le sens du titre ✅
 
 Tout le jeu, comme toute l'ancienne civilisation, repose sur un équilibre du
@@ -1371,7 +1389,12 @@ dans la glace.
    d'ambre à jauge, pour ne plus les confondre avec ceux du sanctuaire.
    v0.8.5 : un faisceau qui arrive sous un nuage l'éclaire proprement (le
    contour du nuage avait des dents dans son ventre).
-10. **À venir, dans un ordre à décider** :
+10. ✅ **v0.9** — l'onde du réveil (§ 3) : à la victoire, un cercle d'or part
+   du sanctuaire et réveille le monde de proche en proche, dans les dix
+   niveaux. Choisie parmi trois maquettes (l'onde ; le réseau de sillons
+   gravés qui relie les machines ; la première journée, où le soleil
+   repart seul). Les deux autres restent possibles par-dessus.
+11. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;

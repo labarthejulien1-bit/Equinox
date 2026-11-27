@@ -156,8 +156,9 @@ export function mix(a, b, t) {
   return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
 }
 
-let cacheKey = '';
-let cache = null;
+// Les dernières palettes calculées. (Pendant l'onde du réveil, chaque image
+// en demande deux : le monde gelé et le monde dégelé.)
+const cache = new Map();
 
 /**
  * Renvoie { lit, shadow } pour un degré de dégel (thaw) et une teinte d'aube
@@ -167,7 +168,7 @@ export function getPalettes(thaw, dawn = 0) {
   const t = Math.round(thaw * 200) / 200;
   const d = Math.round(dawn * 50) / 50;
   const key = t + '|' + d;
-  if (key === cacheKey) return cache;
+  if (cache.has(key)) return cache.get(key);
   const build = (mode) => {
     const out = {};
     for (const name in ICE[mode]) {
@@ -181,7 +182,8 @@ export function getPalettes(thaw, dawn = 0) {
     }
     return out;
   };
-  cacheKey = key;
-  cache = { lit: build('lit'), shadow: build('shadow') };
-  return cache;
+  if (cache.size > 12) cache.clear();
+  const pal = { lit: build('lit'), shadow: build('shadow') };
+  cache.set(key, pal);
+  return pal;
 }

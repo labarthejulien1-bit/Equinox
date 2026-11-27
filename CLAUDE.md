@@ -86,6 +86,22 @@ vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).
 (`engine/light.js`) puis applique les règles → `render.js` dessine la scène en
 palette d'ombre, puis en palette de lumière dans les zones éclairées.
 
+## L'onde du réveil
+
+À la victoire, un cercle d'or part du sanctuaire et réveille le monde de
+proche en proche (`g.wave` dans `game.js`, dessinée par `drawWake` dans
+`render.js`). Un niveau n'a rien à faire pour ça.
+
+- Tout ce qui doit réagir au réveil demande `wokenFor(g, x, y)` : le nombre
+  de secondes depuis que l'onde est passée à cet endroit (0 : pas encore).
+  Ne plus se servir de `g.win.t` pour ça, sinon l'élément se réveille avant
+  que l'onde l'ait touché.
+- Une machine nouvelle s'ajoute à `machineSpots(g)` : elle aura son éclat,
+  sa note et son anneau d'or.
+- Pendant le passage de l'onde, `render.js` dessine la scène deux fois
+  (gelée, puis dégelée à l'intérieur du cercle) : ne rien y dessiner de
+  coûteux qui dépende du hasard d'une image à l'autre.
+
 ## Références
 
 - `docs/GAME_DESIGN.md` — univers, système d'éléments, design des temples et

@@ -30,6 +30,61 @@ const biteOf = (owner) => BITE[typeof owner === 'string' ? owner : owner.kind] |
 /** Les cristaux d'un sanctuaire : un seul (temple.crystal) ou plusieurs (temple.crystals). */
 export const templeCrystals = (level) => level.temple.crystals || [level.temple.crystal];
 
+// ── L'onde du réveil ──────────────────────────────────────────────────
+// Quand le sanctuaire se rallume, un cercle d'or part de ses cristaux et
+// traverse toute la scène. Ce qu'il touche se réveille à cet instant : la
+// neige fond, les fleurs poussent, les machines des anciens se rallument.
+// Il part doucement, pour qu'on le voie naître, puis il accélère.
+const WAVE_DELAY = 0.3; // secondes entre l'allumage et le départ de l'onde
+const WAVE_SPEED = 55; // vitesse de départ (unités par seconde)
+const WAVE_PUSH = 16; // accélération
+const WAVE_MARGIN = 60; // la scène vue par un écran plus large ou plus haut que 360 × 720
+const waveRadius = (t) => (t <= 0 ? 0 : WAVE_SPEED * t + WAVE_PUSH * t * t);
+const waveTime = (r) => (-WAVE_SPEED + Math.sqrt(WAVE_SPEED * WAVE_SPEED + 4 * WAVE_PUSH * r)) / (2 * WAVE_PUSH);
+
+/**
+ * L'onde d'un niveau, avant son départ. Elle part du milieu des cristaux
+ * (x, y) ; `r` est son rayon, `max` le rayon où elle a tout traversé (le coin
+ * le plus éloigné de ce qu'un écran peut montrer), `end` l'instant (g.win.t)
+ * où elle y arrive, `woke` le nombre de machines déjà rallumées.
+ */
+function makeWave(level) {
+  const all = templeCrystals(level);
+  const x = all.reduce((s, c) => s + c.x, 0) / all.length;
+  const y = all.reduce((s, c) => s + c.y, 0) / all.length;
+  const far = (cx, cy) => Math.hypot(cx - x, cy - y);
+  const m = WAVE_MARGIN;
+  const max = Math.max(far(-m, -2 * m), far(360 + m, -2 * m), far(-m, 720 + 2 * m), far(360 + m, 720 + 2 * m));
+  return { x, y, r: 0, max, end: WAVE_DELAY + waveTime(max), woke: 0 };
+}
+
+/** Depuis combien de secondes l'onde du réveil est passée ici (0 : pas encore). */
+export function wokenFor(g, x, y) {
+  if (!g.temple.lit) return 0;
+  const d = Math.hypot(x - g.wave.x, y - g.wave.y);
+  return Math.max(0, g.win.t - WAVE_DELAY - waveTime(d));
+}
+
+/**
+ * Les machines des anciens, là où elles sont en ce moment : chacune se
+ * rallume au passage de l'onde. `r` est la taille de son anneau d'or
+ * (0 : pas d'anneau, juste un éclat, pour ce qui a déjà sa propre lueur).
+ */
+export function machineSpots(g) {
+  const spots = [];
+  for (const m of g.mirrors) if (m.free) spots.push({ x: m.x, y: m.y, r: m.len / 2 + 3 });
+  for (const w of g.wheels) {
+    spots.push({ x: w.def.x, y: w.def.y, r: w.def.r + 3 });
+    // (le pignon du haut de sa chaîne, au-dessus de la porte : voir machine.js)
+    const d = w.def.door && byId(g.doors, w.def.door);
+    if (d) spots.push({ x: d.def.x + (w.def.x < d.def.x ? -1 : 1) * (d.def.w / 2 + 5), y: d.def.top - 8, r: 5 });
+  }
+  for (const e of g.eyes) spots.push({ x: e.def.x, y: e.def.y, r: 7 }, { x: e.def.out.x, y: e.def.out.y, r: 0 });
+  for (const m of g.memories) spots.push({ x: m.def.x, y: m.def.y, r: 0 });
+  for (const l of g.level.lanterns || []) spots.push({ x: l.x, y: l.y, r: 0 });
+  return spots;
+}
+
 // Lever et coucher du soleil : la lumière ne s'allume pas d'un coup. Elle
 // monte à mesure que le soleil s'éloigne du relief (sur DAWN_ZONE unités) ou
 // sort du nuage (sur CLOUD_ZONE unités).
@@ -103,9 +158,11 @@ export function createGame(level) {
     temple: { charge: 0, lit: false, glow: 0 },
     win: { t: 0 },
     thaw: 0, // 0 = ère glaciaire, 1 = monde dégelé
+    // L'onde du réveil : un cercle qui part du sanctuaire rallumé (voir makeWave).
+    wave: makeWave(L),
     touched: { sun: false, cloud: false, mirror: false, rail: false },
     particles: [],
-    events: [], // messages pour l'interface : 'ice-gone', 'door-open', 'mirror-placed', 'temple-lit'
+    events: [], // messages pour l'interface : 'ice-gone', 'door-open', 'mirror-placed', 'temple-lit', 'wake'
     light: null, // résultat du dernier calcul de lumière
   };
 }
@@ -438,11 +495,9 @@ export function computeLight(g) {
     const c = templeCrystals(L)[0];
     const noCrystal = segs.filter((s) => !s.owner || s.owner.kind !== 'crystal');
     points.push({ x: c.x, y: c.y, r: 190 * g.temple.glow, pts: visibilityPolygon(c.x, c.y, noCrystal, biteOf).points });
-    const k = smooth((g.win.t - 2.4) / 1.6);
-    if (k > 0) {
-      for (const l of L.lanterns || []) {
-        points.push({ x: l.x, y: l.y, r: 52 * k, pts: visibilityPolygon(l.x, l.y, segs, biteOf).points });
-      }
+    for (const l of L.lanterns || []) {
+      const k = smooth(wokenFor(g, l.x, l.y) / 1.6); // elle s'allume au passage de l'onde
+      if (k > 0) points.push({ x: l.x, y: l.y, r: 52 * k, pts: visibilityPolygon(l.x, l.y, segs, biteOf).points });
     }
   }
 
@@ -537,9 +592,10 @@ export function update(g, dt) {
   for (const ice of g.ices) {
     if (!ice.active && byId(g.ices, ice.def.after).gone) ice.active = true;
     if (ice.gone || !ice.active) continue;
-    // Un grand glacier (`thaws`) ne fond que lorsque le sanctuaire se rallume.
+    // Un grand glacier (`thaws`) ne fond que lorsque le sanctuaire se rallume
+    // et que l'onde du réveil l'atteint.
     if (ice.def.thaws) {
-      if (g.temple.lit) {
+      if (wokenFor(g, ice.def.points[0].x, ice.def.points[0].y) > 0) {
         ice.melt = Math.min(1, ice.melt + dt / 9);
         if (Math.random() < dt * 20) spawnDrip(g, ice);
         if (ice.melt >= 1) ice.gone = true;
@@ -630,7 +686,13 @@ export function update(g, dt) {
   } else {
     g.win.t += dt;
     g.temple.glow = smooth(g.win.t / 2.2);
-    g.thaw = smooth((g.win.t - 1.5) / 7);
+    // L'onde du réveil grandit ; `thaw` dit où elle en est (0 → 1).
+    const wave = g.wave;
+    wave.r = Math.min(wave.max, waveRadius(g.win.t - WAVE_DELAY));
+    g.thaw = smooth(wave.r / wave.max);
+    // Chaque machine qu'elle atteint se rallume (une note par machine).
+    const woke = machineSpots(g).filter((m) => Math.hypot(m.x - wave.x, m.y - wave.y) <= wave.r).length;
+    for (; wave.woke < woke; wave.woke++) g.events.push('wake');
     if (Math.random() < dt * 5) {
       const all = templeCrystals(L);
       const c = all[Math.floor(Math.random() * all.length)];

@@ -15,7 +15,7 @@
 
 import { clamp, lerp, smooth, pointInPolygon, dist } from '../engine/vec.js';
 import { isBlocked, castRay, polygonSegments } from '../engine/light.js';
-import { sunPosition, streamWet, walkerPosition, hutSize } from './game.js';
+import { sunPosition, streamWet, walkerPosition, hutSize, wokenFor } from './game.js';
 
 const rnd = (a, b) => a + Math.random() * (b - a);
 /** Fait glisser v vers `target`, de `rate` par seconde au plus. */
@@ -194,7 +194,7 @@ export function createLife(g) {
     for (let d = 3; d < path.total - 2 && life.blooms.length < 48; d += rnd(6, 9)) {
       const p = pathAt(path, d);
       if (Math.abs(Math.sin(p.slope)) > 0.6) continue; // pas de fleurs sur une pente raide ou le long d'un ravin
-      life.blooms.push({ x: p.x, y: p.y + 1, h: rnd(4, 7), color: life.blooms.length % 3, delay: life.blooms.length * 0.16 + rnd(0, 0.5), grow: 0 });
+      life.blooms.push({ x: p.x, y: p.y + 1, h: rnd(4, 7), color: life.blooms.length % 3, delay: rnd(0.1, 0.9), grow: 0 });
     }
   }
 
@@ -307,7 +307,7 @@ export function updateLife(g, dt) {
   // La nuit : le soleil est passé derrière le relief (un nuage ne suffit pas).
   const behind = pointInPolygon(light.sun, L.ground);
   life.night = approach(life.night, behind ? 1 : 0, behind ? 0.5 : 0.9, dt);
-  life.revive = g.temple.lit ? smooth((g.win.t - 2) / 3) : 0;
+  life.revive = g.temple.lit ? g.thaw : 0; // (où en est l'onde du réveil, pour ce qui n'a pas de place précise)
 
   updateWind(g, life, dt);
 
@@ -347,10 +347,10 @@ export function updateLife(g, dt) {
   updateAquifers(g, life, dt);
   updateSky(g, life, dt);
 
-  // Les fleurs poussent une à une quand le sanctuaire s'est rallumé.
+  // Les fleurs poussent une à une, au passage de l'onde du réveil.
   if (g.temple.lit) {
     for (const b of life.blooms) {
-      if (g.win.t < 2.6 + b.delay) continue;
+      if (wokenFor(g, b.x, b.y) <= b.delay) continue;
       if (b.grow === 0) g.events.push('bloom');
       b.grow = Math.min(1, b.grow + dt / 1.3);
     }
@@ -418,7 +418,7 @@ const UPDATE = {
 };
 
 function updatePlant(k, g, life, dt) {
-  const want = k.sun || k.beam || life.revive > 0.3;
+  const want = k.sun || k.beam || wokenFor(g, k.x, k.y) > 0.3;
   k.open = approach(k.open, want ? 1 : 0, want ? 0.8 : 1.2, dt);
 }
 
@@ -435,6 +435,7 @@ function setState(k, state) {
 function updateIbex(k, g, life, dt) {
   const lit = k.sun || k.beam;
   const asleep = life.night > 0.6 && !g.temple.lit;
+  const woke = wokenFor(g, k.x, k.y); // l'onde du réveil est passée sur lui depuis… (secondes)
   const path = k.path;
   const nodes = path ? path.pts.map((p, i) => ({ ...p, d: path.cum[i] })) : [];
   const here = nodes.find((n) => Math.abs(n.d - k.dist) < 0.5);
@@ -461,7 +462,7 @@ function updateIbex(k, g, life, dt) {
     if (k.t > 0.8) setState(k, 'stand');
   } else if (k.state === 'lie') {
     if (asleep) setState(k, 'sleep');
-    else if (g.temple.lit || (!lit && k.t > 0.7)) shake(g.temple.lit ? 'revive' : 'shade'); // l'ombre arrive : debout !
+    else if (woke > 0 || (!lit && k.t > 0.7)) shake(woke > 0 ? 'revive' : 'shade'); // l'ombre arrive : debout !
     else if (path && k.t > k.rest) {
       // De temps en temps, il change de place.
       const others = nodes.filter((n) => n !== here && sunny(n));
@@ -471,10 +472,10 @@ function updateIbex(k, g, life, dt) {
     }
   } else if (k.state === 'stand') {
     if (asleep) setState(k, 'sleep');
-    else if (g.temple.lit) {
+    else if (woke > 0) {
       // Le monde revient à la vie : il descend voir, au bout de son chemin.
       const gather = nodes[k.d.gather ?? nodes.length - 1];
-      if (gather && Math.abs(gather.d - k.dist) > 0.5 && life.revive > 0.2) go(gather);
+      if (gather && Math.abs(gather.d - k.dist) > 0.5 && woke > 0.6) go(gather);
     } else if (k.t > 1.3) {
       const rests = nodes.filter((n) => n.rest && sunny(n));
       if (lit && (!path || (here && here.rest))) setState(k, 'lie');
@@ -531,7 +532,7 @@ function updateIbex(k, g, life, dt) {
  * sentinelle se dresse et siffle ; l'autre plonge dans son trou.
  */
 function updateMarmots(k, g, life, dt) {
-  const want = (k.sun && life.night < 0.5) || life.revive > 0.3;
+  const want = (k.sun && life.night < 0.5) || wokenFor(g, k.x, k.y) > 0.3;
   k.sunT = want ? k.sunT + dt : 0;
   const bird = life.critters.find((c) => c.type === 'raptor' && c.shadow);
   const birdNear = bird && Math.hypot(bird.shadow.x - k.x, bird.shadow.y - k.y) < 16;
@@ -623,7 +624,7 @@ function updateHare(k, g, life, dt) {
       bounds(k.len ? (k.u < 0.5 ? 1 : 0) : k.u, 3, 0.25, 'alert');
       k.back = rnd(3.5, 5.5);
     } else if (asleep) setState(k, 'sleep');
-    else if (g.temple.lit && k.state !== 'sit' && life.revive > 0.3) {
+    else if (k.state !== 'sit' && wokenFor(g, k.x, k.y) > 0.5) {
       // Le monde revient à la vie : il s'approche et se dresse.
       bounds(k.d.gather ?? k.home, 3, 0.36, 'sit');
     } else if (k.state === 'alert' && k.t > (k.back || 1.2) && !homeLit) {

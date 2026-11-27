@@ -21,6 +21,8 @@ import {
   walkerPosition,
   templeCrystals,
   lampHalos,
+  wokenFor,
+  machineSpots,
 } from './game.js';
 import { drawDecor } from './decor.js';
 import { drawUnderground, drawRemnants, drawDrips } from './underground.js';
@@ -98,7 +100,23 @@ export function createRenderer(canvas) {
   function render(g) {
     const light = g.light;
     if (!light) return;
-    const pal = getPalettes(g.thaw, light.dawn);
+    // Le monde est gelé (0) ou dégelé (1). Entre les deux, l'onde du réveil :
+    // dégelé à l'intérieur de son cercle, encore gelé au-dehors. Pendant ces
+    // quelques secondes, chaque scène est dessinée deux fois (`paint`).
+    const wave = g.wave;
+    const crossing = wave.r > 0 && wave.r < wave.max;
+    const pal = getPalettes(wave.r > 0 && !crossing ? 1 : 0, light.dawn);
+    const thawed = crossing ? getPalettes(1, light.dawn) : null;
+    const paint = (c, mode, draw) => {
+      draw(pal[mode]);
+      if (!crossing) return;
+      c.save();
+      c.beginPath();
+      c.arc(wave.x, wave.y, wave.r, 0, TAU);
+      c.clip();
+      draw(thawed[mode]);
+      c.restore();
+    };
 
     // Zones éclairées par le soleil et les miroirs, sous forme de polygones.
     const shapes = [];
@@ -116,11 +134,11 @@ export function createRenderer(canvas) {
       lit.fill();
     }
     lit.globalCompositeOperation = 'source-atop'; // ne peint que là où il y a déjà de la lumière
-    drawScene(lit, pal.lit, g, true);
+    paint(lit, 'lit', (P) => drawScene(lit, P, g, true));
 
     // Étape 1 : la scène « ombre », puis on pose la lumière dessus.
     world(ctx);
-    drawScene(ctx, pal.shadow, g, false);
+    paint(ctx, 'shadow', (P) => drawScene(ctx, P, g, false));
     screen(ctx);
     ctx.globalAlpha = light.intensity; // à l'aube, le jour se pose en transparence sur la nuit
     ctx.drawImage(litCanvas, 0, 0);
@@ -137,7 +155,7 @@ export function createRenderer(canvas) {
       ctx.clip();
       poly(ctx, p.pts);
       ctx.clip();
-      drawForeground(ctx, pal.lit, g, true);
+      paint(ctx, 'lit', (P) => drawForeground(ctx, P, g, true));
       ctx.restore();
     }
     // Les lampes (cristaux-mémoire, sorties de conduit) et les faisceaux
@@ -150,14 +168,14 @@ export function createRenderer(canvas) {
       ctx.clip();
       poly(ctx, p.pts);
       ctx.clip();
-      drawForeground(ctx, pal.lit, g, true);
+      paint(ctx, 'lit', (P) => drawForeground(ctx, P, g, true));
       ctx.restore();
     }
     for (const pts of light.lampPolys) {
       ctx.save();
       poly(ctx, pts);
       ctx.clip();
-      drawForeground(ctx, pal.lit, g, true);
+      paint(ctx, 'lit', (P) => drawForeground(ctx, P, g, true));
       ctx.restore();
     }
 
@@ -237,8 +255,8 @@ export function createRenderer(canvas) {
     c.arc(sun.x, sun.y, L.sun.radius, 0, TAU);
     c.fill();
 
-    // Flocons (ils disparaissent quand le monde dégèle)
-    const snowAlpha = 0.75 * (1 - g.thaw);
+    // Flocons (il ne neige plus là où l'onde du réveil est passée)
+    const snowAlpha = g.wave.r < g.wave.max || !g.temple.lit ? 0.75 : 0;
     if (snowAlpha > 0.01) {
       c.fillStyle = P.snow;
       c.globalAlpha = snowAlpha;
@@ -250,6 +268,7 @@ export function createRenderer(canvas) {
         const drift = g.life ? g.life.wind.drift : 0;
         const x = v.left - 20 + ((hash(i) * W + t * (2 + hash(i + 9) * 4) + drift * (0.5 + hash(i + 31)) + Math.sin(t * 0.7 + i) * 6) % W);
         const y = v.top + ((hash(i + 50) * H + t * sp) % H);
+        if (wokenFor(g, x, y) > 0) continue;
         c.beginPath();
         c.arc(x, y, 0.7 + hash(i + 20) * 0.8, 0, TAU);
         c.fill();
@@ -1098,8 +1117,8 @@ export function createRenderer(canvas) {
     const stretch = pose.stretch ? Math.sin(Math.PI * pose.stretch) : 0;
     const cheer = pose.cheer || 0;
     const vis = pose.vis ?? 1;
-    // Ils dansent quand le temple s'allume : ils sautent, se balancent et se retournent.
-    const joy = g.temple.lit ? smooth(g.win.t / 0.8) * (1 - smooth((g.win.t - 14) / 4)) : 0;
+    // Ils dansent quand l'onde du réveil les atteint : ils sautent, se balancent et se retournent.
+    const joy = smooth(wokenFor(g, p.x, p.y) / 0.8) * (1 - smooth((g.win.t - 16) / 4));
     const hop =
       joy * Math.abs(Math.sin(t * 5.5 + i * 1.3)) * 5 +
       step * Math.abs(Math.sin(t * 9)) * 1.6 +
@@ -1325,18 +1344,18 @@ export function createRenderer(canvas) {
     }
 
     // Halo des lanternes
-    const lk = smooth((g.win.t - 2.4) / 1.6);
-    if (lk > 0) {
-      for (const l of L.lanterns || []) {
-        const gl = c.createRadialGradient(l.x, l.y, 0, l.x, l.y, 14);
-        gl.addColorStop(0, `rgba(255,226,150,${0.55 * lk})`);
-        gl.addColorStop(1, 'rgba(255,210,120,0)');
-        c.fillStyle = gl;
-        c.beginPath();
-        c.arc(l.x, l.y, 14, 0, TAU);
-        c.fill();
-      }
+    for (const l of L.lanterns || []) {
+      const lk = smooth(wokenFor(g, l.x, l.y) / 1.6); // elle s'allume au passage de l'onde
+      if (lk <= 0) continue;
+      const gl = c.createRadialGradient(l.x, l.y, 0, l.x, l.y, 14);
+      gl.addColorStop(0, `rgba(255,226,150,${0.55 * lk})`);
+      gl.addColorStop(1, 'rgba(255,210,120,0)');
+      c.fillStyle = gl;
+      c.beginPath();
+      c.arc(l.x, l.y, 14, 0, TAU);
+      c.fill();
     }
+    drawWake(c, g, halo);
 
     // Halo des cristaux : chacun brille dès qu'il reçoit de la lumière, mais
     // le sanctuaire ne se charge (ch) que s'ils la reçoivent tous ensemble.
@@ -1527,6 +1546,72 @@ export function createRenderer(canvas) {
         c.rect(b.x - 5, b.y + 1, 10.5, 5.2);
         c.fill();
       }
+    }
+  }
+
+  /**
+   * L'onde du réveil (voir game.js) : un cercle d'or qui part du sanctuaire
+   * rallumé, et l'anneau gradué que garde chaque machine qu'il a touchée.
+   * (dessiné en mode « lighter » : tout ici ajoute de la lumière)
+   */
+  function drawWake(c, g, halo) {
+    if (!g.temple.lit) return;
+    const t = g.time;
+    const wave = g.wave;
+
+    // Le cercle : une traîne dorée, puis un fil presque blanc sur son bord.
+    if (wave.r > 0 && wave.r < wave.max) {
+      const fade = 1 - smooth((wave.r / wave.max - 0.8) / 0.2); // il s'éteint en sortant de l'écran
+      const R = wave.r + 3;
+      const inner = Math.max(0, wave.r - 60);
+      const band = c.createRadialGradient(wave.x, wave.y, inner, wave.x, wave.y, R);
+      band.addColorStop(0, 'rgba(255,220,130,0)');
+      band.addColorStop(0.7, `rgba(255,222,140,${0.22 * fade})`);
+      band.addColorStop(0.93, `rgba(255,240,190,${0.7 * fade})`);
+      band.addColorStop(0.965, `rgba(255,252,235,${0.95 * fade})`);
+      band.addColorStop(1, 'rgba(255,230,150,0)');
+      c.fillStyle = band;
+      c.beginPath();
+      c.arc(wave.x, wave.y, R, 0, TAU);
+      c.arc(wave.x, wave.y, inner, 0, TAU, true); // (un anneau : on ne peint pas le centre, qui est vide)
+      c.fill();
+    }
+
+    // Les machines réveillées : un éclat au passage de l'onde, puis un
+    // anneau gradué qui tourne lentement, comme celui du cristal.
+    c.lineCap = 'round';
+    for (const m of machineSpots(g)) {
+      const since = wokenFor(g, m.x, m.y);
+      if (since <= 0) continue;
+      const size = Math.max(m.r, 6);
+      const k = since / 0.9;
+      if (k < 1) {
+        halo(m.x, m.y, size * 2.6, 0.4 * (1 - k));
+        c.strokeStyle = `rgba(255, 236, 180, ${0.9 * (1 - k)})`;
+        c.lineWidth = 2.2 * (1 - k) + 0.4;
+        c.beginPath();
+        c.arc(m.x, m.y, size + 20 * k, 0, TAU);
+        c.stroke();
+      }
+      if (!m.r) continue; // (lanternes et lampes ont déjà leur propre lueur)
+      // vif au réveil, puis discret : on doit pouvoir continuer à jouer
+      const a = clamp(since * 2, 0, 1) * (0.5 + 0.4 * (1 - smooth((since - 2) / 3)));
+      halo(m.x, m.y, m.r * 2, 0.2 * a);
+      c.strokeStyle = `rgba(255, 226, 150, ${a})`;
+      c.lineWidth = 0.9;
+      c.beginPath();
+      c.arc(m.x, m.y, m.r, 0, TAU);
+      c.stroke();
+      c.lineWidth = 1.1;
+      c.beginPath();
+      for (let i = 0; i < 12; i++) {
+        const an = (i / 12) * TAU + t * 0.35;
+        const r0 = m.r + 1.2;
+        const r1 = m.r + (i % 3 === 0 ? 4.2 : 2.6);
+        c.moveTo(m.x + Math.cos(an) * r0, m.y + Math.sin(an) * r0);
+        c.lineTo(m.x + Math.cos(an) * r1, m.y + Math.sin(an) * r1);
+      }
+      c.stroke();
     }
   }
 

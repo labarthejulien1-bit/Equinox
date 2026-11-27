@@ -330,7 +330,8 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
       }, 350);
     }
 
-    if (g.temple.lit && g.win.t > 5.5 && !memoryShown) {
+    // La carte du souvenir attend que l'onde du réveil ait traversé l'écran.
+    if (g.temple.lit && g.win.t > g.wave.end + 1.2 && !memoryShown) {
       memoryShown = true;
       const m = g.level.memory;
       $('memory-number').textContent = `Souvenir ${m.number}`;
