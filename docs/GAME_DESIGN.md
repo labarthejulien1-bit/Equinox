@@ -1289,7 +1289,7 @@ qui ont de l'eau :
 | --- | --- | --- |
 | 1 | un reste du glacier, accroché au plafond de sa niche, qui goutte | boyau au pied de la falaise, nappe sous le temple, puis filet vers le bas |
 | 2 | la source du replat (rien n'est dessiné dans la roche : choix du propriétaire) | une perte au pied de la cascade |
-| 3 | une veine venue de la gauche, jusqu'au bec qui alimente le lac | le ravin, qui sort de l'écran |
+| 3 | la neige du versant gauche fond : un filet descend la pente, tombe du surplomb et rejoint le lac | le ravin, qui sort de l'écran |
 | 4 | le torrent sort de la roche à gauche | il s'y renfonce à droite et quitte l'écran |
 | 6 | la neige du versant et une veine venue de la droite, jusqu'à la source | perte au pied de la cascade, boyau vers le bas |
 | 8 | une veine venue de la gauche, jusqu'au lac | un filet s'échappe par le fond du lac |

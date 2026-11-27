@@ -879,7 +879,7 @@ function updateBits(g, life, dt) {
   // Embruns au pied des cascades
   for (const s of g.streams) {
     for (const w of streamWet(s)) {
-      if (w.type !== 'fall' || !w.reachesEnd) continue;
+      if (w.type !== 'fall' || !w.reachesEnd || (s.def.width || 4.6) < 3) continue; // (un simple filet n'en fait pas)
       const bot = w.pts[w.pts.length - 1];
       if (Math.random() < dt * 16) addBit(life, { type: 'spray', x: bot.x + rnd(-4, 4), y: bot.y - 2, vx: rnd(-16, 16), vy: rnd(-34, -10), max: rnd(0.4, 0.8), r: rnd(0.5, 1), fall: 70 });
     }

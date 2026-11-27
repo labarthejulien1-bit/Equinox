@@ -274,7 +274,7 @@ export function createRenderer(canvas) {
     for (const b of g.basins) drawBasin(c, P, b, g, isLit);
 
     // Cascades (dans l'air : elles brillent au soleil, s'éteignent dans l'ombre)
-    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'fall') drawFall(c, P, w, g, isLit);
+    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'fall') drawFall(c, P, w, g, isLit, s.def.width);
 
     // Supports des miroirs, socles, pins
     for (const m of g.mirrors) drawMount(c, P, m);
@@ -314,7 +314,7 @@ export function createRenderer(canvas) {
     }
     // (la perte par où l'eau s'en va dans le sol, puis l'eau elle-même)
     for (const s of g.streams) if (s.def.drain) drawDrain(c, P, s.def.drain);
-    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit);
+    for (const s of g.streams) for (const w of streamWet(s)) if (w.type === 'run') drawRun(c, P, w, g, isLit, s.def.width);
 
     // Empreintes, fleurs du dégel, éclats sur l'eau (voir lifeDraw.js)
     drawLifeGround(c, P, g, isLit);
@@ -520,11 +520,34 @@ export function createRenderer(canvas) {
     }
   }
 
-  function drawFall(c, P, w, g, isLit) {
+  function drawFall(c, P, w, g, isLit, width = 4.6) {
     const top = w.pts[0];
     const bot = w.pts[w.pts.length - 1];
     const t = g.time;
     c.fillStyle = P.water;
+    if (width < 3) {
+      // Un simple filet qui tombe : un trait fin, un reflet, une goutte d'écume
+      c.fillRect(top.x - width / 2, top.y, width, bot.y - top.y);
+      c.strokeStyle = isLit ? '#ffffff' : P.iceLine;
+      c.globalAlpha = 0.6;
+      c.lineWidth = 0.6;
+      c.lineCap = 'round';
+      c.setLineDash([9, 11]);
+      c.lineDashOffset = -t * 90;
+      c.beginPath();
+      c.moveTo(top.x, top.y + 1);
+      c.lineTo(top.x, bot.y);
+      c.stroke();
+      c.setLineDash([]);
+      c.globalAlpha = 1;
+      if (w.reachesEnd && bot.y < view.bottom) {
+        c.fillStyle = isLit ? '#ffffff' : P.iceLine;
+        c.beginPath();
+        c.arc(bot.x, bot.y - 0.8, 1 + 0.5 * Math.abs(Math.sin(t * 5)), 0, TAU);
+        c.fill();
+      }
+      return;
+    }
     c.fillRect(top.x - 3, top.y, 6, bot.y - top.y);
     // Filets clairs qui descendent
     c.strokeStyle = isLit ? '#ffffff' : P.iceLine;
@@ -553,18 +576,20 @@ export function createRenderer(canvas) {
     }
   }
 
-  function drawRun(c, P, w, g, isLit) {
+  /** width : la largeur du cours d'eau (4.6 pour un torrent, 2 environ pour un filet). */
+  function drawRun(c, P, w, g, isLit, width = 4.6) {
+    const thin = width < 3;
     c.lineCap = 'round';
     c.lineJoin = 'round';
     c.strokeStyle = P.water;
-    c.lineWidth = 4.6;
+    c.lineWidth = width;
     line(c, w.pts);
     c.stroke();
     // Reflets qui filent
     c.strokeStyle = isLit ? '#ffffff' : P.iceLine;
     c.globalAlpha = 0.7;
-    c.lineWidth = 0.9;
-    c.setLineDash([4, 9]);
+    c.lineWidth = thin ? 0.6 : 0.9;
+    c.setLineDash(thin ? [3, 8] : [4, 9]);
     c.lineDashOffset = -g.time * 26;
     c.stroke();
     c.setLineDash([]);

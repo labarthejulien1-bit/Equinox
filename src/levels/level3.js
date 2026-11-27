@@ -91,6 +91,35 @@ export default {
         },
       ],
     },
+    // D'où vient l'eau du lac : la neige du versant fond, et un filet descend
+    // la pente, tombe du surplomb et rejoint la rive (décor : il coule toujours
+    // et n'arrête pas la lumière).
+    {
+      id: 'fonte',
+      startFull: true,
+      speed: 200,
+      width: 2.2, // un simple filet (un torrent fait 4.6)
+      parts: [
+        {
+          run: [
+            [35.8, 297.4],
+            [40.2, 309.4],
+            [46.3, 320.6],
+            [52, 332],
+            [74, 380],
+            [88, 418],
+          ],
+        },
+        { fall: { x: 88.6, top: 418, bottom: 482 } },
+        {
+          run: [
+            [88.6, 482.5],
+            [89.5, 483.8],
+            [96, 500],
+          ],
+        },
+      ],
+    },
   ],
 
   houses: [{ x: 338, baseY: 248, w: 22 }],
@@ -115,12 +144,6 @@ export default {
   blooms: [
     [[320, 254.7], [326, 250], [338.8, 247], [352, 246], [361, 240.7]],
   ],
-  // L'eau dans la roche, vue en coupe (décor : voir src/game/underground.js).
-  // En amont : une veine d'eau traverse la roche et alimente le lac par le bec de la rive gauche. (En aval, l'eau quitte l'écran par le ravin.)
-  veins: [
-    { width: 5, path: [[-8, 548], [24, 532], [56, 512], [84, 502], [95.5, 498.6]] },
-  ],
-
   // Les objectifs secondaires : une médaille chacun (cuivre, argent, or).
   goals: [
     { id: 'poisson', type: 'fish', title: 'Un poisson a sauté', text: 'Touche le lac : un poisson y saute' },

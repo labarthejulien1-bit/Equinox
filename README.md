@@ -135,7 +135,7 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 | `mirrors` | miroirs (sur mât, pris dans la glace, sur radeau, portés, sur rail, jumelés) | renvoient la lumière ; celui sur rail ne tourne pas, il glisse ; deux jumeaux (`twin`) tournent à l'envers l'un de l'autre |
 | `ices`, `fills` | glaciers, corniches de neige ; ce qu'une corniche comble en tombant | fondent à la lumière, une fois pour toutes (`beamOnly` : seulement sous un reflet ; `after` : n'apparaît qu'après la fonte d'une autre) |
 | `frosts` | eaux calmes : source, digue, pont | gèlent à l'ombre, dégèlent à la lumière |
-| `streams` | cours d'eau (tronçons qui coulent ou qui tombent) | coulent si leur source est ouverte ; une cascade peut arrêter la lumière |
+| `streams` | cours d'eau (tronçons qui coulent ou qui tombent ; `width: 2.2` en fait un simple filet de fonte) | coulent si leur source est ouverte ; une cascade peut arrêter la lumière |
 | `basins` | bassins | se remplissent quand leur digue est gelée |
 | `wheels`, `doors` | roues à eau, portes de pierre | l'eau fait tourner la roue dans le sens du courant ; par une chaîne sans fin, un contrepoids monte et la porte descend |
 | `walkers` | porteurs | avancent tant que le chemin les porte (pont gelé, crevasse comblée : `gates`), puis posent leur miroir |
