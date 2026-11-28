@@ -1492,7 +1492,10 @@ dans la glace.
    l'accueil et son grand bouton, « Le voyage » en vignettes avec la
    bannière de l'histoire, les volets de pause et de fin de niveau. Le film
    devient l'histoire du chapitre I.
-13. **À venir, dans un ordre à décider** :
+13. ✅ **Android** — le projet Capacitor est en place (`android/`) et un
+   premier APK de test a été compilé (v0.11.0). Reste : l'essai sur un vrai
+   téléphone, puis la clé de signature et l'AAB pour le Play Store.
+14. **À venir, dans un ordre à décider** :
    - l'histoire (un court film) des chapitres II à VI ;
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
@@ -1500,4 +1503,4 @@ dans la glace.
    - premières machines et premiers éléments d'énigme, un par niveau ;
    - les règles nouvelles demandées par les décors (liste au § 5 ter) ;
    - énoncé des dix niveaux de chaque chapitre, en commençant par le I ;
-   - emballage Capacitor, APK de test, puis AAB signé pour le Play Store.
+   - essai de l'APK sur un vrai téléphone, puis clé de signature et AAB pour le Play Store.

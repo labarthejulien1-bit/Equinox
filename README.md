@@ -168,21 +168,25 @@ Un niveau est une liste d'éléments ; les règles sont les mêmes partout.
 
 ## Étape 2 : l'application Android (APK / AAB)
 
-Rien n'est à réécrire : Capacitor emballe le dossier `dist/`.
+Rien n'est réécrit : [Capacitor](https://capacitorjs.com) emballe le dossier
+`dist/` dans une application Android. Le projet Android est dans `android/`
+(identifiant `com.equinox.game`, écran verrouillé en portrait, icône et écran
+de lancement tirés de `public/icons/icon-512.png`). Son numéro de version
+vient de `package.json`.
+
+Il faut Java 21 et le SDK Android (plateforme 36), par exemple avec
+[Android Studio](https://developer.android.com/studio).
 
 ```bash
-npm install @capacitor/core @capacitor/android
-npm install -D @capacitor/cli
-npx cap init Equinox com.equinox.game --web-dir dist
-npm run build
-npx cap add android
-npx cap sync
-npx cap open android      # ouvre Android Studio → Build → APK ou Bundle (AAB)
+npm run android                 # construit le jeu et le copie dans android/
+cd android
+./gradlew assembleDebug         # → app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Il faut [Android Studio](https://developer.android.com/studio) sur
-l'ordinateur — ou bien une recette GitHub Actions qui fabrique l'APK dans le
-cloud (à ajouter à l'étape 2).
+Cet APK « debug » s'installe sur un téléphone pour essayer le jeu (il faut
+autoriser l'installation d'applications inconnues). Il ne convient pas au
+Play Store : pour publier, il faudra une clé de signature à toi, à garder
+précieusement, et un fichier AAB (`./gradlew bundleRelease`).
 
 ## Travailler avec Claude Code
 

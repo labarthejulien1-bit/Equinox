@@ -13,6 +13,10 @@ Le propriétaire du projet débute en code : privilégier la lisibilité.
   Le tour complet prend environ cinq minutes ; `npm run check -- 7` ne
   vérifie que le niveau 7.
 - `npm run build` — build de production dans `dist/`
+- `npm run android` — construit le jeu et le copie dans le projet Android
+  (`android/`, fait avec Capacitor). L'APK se compile ensuite avec Gradle :
+  voir le README, « Étape 2 ». Il faut le SDK Android, qui n'est pas installé
+  d'avance dans une session cloud.
 
 ## Conventions
 

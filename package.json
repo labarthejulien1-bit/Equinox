@@ -8,9 +8,15 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "check": "node scripts/check-level.mjs"
+    "check": "node scripts/check-level.mjs",
+    "android": "vite build && cap sync android"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.3",
     "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/core": "^8.6.3"
   }
 }
