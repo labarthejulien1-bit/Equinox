@@ -81,8 +81,8 @@ d'une légende : une catastrophe dont plus personne ne connaît la cause.
 | --- | --- | --- |
 | 0 à 8 s | L'âge d'or : la cité en pleine lumière, pleine de vie (oiseaux, promeneurs, cabines qui montent le long des tours, le cœur qui bat). | « Ils avaient apprivoisé le soleil et les sciences. » puis « Leur cité devait être éternelle. » |
 | 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Puis l'été n'est jamais revenu. » puis « En une nuit, la cité éternelle s'est éteinte. » |
-| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Le grand hiver a tout englouti. Mille ans de glace. » puis « Un petit peuple vit dans ses ruines. Il ne sait rien. » |
-| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Il lui reste un geste, dont nul ne sait le sens. » |
+| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Le grand hiver a tout englouti. Mille ans de glace. » puis « Aujourd'hui, il n'en reste que quelques tribus démunies. » |
+| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Seuls demeurent des rites et le culte du soleil. » |
 | 26 à 30 s | Le cristal répond d'une lueur. L'image reste, puis s'efface : le chapitre I s'ouvre. | « Ce matin, quelque chose a répondu. » |
 
 Le texte garde le suspense : il ne dit ni ce que sont devenus les anciens,

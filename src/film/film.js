@@ -48,8 +48,8 @@ export const CAPTIONS = [
   [7.7, 10.6, 'Puis l’été n’est jamais revenu.', [50, 61]],
   [10.9, 14.2, 'En une nuit, la cité éternelle s’est éteinte.', [50, 86]],
   [14.5, 17.6, 'Le grand hiver a tout englouti. Mille ans de glace.', [50, 8]],
-  [17.8, 21, 'Un petit peuple vit dans ses ruines. Il ne sait rien.', [50, 8]],
-  [21.5, 25.3, 'Il lui reste un geste, dont nul ne sait le sens.', [50, 8]],
+  [17.8, 21.1, 'Aujourd’hui, il n’en reste que quelques tribus démunies.', [50, 8]],
+  [21.5, 25.3, 'Seuls demeurent des rites et le culte du soleil.', [50, 8]],
   [26.5, 29.4, 'Ce matin, quelque chose a répondu.', [34, 62]],
 ];
 const CAPTION_FADE = 0.45; // secondes pour apparaître, puis pour s'effacer
