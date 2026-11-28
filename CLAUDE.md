@@ -101,9 +101,10 @@ d'avancement court en bas de l'écran.
   l'instant t (entre 0 et 1), `CAPTIONS` liste ses phrases et `CUES` ses sons
   brefs. Il ne touche pas au DOM : `npm run check` le fait défiler
   (`npm run check -- film`).
-- Les phrases ont le ton d'une légende : une catastrophe, un mystère. Elles
-  ne disent jamais pourquoi les anciens ont tout éteint : c'est la
-  révélation du dernier temple. Les garder courtes (le test refuse plus de
+- Les phrases ont le ton d'une légende : une cité éternelle qui s'est
+  éteinte. Elles gardent le suspense : ni ce que sont devenus les anciens,
+  ni pourquoi ils ont tout éteint (c'est la révélation du dernier temple ; un
+  court texte entre les chapitres est prévu pour plus tard). Les garder courtes (le test refuse plus de
   56 caractères, ou trop peu de temps pour lire).
 - Chaque phrase a sa place sur l'image (`[x, y]` dans `CAPTIONS`, en
   centièmes de l'écran), choisie pour ne pas cacher ce qui se passe à ce

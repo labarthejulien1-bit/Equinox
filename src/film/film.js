@@ -37,17 +37,19 @@ export const T = {
 // Les phrases du film : [début, fin, phrase, [x, y]]. Chacune s'affiche dans
 // un petit encart posé sur l'image, centré en (x, y) — en centièmes de
 // l'écran — là où il ne cache pas ce qui se passe à ce moment.
-// Le ton est celui d'une légende : une catastrophe dont personne ne connaît
-// plus la cause. Les phrases ne disent jamais pourquoi les anciens ont agi
-// ainsi : ça, c'est la révélation du dernier temple.
+// Le ton est celui d'une légende : une cité éternelle qui s'est éteinte, sans
+// qu'on sache comment. Les phrases gardent le suspense : elles ne disent ni
+// ce que sont devenus les anciens, ni pourquoi ils ont agi ainsi. (Un court
+// texte viendra plus tard entre les chapitres ; le pourquoi reste la
+// révélation du dernier temple.)
 export const CAPTIONS = [
-  [0.9, 4.2, 'Il y a mille ans, un peuple commandait au soleil.', [50, 86]],
-  [4.5, 7.5, 'Sa cité de lumière, on la disait éternelle.', [64, 7]],
-  [7.7, 10.6, 'Puis le ciel s’est refermé.', [50, 61]],
-  [10.9, 14.2, 'En une nuit, tout s’est éteint. Nul ne sait pourquoi.', [50, 86]],
-  [14.5, 17.6, 'Le grand hiver a tout englouti. Mille ans de glace.', [50, 8]],
-  [17.9, 20.9, 'Dans les ruines, un petit peuple a survécu.', [50, 8]],
-  [21.5, 25.3, 'Il répète un geste dont il a oublié le sens.', [50, 8]],
+  [0.9, 4.2, 'Ils avaient apprivoisé le soleil et les sciences.', [50, 86]],
+  [4.5, 7.5, 'Leur cité devait être éternelle.', [64, 7]],
+  [7.7, 10.6, 'Puis le soleil a pâli.', [50, 61]],
+  [10.9, 14.2, 'En une nuit, la cité éternelle s’est éteinte.', [50, 86]],
+  [14.5, 17.6, 'Un été, la neige n’a plus fondu. Mille ans de glace.', [50, 8]],
+  [17.8, 21, 'Un petit peuple vit dans ses ruines. Il ne sait rien.', [50, 8]],
+  [21.5, 25.3, 'Il lui reste un geste, dont nul ne sait le sens.', [50, 8]],
   [26.5, 29.4, 'Ce matin, quelque chose a répondu.', [34, 62]],
 ];
 const CAPTION_FADE = 0.45; // secondes pour apparaître, puis pour s'effacer
