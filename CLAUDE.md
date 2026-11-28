@@ -93,19 +93,22 @@ palette d'ombre, puis en palette de lumière dans les zones éclairées.
 Le jeu s'ouvre sur un film de 30 secondes : « Il y a mille ans », la
 capitale des anciens à son âge d'or, puis éteinte, puis mille ans de neige,
 et le petit peuple qui s'installe dans ses ruines. Il est dessiné par le jeu
-(aucun fichier vidéo) et vit dans `src/film/`. Sept phrases courtes
-l'accompagnent dans un bandeau en bas de l'écran, au-dessus d'une barre
-d'avancement.
+(aucun fichier vidéo) et vit dans `src/film/`. Huit phrases courtes
+l'accompagnent, chacune dans un petit encart posé sur l'image ; une barre
+d'avancement court en bas de l'écran.
 
 - `film.js` — le **déroulé** : `filmState(t)` dit où en est chaque chose à
   l'instant t (entre 0 et 1), `CAPTIONS` liste ses phrases et `CUES` ses sons
   brefs. Il ne touche pas au DOM : `npm run check` le fait défiler
   (`npm run check -- film`).
-- Les phrases disent ce que l'image montre, jamais pourquoi les anciens ont
-  tout éteint : c'est la révélation du dernier temple. Les garder courtes
-  (le test refuse plus de 56 caractères, ou trop peu de temps pour lire).
-- Le bandeau et la barre sont en HTML (`#film-band`, mis à jour par
-  `ui.film()`) ; le dessin leur laisse le bas de l'écran (`FILM_BAND`).
+- Les phrases ont le ton d'une légende : une catastrophe, un mystère. Elles
+  ne disent jamais pourquoi les anciens ont tout éteint : c'est la
+  révélation du dernier temple. Les garder courtes (le test refuse plus de
+  56 caractères, ou trop peu de temps pour lire).
+- Chaque phrase a sa place sur l'image (`[x, y]` dans `CAPTIONS`, en
+  centièmes de l'écran), choisie pour ne pas cacher ce qui se passe à ce
+  moment. L'encart et la barre sont en HTML (`#film-text`, `#film-bar`, mis
+  à jour par `ui.film()`) ; l'image du film occupe tout l'écran.
 - `filmDraw.js` — le **dessin**, d'après cet état. Il ne connaît aucune
   date : pour changer le moment d'une chose, c'est dans `film.js`.
 - Le film est le chapitre 0 de la liste des chapitres (`prologue` dans

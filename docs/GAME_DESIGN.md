@@ -72,16 +72,22 @@ tournent, et de là court dans toute la ville par les passerelles. Les
 anciens portent de longues robes blanches à capuchon, une ceinture d'or et
 un masque d'or.
 
-Le film a d'abord été pensé sans un mot ; on ne le comprenait pas. Sept
-phrases courtes l'accompagnent donc, une à la fois, dans un bandeau :
+Le film a d'abord été pensé sans un mot ; on ne le comprenait pas. Huit
+phrases courtes l'accompagnent donc, une à la fois, chacune dans un petit
+encart posé sur l'image (l'image garde tout l'écran). Leur ton est celui
+d'une légende : une catastrophe dont plus personne ne connaît la cause.
 
 | Temps | Ce qu'on voit | La phrase |
 | --- | --- | --- |
-| 0 à 8 s | L'âge d'or : la cité en pleine lumière, pleine de vie (oiseaux, promeneurs, cabines qui montent le long des tours, le cœur qui bat). | « Il y a mille ans, les anciens guidaient le soleil. » puis « Sa lumière faisait battre le cœur de leur cité. » |
-| 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Un soir, ils ont tout éteint. » |
-| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Mille hivers ont passé. » puis « Un petit peuple s'est installé dans les ruines. » |
-| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Il lui reste un geste. Personne ne sait plus pourquoi. » |
-| 26 à 30 s | Le cristal répond d'une lueur. L'image reste, puis s'efface : le chapitre I s'ouvre. | « Ce matin, le cristal a répondu. » |
+| 0 à 8 s | L'âge d'or : la cité en pleine lumière, pleine de vie (oiseaux, promeneurs, cabines qui montent le long des tours, le cœur qui bat). | « Il y a mille ans, un peuple commandait au soleil. » puis « Sa cité de lumière, on la disait éternelle. » |
+| 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Puis le ciel s'est refermé. » puis « En une nuit, tout s'est éteint. Nul ne sait pourquoi. » |
+| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Le grand hiver a tout englouti. Mille ans de glace. » puis « Dans les ruines, un petit peuple a survécu. » |
+| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Il répète un geste dont il a oublié le sens. » |
+| 26 à 30 s | Le cristal répond d'une lueur. L'image reste, puis s'efface : le chapitre I s'ouvre. | « Ce matin, quelque chose a répondu. » |
+
+La légende dit « nul ne sait pourquoi » et « on la disait éternelle » : c'est
+la voix du petit peuple, qui ignore la vérité. L'image, elle, montre les
+anciens replier calmement leurs miroirs.
 
 Ce que le film montre et ce qu'il tait : on voit **ce que** les anciens ont
 fait (ils ont replié leurs miroirs avant la neige), jamais **pourquoi**. Le
@@ -1435,8 +1441,10 @@ dans la glace.
    repart seul). Les deux autres restent possibles par-dessus.
 11. ✅ **v0.10** — le chapitre 0 : un film de 30 secondes qui ouvre le jeu
    (§ 3), la capitale des anciens de l'âge d'or à aujourd'hui. Il faut
-   l'avoir vu pour ouvrir le chapitre I. v0.10.1 : sept phrases en bandeau,
-   une barre d'avancement, et plus de vie dans l'âge d'or.
+   l'avoir vu pour ouvrir le chapitre I. v0.10.1 : des phrases, une barre
+   d'avancement, et plus de vie dans l'âge d'or. v0.10.2 : l'image reprend
+   tout l'écran, les phrases passent dans de petits encarts et prennent un
+   ton de légende (catastrophe, mystère).
 12. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,

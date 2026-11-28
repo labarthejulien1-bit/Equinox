@@ -1,7 +1,7 @@
 {
   "name": "equinox",
   "private": true,
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Equinox — jeu d'énigmes d'ombre et de lumière",
   "type": "module",
   "scripts": {

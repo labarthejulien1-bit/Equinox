@@ -1,8 +1,6 @@
 // Interface : écran titre, choix du chapitre et du niveau, menu de la partie
 // (objectifs et médailles), réglages, indice en bas d'écran, carte « souvenir »,
-// bandeau du film. Tout est en HTML/CSS par-dessus le canvas (voir index.html et style.css).
-
-import { FILM_BAND } from '../film/filmDraw.js';
+// encarts du film. Tout est en HTML/CSS par-dessus le canvas (voir index.html et style.css).
 
 const $ = (id) => document.getElementById(id);
 
@@ -81,7 +79,6 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
   const pauseMenu = $('pause');
   const settingsMenu = $('settings');
   const veil = $('film-veil'); // posé sur le dessin pendant le film : aucun toucher ne passe
-  $('film-band').style.height = `${FILM_BAND * 100}%`;
   let filmCaption = null;
   let currentHint = null;
   let memoryShown = false;
@@ -159,9 +156,15 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     show(chapterMenu);
   }
 
-  /** À chaque image du film : la phrase du bandeau et la barre d'avancement (p : filmState). */
+  /** À chaque image du film : l'encart de texte et la barre d'avancement (p : filmState). */
   function film(p) {
-    if (p.caption !== filmCaption && p.caption) $('film-text').textContent = p.caption; // (on garde l'ancienne phrase pendant qu'elle s'efface)
+    if (p.caption !== filmCaption && p.caption) {
+      // Une phrase nouvelle : on la pose à sa place sur l'image.
+      const text = $('film-text');
+      text.textContent = p.caption;
+      text.style.left = `${p.captionAt[0]}%`;
+      text.style.top = `${p.captionAt[1]}%`;
+    }
     filmCaption = p.caption;
     $('film-text').style.opacity = p.captionAlpha.toFixed(2);
     $('film-progress').style.width = `${(p.progress * 100).toFixed(2)}%`;

@@ -41,40 +41,38 @@ body {
   inset: 0;
 }
 
-/* Le bandeau du film : une phrase à la fois, et la barre d'avancement tout en bas.
-   (sa hauteur est réglée par le jeu : voir FILM_BAND dans film/filmDraw.js) */
-#film-band {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 22px calc(10px + env(safe-area-inset-bottom));
-  background: #080c1f;
-  border-top: 1px solid rgba(255, 226, 160, 0.28);
-}
-
+/* L'encart du film : une phrase à la fois, posée sur l'image.
+   (sa place change d'une phrase à l'autre : voir CAPTIONS dans film/film.js) */
 #film-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  max-width: 62%;
   margin: 0;
-  max-width: 24em;
+  padding: 9px 15px 10px;
+  border: 1px solid rgba(255, 226, 160, 0.45);
+  border-radius: 12px;
+  background: rgba(8, 12, 31, 0.78);
+  box-shadow: 0 6px 22px rgba(4, 7, 20, 0.45);
   text-align: center;
-  font-size: clamp(15px, 4.5vw, 19px);
+  font-size: clamp(13.5px, 3.9vw, 16.5px);
   font-weight: 300;
-  line-height: 1.4;
+  line-height: 1.38;
   letter-spacing: 0.03em;
   text-wrap: balance; /* pas de mot tout seul sur la dernière ligne */
   opacity: 0;
 }
 
+/* La barre d'avancement, tout en bas de l'écran */
 #film-bar {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: 4px;
-  background: rgba(244, 241, 230, 0.12);
+  background: rgba(8, 12, 31, 0.55);
 }
 
 #film-progress {

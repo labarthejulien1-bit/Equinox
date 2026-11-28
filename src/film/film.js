@@ -3,8 +3,8 @@
 // Un seul cadrage : la capitale des anciens à son âge d'or, le soir où ils
 // l'éteignent, mille ans qui passent (la neige, la glace, les ruines, puis
 // le petit peuple qui s'installe), et le premier reflet d'aujourd'hui sur le
-// cristal éteint. Sept phrases courtes l'accompagnent, dans un bandeau en bas
-// de l'écran (CAPTIONS), au-dessus d'une barre d'avancement.
+// cristal éteint. Huit phrases courtes l'accompagnent, dans de petits encarts
+// posés sur l'image (CAPTIONS) ; une barre d'avancement court en bas.
 //
 // Ce fichier ne contient que le DÉROULÉ : à l'instant t, où en est chaque
 // chose (entre 0 et 1). Il ne touche pas au DOM, comme game.js : `npm run
@@ -34,17 +34,21 @@ export const T = {
   fade: 28.6, // fondu de fin
 };
 
-// Les bandeaux de texte : [début, fin, phrase]. Des phrases courtes, une
-// seule à la fois, qui disent ce que l'image montre, jamais pourquoi les
-// anciens ont agi ainsi : ça, c'est la révélation du dernier temple.
+// Les phrases du film : [début, fin, phrase, [x, y]]. Chacune s'affiche dans
+// un petit encart posé sur l'image, centré en (x, y) — en centièmes de
+// l'écran — là où il ne cache pas ce qui se passe à ce moment.
+// Le ton est celui d'une légende : une catastrophe dont personne ne connaît
+// plus la cause. Les phrases ne disent jamais pourquoi les anciens ont agi
+// ainsi : ça, c'est la révélation du dernier temple.
 export const CAPTIONS = [
-  [0.9, 4.3, 'Il y a mille ans, les anciens guidaient le soleil.'],
-  [4.7, 8.0, 'Sa lumière faisait battre le cœur de leur cité.'],
-  [9.3, 12.5, 'Un soir, ils ont tout éteint.'],
-  [13.0, 16.2, 'Mille hivers ont passé.'],
-  [17.4, 20.8, 'Un petit peuple s’est installé dans les ruines.'],
-  [21.6, 25.6, 'Il lui reste un geste. Personne ne sait plus pourquoi.'],
-  [26.5, 29.4, 'Ce matin, le cristal a répondu.'],
+  [0.9, 4.2, 'Il y a mille ans, un peuple commandait au soleil.', [50, 86]],
+  [4.5, 7.5, 'Sa cité de lumière, on la disait éternelle.', [64, 7]],
+  [7.7, 10.6, 'Puis le ciel s’est refermé.', [50, 61]],
+  [10.9, 14.2, 'En une nuit, tout s’est éteint. Nul ne sait pourquoi.', [50, 86]],
+  [14.5, 17.6, 'Le grand hiver a tout englouti. Mille ans de glace.', [50, 8]],
+  [17.9, 20.9, 'Dans les ruines, un petit peuple a survécu.', [50, 8]],
+  [21.5, 25.3, 'Il répète un geste dont il a oublié le sens.', [50, 8]],
+  [26.5, 29.4, 'Ce matin, quelque chose a répondu.', [34, 62]],
 ];
 const CAPTION_FADE = 0.45; // secondes pour apparaître, puis pour s'effacer
 
@@ -110,8 +114,9 @@ export function filmState(t) {
   return {
     t,
     progress: t / FILM_LENGTH, // pour la barre d'avancement
-    // le bandeau : sa phrase, et sa présence (elle apparaît et s'efface en douceur)
+    // l'encart : sa phrase, sa place, et sa présence (il apparaît et s'efface en douceur)
     caption: caption ? caption[2] : '',
+    captionAt: caption ? caption[3] : null,
     captionAlpha: caption ? Math.min(ramp(t, caption[0], caption[0] + CAPTION_FADE), 1 - ramp(t, caption[1] - CAPTION_FADE, caption[1])) : 0,
     veil: Math.max(1 - ease(t, 0, 1.2), ease(t, T.fade, FILM_LENGTH)), // fondus du début et de la fin
     warm: 1 - ease(t, 8.7, 12.7), // 1 : les couleurs de l'âge d'or ; 0 : celles du froid

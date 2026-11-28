@@ -4,16 +4,12 @@
 // aplats, une face au soleil et une face à l'ombre. Chaque chose se dessine
 // d'après l'état du film (filmState) : rien ici ne connaît l'heure.
 //
-// La scène fait 360 × 780 unités. Elle est calée au-dessus du bandeau de
-// texte (FILM_BAND, le bas de l'écran) ; sur un écran plus large ou plus
-// haut, le ciel, les lointains et le sol débordent.
+// La scène fait 360 × 780 unités. Elle est calée en bas de l'écran ; sur un
+// écran plus large ou plus haut, le ciel, les lointains et le sol débordent.
 
 import { TAU, clamp, lerp, smooth } from '../engine/vec.js';
 import { mix } from '../game/palette.js';
 import { filmState } from './film.js';
-
-/** La part de l'écran, en bas, réservée au bandeau de texte et à la barre d'avancement. */
-export const FILM_BAND = 0.13;
 
 const W = 360;
 const H = 780;
@@ -206,9 +202,9 @@ export function createFilmRenderer(canvas) {
   function draw(film) {
     const p = filmState(film.t);
     const t = p.t;
-    // La scène est centrée, et calée juste au-dessus du bandeau de texte.
+    // La scène est calée en bas de l'écran et centrée.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const cw = canvas.width / dpr, ch = (canvas.height / dpr) * (1 - FILM_BAND);
+    const cw = canvas.width / dpr, ch = canvas.height / dpr;
     const s = Math.min(cw / W, ch / H);
     c.setTransform(dpr * s, 0, 0, dpr * s, (dpr * (cw - W * s)) / 2, dpr * (ch - H * s));
     c.globalAlpha = 1;
