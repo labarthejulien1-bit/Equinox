@@ -1115,7 +1115,7 @@ function checkGoals(level) {
   }
 }
 
-// ── Le film du chapitre 0 ─────────────────────────────────────────────
+// ── Le film (l'histoire du chapitre I) ────────────────────────────────
 
 /** Fait défiler le déroulé du film (sans le dessiner) et vérifie qu'il raconte bien ce qui est prévu. */
 function checkFilm() {
@@ -1152,10 +1152,10 @@ function checkFilm() {
 
 const checks = { 1: checkLevel1, 2: checkLevel2, 3: checkLevel3, 4: checkLevel4, 5: checkLevel5, 6: checkLevel6, 7: checkLevel7, 8: checkLevel8, 9: checkLevel9, 10: checkLevel10 };
 // `npm run check -- 6` ne vérifie que le niveau 6 (pratique pendant qu'on le construit).
-// `npm run check -- film` ne vérifie que le film du chapitre 0.
+// `npm run check -- film` ne vérifie que le film.
 const only = process.argv[2] && process.argv[2] !== 'film' ? Number(process.argv[2]) : null;
 if (!only) {
-  console.log('\nChapitre 0 — le film');
+  console.log('\nL’histoire du chapitre I — le film');
   checkFilm();
 }
 for (const level of process.argv[2] === 'film' ? [] : levels) {

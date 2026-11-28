@@ -96,7 +96,7 @@ src/
     input.js            gestes tactiles (soleil, nuage, miroirs, bulles, simple toucher)
     audio.js            le son, fabriqué par le navigateur (aucun fichier)
     vec.js              petites fonctions mathématiques
-  film/                 le chapitre 0 : un film de 30 secondes, dessiné par le jeu
+  film/                 l'histoire du chapitre I : un film de 30 secondes, dessiné par le jeu
     film.js             son déroulé : où en est chaque chose à chaque instant
     filmDraw.js         son dessin : la capitale des anciens, de l'âge d'or aux ruines
   game/
@@ -115,7 +115,8 @@ src/
     index.js            les six chapitres et leurs niveaux, dans l'ordre
     terrain.js          outil pour écrire le relief en tronçons nommés
     level1.js … level10.js  un fichier par niveau : formes, positions, textes
-  ui/ui.js              écran titre, chapitres et niveaux, menu (objectifs, médailles), réglages, souvenir
+  ui/ui.js              accueil, voyage (chapitres, histoire, niveaux), volets de pause et de fin de niveau, réglages
+  ui/thumbs.js          les vignettes des menus, dessinées par le jeu (aucun fichier image)
   ui/settings.js        les réglages du joueur, gardés sur l'appareil
 public/                 icône, manifeste PWA, service worker
 scripts/check-level.mjs test automatique de tous les niveaux

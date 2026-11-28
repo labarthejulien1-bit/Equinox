@@ -1,5 +1,5 @@
-// Progression du joueur : le film du chapitre 0 (vu ou non), la liste des
-// niveaux terminés et les médailles gagnées, gardés sur l'appareil.
+// Progression du joueur : les histoires vues, la liste des niveaux terminés
+// et les médailles gagnées, gardées sur l'appareil.
 // Le stockage peut être indisponible (navigation privée…) : le jeu doit
 // fonctionner quand même, d'où les try/catch.
 
@@ -56,32 +56,40 @@ export function markMedal(levelId, goalId) {
   }
 }
 
-// ── Le film du chapitre 0 : il faut l'avoir vu pour ouvrir le chapitre I ──
+// ── Les histoires : chaque chapitre s'ouvre par un court film, à voir en
+// entier pour ouvrir ses niveaux. On retient l'identifiant de celles déjà vues.
 
-const FILM_KEY = 'equinox.film';
+const STORIES_KEY = 'equinox.stories';
 
-export function filmSeen() {
+function loadStories() {
   try {
-    return localStorage.getItem(FILM_KEY) === '1';
+    const list = JSON.parse(localStorage.getItem(STORIES_KEY) || '[]');
+    return Array.isArray(list) ? list : [];
   } catch {
-    return false;
+    return [];
   }
 }
 
-export function markFilm() {
+export function storySeen(id) {
+  return loadStories().includes(id);
+}
+
+export function markStory(id) {
+  const seen = loadStories();
+  if (seen.includes(id)) return;
   try {
-    localStorage.setItem(FILM_KEY, '1');
+    localStorage.setItem(STORIES_KEY, JSON.stringify([...seen, id]));
   } catch {
-    // tant pis : il faudra le revoir la prochaine fois
+    // tant pis : il faudra la revoir la prochaine fois
   }
 }
 
-/** Efface toute la progression (film vu, niveaux terminés et médailles). */
+/** Efface toute la progression (histoires vues, niveaux terminés et médailles). */
 export function resetProgress() {
   try {
     localStorage.removeItem(KEY);
     localStorage.removeItem(MEDALS_KEY);
-    localStorage.removeItem(FILM_KEY);
+    localStorage.removeItem(STORIES_KEY);
   } catch {
     // rien à effacer
   }

@@ -1,4 +1,4 @@
-// Le film du chapitre 0 : « Il y a mille ans ».
+// Le film « Il y a mille ans » : l'histoire qui ouvre le chapitre I.
 //
 // Un seul cadrage : la capitale des anciens à son âge d'or, le soir où ils
 // l'éteignent, mille ans qui passent (la neige, la glace, les ruines, puis

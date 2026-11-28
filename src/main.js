@@ -4,18 +4,19 @@
 // imports sont relatifs et se terminent par .js, et la feuille de style est
 // chargée par index.html. Un simple serveur de fichiers suffit donc à jouer.
 
-import { chapters, prologue, levels, LEVELS_PER_CHAPTER } from './levels/index.js';
+import { chapters, levels, LEVELS_PER_CHAPTER } from './levels/index.js';
 import { createGame, update } from './game/game.js';
 import { createLife, updateLife, tapLife } from './game/life.js';
 import { createAudio } from './engine/audio.js';
 import { createRenderer } from './game/render.js';
 import { createGoals, updateGoals, MEDALS } from './game/goals.js';
-import { loadDone, markDone, medalsOf, markMedal, resetProgress, filmSeen, markFilm } from './game/progress.js';
+import { loadDone, markDone, medalsOf, markMedal, resetProgress, storySeen, markStory } from './game/progress.js';
 import { createFilm, updateFilm, filmState } from './film/film.js';
 import { createFilmRenderer } from './film/filmDraw.js';
 import { loadSettings, saveSettings } from './ui/settings.js';
 import { attachInput } from './engine/input.js';
 import { createUI } from './ui/ui.js';
+import { createThumbs } from './ui/thumbs.js';
 
 const canvas = document.getElementById('game');
 const renderer = createRenderer(canvas);
@@ -44,15 +45,23 @@ function play(i) {
   renderer.resize(game.level);
 }
 
-// Le film du chapitre 0. Tant qu'il passe, le niveau en cours attend.
+// Le film : l'histoire qui ouvre un chapitre. Tant qu'il passe, le niveau en
+// cours attend. (Seule l'histoire du chapitre I existe pour l'instant.)
 const filmRenderer = createFilmRenderer(canvas);
 let film = null;
+let filmStory = null; // l'histoire que raconte le film en cours
 
 /** Lance le film (start : pour les essais, on peut sauter à un instant). */
-function playFilm(start = 0) {
+function playFilm(start = 0, story = chapters[0].story) {
   film = createFilm(start);
-  filmRenderer.resize();
+  filmStory = story;
 }
+
+// L'affiche : tant que l'histoire du premier chapitre n'a pas été vue,
+// l'accueil montre la cité des anciens, vivante, à la place du niveau.
+const POSTER_AT = 3; // l'instant du film qui sert d'affiche
+let posterClock = 0;
+const posterOn = () => !game.started && !storySeen(chapters[0].story.id);
 
 // Le son : il ne peut démarrer qu'après un premier geste du joueur.
 const settings = loadSettings();
@@ -78,15 +87,16 @@ const ui = createUI({
   onRestart: () => play(index),
   onSelect: (level) => play(levels.indexOf(level)),
   onNext: () => play(Math.min(index + 1, levels.length - 1)),
-  prologue,
-  filmSeen,
-  onFilm: () => playFilm(),
+  storySeen,
+  thumbs: createThumbs(),
+  onStory: (chapter) => playFilm(0, chapter.story),
 });
 
 // Un simple toucher (sans glisser) dérange l'animal ou le villageois visé.
 attachInput(canvas, renderer.view, () => game, ui.touch, (p) => tapLife(game, p));
 
-const resize = () => (film ? filmRenderer.resize() : renderer.resize(game.level));
+// (le film et le jeu se dessinent dans le même canvas : une seule taille à régler)
+const resize = () => renderer.resize(game.level);
 window.addEventListener('resize', resize);
 resize();
 
@@ -105,12 +115,18 @@ function frame(now) {
     ui.film(state); // la phrase du bandeau, la barre d'avancement
     filmRenderer.draw(film);
     if (film.done) {
-      // Vu en entier : le chapitre I s'ouvre.
+      // Vue en entier : les niveaux du chapitre s'ouvrent.
       film = null;
-      markFilm();
-      renderer.resize(game.level);
-      ui.filmEnded();
+      markStory(filmStory.id);
+      ui.storyEnded();
     }
+    requestAnimationFrame(frame);
+    return;
+  }
+  if (posterOn()) {
+    // L'accueil d'un nouveau joueur : l'affiche du film, qui vit doucement.
+    posterClock += dt;
+    filmRenderer.draw({ t: POSTER_AT }, POSTER_AT + posterClock);
     requestAnimationFrame(frame);
     return;
   }
@@ -127,7 +143,7 @@ function frame(now) {
   game.events.length = 0;
   audio.update(game, dt);
   renderer.render(game);
-  ui.update(game, index < levels.length - 1);
+  ui.update(game, levels[index + 1] || null);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -135,7 +151,7 @@ requestAnimationFrame(frame);
 // Pratique pour bricoler depuis la console du navigateur :
 //   __equinox.game        l'état du niveau en cours
 //   __equinox.play(2)     saute au niveau 3 (on compte à partir de 0)
-//   __equinox.playFilm()  lance le film du chapitre 0
+//   __equinox.playFilm()  lance le film (l'histoire du chapitre I)
 window.__equinox = {
   get game() {
     return game;

@@ -1,84 +1,69 @@
-// Interface : écran titre, choix du chapitre et du niveau, menu de la partie
-// (objectifs et médailles), réglages, indice en bas d'écran, carte « souvenir »,
-// encarts du film. Tout est en HTML/CSS par-dessus le canvas (voir index.html et style.css).
+// Interface : l'accueil, « Le voyage » (chapitres, histoire et niveaux), les
+// volets de pause et de fin de niveau, les réglages, l'indice en bas d'écran,
+// les encarts du film. Tout est en HTML/CSS par-dessus le canvas (voir
+// index.html et style.css).
+//
+// L'idée qui guide ces écrans : le joueur doit pouvoir jouer en un toucher.
+// L'accueil lui propose toujours la prochaine chose à faire ; le reste est à
+// portée de pouce, en bas de l'écran.
 
 const $ = (id) => document.getElementById(id);
 
 const MEDAL_NAMES = { cuivre: 'Médaille de cuivre', argent: 'Médaille d’argent', or: 'Médaille d’or' };
 
+// Deux petits dessins pour les vignettes des niveaux
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 L10 17.5 L19 7"/></svg>';
+const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+/** Fabrique un élément : el('span', 'num', '4'). */
+function el(tag, className = '', text = '') {
+  const e = document.createElement(tag);
+  if (className) e.className = className;
+  if (text) e.textContent = text;
+  return e;
+}
+
 /** Une pastille de médaille : pleine si elle est gagnée. */
 function pip(medal, on) {
-  const s = document.createElement('span');
-  s.className = `pip ${medal}${on ? ' on' : ''}`;
-  return s;
+  return el('span', `pip ${medal}${on ? ' on' : ''}`);
 }
 
 /** Les trois pastilles d'un niveau. goals : [{ medal, done }]. */
 function pips(goals) {
-  const box = document.createElement('span');
-  box.className = 'pips';
+  const box = el('span', 'pips');
   for (const g of goals) box.append(pip(g.medal, g.done));
   return box;
 }
 
-/** « 4/30 » précédé d'une pastille d'or : les médailles d'un chapitre. */
-function medalCount(won, total) {
-  const box = document.createElement('span');
-  box.className = 'pips';
-  box.append(pip('or', won > 0), `${won}/${total}`);
-  return box;
-}
-
-/** Fabrique une ligne de liste : numéro, nom (et sous-titre), marque à droite. */
-function row({ num, name, sub, mark, extra, done, disabled, onClick }) {
-  const b = document.createElement('button');
-  if (done) b.className = 'done';
-  b.disabled = !!disabled;
-  const n = document.createElement('span');
-  n.className = 'num';
-  n.textContent = num;
-  const t = document.createElement('span');
-  t.className = 'name';
-  t.textContent = name;
-  if (sub) {
-    const s = document.createElement('small');
-    s.textContent = sub;
-    t.append(s);
-  }
-  const m = document.createElement('span');
-  m.className = 'mark';
-  if (extra) m.append(extra);
-  m.append(mark);
-  b.append(n, t, m);
-  if (onClick) b.addEventListener('click', onClick);
-  return b;
-}
+/** « 1 niveau », « 3 niveaux », « 2 médailles ». */
+const plural = (n, word) => `${n} ${word}${n > 1 ? (word.endsWith('au') ? 'x' : 's') : ''}`;
 
 /**
  * @param chapters   les chapitres du jeu (voir levels/index.js)
  * @param perChapter nombre de niveaux qu'aura chaque chapitre
  * @param isDone     (id) => vrai si ce niveau est terminé
- * @param goalsOf    (level) => ses objectifs [{ text, medal, done }]
+ * @param goalsOf    (level) => ses objectifs [{ def, medal, done }]
+ * @param storySeen  (id) => vrai si cette histoire a été vue en entier
+ * @param thumbs     les vignettes (voir ui/thumbs.js)
  * @param settings   les réglages du joueur (modifiés ici, voir ui/settings.js)
  * @param sound      { muted, setMuted(v), setVolume(v) }
  * @param onSettings () => les réglages ont changé (à enregistrer)
  * @param onReset    () => effacer la progression
+ * @param onRestart  () => relancer le niveau en cours
  * @param onSelect   (level) => lance ce niveau
- * @param prologue   le chapitre 0 (un film) : { number, title, place }
- * @param filmSeen   () => vrai si le film a été vu en entier
- * @param onFilm     () => lance le film
+ * @param onNext     () => lance le niveau suivant
+ * @param onStory    (chapter) => lance le film de son histoire
  */
-export function createUI({ chapters, perChapter, isDone, goalsOf, settings, sound, version, onSettings, onReset, onRestart, onSelect, onNext, prologue, filmSeen, onFilm }) {
+export function createUI({ chapters, perChapter, isDone, goalsOf, storySeen, thumbs, settings, sound, version, onSettings, onReset, onRestart, onSelect, onNext, onStory }) {
   const title = $('title');
   const hud = $('hud');
   const hint = $('hint');
   const toast = $('toast');
   const memory = $('memory');
-  const chapterMenu = $('chapters');
-  const levelMenu = $('levels');
+  const voyage = $('voyage');
   const pauseMenu = $('pause');
   const settingsMenu = $('settings');
-  const veil = $('film-veil'); // posé sur le dessin pendant le film : aucun toucher ne passe
+  const veil = $('film-veil'); // posé sur le dessin pendant un film : aucun toucher ne passe
   let filmCaption = null;
   let currentHint = null;
   let memoryShown = false;
@@ -87,10 +72,12 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
   let settingsBack = null; // l'écran d'où l'on a ouvert les réglages
   let toastTimer = 0;
   let medalKey = '';
+  let tab = null; // le chapitre montré dans « Le voyage »
+  let homeAction = () => {}; // ce que fait le grand bouton de l'accueil
 
-  const hide = (el) => el.classList.add('hidden');
-  const show = (el) => el.classList.remove('hidden');
-  const hideMenus = () => [chapterMenu, levelMenu, pauseMenu, settingsMenu].forEach(hide);
+  const hide = (e) => e.classList.add('hidden');
+  const show = (e) => e.classList.remove('hidden');
+  const hideMenus = () => [voyage, pauseMenu, settingsMenu].forEach(hide);
 
   /** À appeler quand un niveau démarre (ou redémarre). */
   function reset() {
@@ -102,59 +89,134 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     toast.classList.remove('visible');
   }
 
-  // ── Choix du chapitre ──
-
-  /** fresh : le chapitre I vient de s'ouvrir (le film se termine), on le fait remarquer. */
-  function openChapters(fresh = false) {
-    const list = $('chapter-list');
-    list.textContent = '';
-    let won = 0;
-    let total = 0;
-    // Le chapitre 0 est un film : il faut l'avoir vu pour ouvrir la suite.
-    const seen = filmSeen();
-    list.append(
-      row({
-        num: prologue.number,
-        name: prologue.title,
-        sub: prologue.place,
-        mark: seen ? '✓' : 'à voir',
-        done: seen,
-        onClick: () => {
-          reset();
-          hide(title);
-          hide(hud);
-          show(veil);
-          onFilm();
-        },
-      }),
-    );
-    for (const chapter of chapters) {
-      const done = chapter.levels.filter((l) => isDone(l.id)).length;
-      const open = chapter.levels.length > 0;
-      const goals = chapter.levels.flatMap(goalsOf);
-      const medals = goals.filter((g) => g.done).length;
-      won += medals;
-      total += goals.length;
-      list.append(
-        row({
-          num: chapter.number,
-          name: chapter.title,
-          sub: chapter.place,
-          mark: !open ? 'bientôt' : seen ? `${done}/${perChapter}` : 'fermé',
-          extra: open && seen && goals.length ? medalCount(medals, goals.length) : null,
-          done: open && done === perChapter,
-          disabled: !open || !seen,
-          onClick: () => openLevels(chapter),
-        }),
-      );
-      if (fresh && open && chapter === chapters[0]) list.lastChild.classList.add('fresh');
-    }
-    $('chapters-note').textContent = seen ? '' : 'Regarde le chapitre 0 pour ouvrir le voyage.';
-    $('chapters-medals').textContent = total ? `${won} médailles sur ${total}` : '';
-    $('close-chapters').hidden = !playing; // au tout début, il faut choisir
-    hideMenus();
-    show(chapterMenu);
+  /** Lance un niveau depuis un menu. */
+  function start(level) {
+    reset();
+    hide(title);
+    show(hud);
+    playing = true;
+    onSelect(level);
   }
+
+  // ── Où en est le joueur ──
+
+  const built = chapters.filter((c) => c.levels.length);
+  /** Le chapitre en cours : le premier qui n'est pas terminé (ou le dernier construit). */
+  const currentChapter = () => built.find((c) => c.levels.some((l) => !isDone(l.id))) || built[built.length - 1];
+  /** Vrai s'il faut encore regarder l'histoire de ce chapitre pour ouvrir ses niveaux. */
+  const locked = (chapter) => !!chapter.story && !storySeen(chapter.story.id);
+  /** Le prochain niveau à jouer dans ce chapitre (rien s'ils sont tous terminés). */
+  const nextLevel = (chapter) => chapter.levels.find((l) => !isDone(l.id)) || null;
+  const chapterOf = (level) => chapters.find((c) => c.levels.includes(level)) || built[0];
+  const medalsWon = (chapter) => chapter.levels.flatMap(goalsOf).filter((g) => g.done).length;
+
+  /** Lance le film de l'histoire d'un chapitre. */
+  function watch(chapter) {
+    reset();
+    hide(title);
+    hide(hud);
+    show(veil);
+    tab = chapter;
+    onStory(chapter);
+  }
+
+  // ── L'accueil : la prochaine chose à faire, en un seul grand bouton ──
+
+  function showHome() {
+    const chapter = currentChapter();
+    const next = nextLevel(chapter);
+    const done = chapter.levels.filter((l) => isDone(l.id)).length;
+    const line = $('home-line');
+    line.textContent = '';
+    $('home-chapter').textContent = `Chapitre ${chapter.number} · ${chapter.title}`;
+    if (locked(chapter)) {
+      // D'abord l'histoire du chapitre
+      $('home-title').textContent = chapter.story.title;
+      line.append(`L’histoire · ${chapter.story.seconds} secondes`);
+      $('start').textContent = '▶  Regarder l’histoire';
+      homeAction = () => watch(chapter);
+    } else if (next) {
+      $('home-title').textContent = `${next.number} · ${next.title}`;
+      line.append(pips(goalsOf(next)), `${plural(done, 'niveau')} sur ${perChapter} · ${plural(medalsWon(chapter), 'médaille')}`);
+      $('start').textContent = done ? 'Continuer' : 'Commencer';
+      homeAction = () => start(next);
+    } else {
+      // Tout ce qui existe est terminé
+      $('home-title').textContent = 'La suite du voyage arrive bientôt';
+      line.append(`${plural(medalsWon(chapter), 'médaille')} sur ${chapter.levels.flatMap(goalsOf).length}`);
+      $('start').textContent = 'Le voyage';
+      homeAction = () => openVoyage();
+    }
+    hideMenus();
+    show(title);
+  }
+
+  $('start').addEventListener('click', () => homeAction());
+  $('home-voyage').addEventListener('click', () => openVoyage());
+  $('home-settings').addEventListener('click', () => openSettings(showHome));
+
+  // ── Le voyage : les chapitres en haut, puis l'histoire et les niveaux du chapitre choisi ──
+
+  /** fresh : l'histoire vient d'être vue, le premier niveau à jouer se fait remarquer. */
+  function openVoyage(chapter = null, fresh = false) {
+    tab = chapter || (currentGame && playing ? chapterOf(currentGame.level) : currentChapter());
+    const isLocked = locked(tab);
+    const next = nextLevel(tab);
+    const done = tab.levels.filter((l) => isDone(l.id)).length;
+    const goals = tab.levels.flatMap(goalsOf);
+
+    // Les ronds des chapitres
+    const tabs = $('chapter-tabs');
+    tabs.textContent = '';
+    for (const c of chapters) {
+      const b = el('button', c === tab ? 'on' : '', c.number);
+      b.disabled = !c.levels.length;
+      b.setAttribute('aria-label', `Chapitre ${c.number} : ${c.title}`);
+      b.addEventListener('click', () => openVoyage(c));
+      tabs.append(b);
+    }
+    $('voyage-title').textContent = tab.title;
+    $('voyage-sub').textContent = isLocked ? `${tab.place} · ${plural(tab.levels.length, 'niveau')}` : `${tab.place} · ${done}/${perChapter} · ${plural(medalsWon(tab), 'médaille')} sur ${goals.length}`;
+
+    // La bannière de l'histoire
+    const story = $('story');
+    story.hidden = !tab.story;
+    if (tab.story) {
+      story.classList.toggle('todo', isLocked);
+      $('story-title').textContent = tab.story.title;
+      $('story-note').textContent = isLocked ? 'À regarder pour ouvrir le chapitre' : 'Vue · toucher pour la revoir';
+      thumbs.story(story, tab.story);
+    }
+
+    // Les niveaux, en vignettes
+    const grid = $('level-grid');
+    grid.textContent = '';
+    for (const level of tab.levels) {
+      const finished = isDone(level.id);
+      const b = el('button', `tile${finished ? ' done' : ''}${!isLocked && level === next ? ' next' : ''}${fresh && level === next ? ' fresh' : ''}`);
+      b.disabled = isLocked;
+      const foot = el('span', 'foot');
+      foot.append(el('span', 'name', level.title), pips(isLocked ? goalsOf(level).map((g) => ({ ...g, done: false })) : goalsOf(level)));
+      b.append(el('span', 'num', level.number), foot);
+      if (finished || isLocked) {
+        const badge = el('span', 'badge');
+        badge.innerHTML = isLocked ? ICON_LOCK : ICON_CHECK;
+        b.append(badge);
+      }
+      b.addEventListener('click', () => start(level));
+      thumbs.level(b, level);
+      grid.append(b);
+    }
+    hide(title);
+    hideMenus();
+    show(voyage);
+  }
+
+  $('story').addEventListener('click', () => watch(tab));
+  // « Retour » : au jeu si une partie est en cours, sinon à l'accueil
+  $('close-voyage').addEventListener('click', () => (playing ? hide(voyage) : showHome()));
+
+  // ── Le film d'une histoire ──
 
   /** À chaque image du film : l'encart de texte et la barre d'avancement (p : filmState). */
   function film(p) {
@@ -170,50 +232,14 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     $('film-progress').style.width = `${(p.progress * 100).toFixed(2)}%`;
   }
 
-  /** Le film vient de finir : on revient aux chapitres, le chapitre I est ouvert. */
-  function filmEnded() {
+  /** Le film vient de finir : on revient au voyage, les niveaux du chapitre sont ouverts. */
+  function storyEnded() {
     hide(veil);
     if (playing) show(hud);
-    openChapters(true);
+    openVoyage(tab, true);
   }
 
-  // ── Choix du niveau, dans un chapitre ──
-
-  function openLevels(chapter) {
-    $('levels-chapter').textContent = `Chapitre ${chapter.number} · ${chapter.title}`;
-    $('levels-place').textContent = chapter.place;
-    const list = $('level-list');
-    list.textContent = '';
-    for (const level of chapter.levels) {
-      list.append(
-        row({
-          num: level.number,
-          name: level.title,
-          extra: pips(goalsOf(level)),
-          mark: isDone(level.id) ? '✓' : '',
-          done: isDone(level.id),
-          onClick: () => {
-            reset();
-            hide(title);
-            show(hud);
-            playing = true;
-            onSelect(level);
-          },
-        }),
-      );
-    }
-    // Les niveaux déjà écrits mais pas encore construits
-    chapter.soon.forEach((name, i) => {
-      list.append(row({ num: String(chapter.levels.length + i + 1), name, mark: 'bientôt', disabled: true }));
-    });
-    $('close-levels').hidden = !playing;
-    hideMenus();
-    show(levelMenu);
-  }
-
-  const chapterOf = (level) => chapters.find((c) => c.levels.includes(level)) || chapters[0];
-
-  // ── Le menu de la partie : les objectifs du niveau et leurs médailles ──
+  // ── La pause : les objectifs du niveau et leurs médailles, puis cinq actions ──
 
   function fillGoals() {
     const level = currentGame.level;
@@ -222,14 +248,9 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     const list = $('goal-list');
     list.textContent = '';
     for (const g of goals) {
-      const line = document.createElement('div');
-      line.className = `goal${g.done ? ' done' : ''}`;
-      const text = document.createElement('span');
-      text.className = 'goal-text';
-      text.textContent = g.def.text;
-      const small = document.createElement('small');
-      small.textContent = g.done ? `${MEDAL_NAMES[g.medal]} gagnée` : MEDAL_NAMES[g.medal];
-      text.append(small);
+      const line = el('div', `goal${g.done ? ' done' : ''}`);
+      const text = el('span', 'goal-text', g.def.text);
+      text.append(el('small', '', g.done ? `${MEDAL_NAMES[g.medal]} gagnée` : MEDAL_NAMES[g.medal]));
       line.append(pip(g.medal, g.done), text);
       list.append(line);
     }
@@ -241,8 +262,14 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
         : 'Les trois médailles de ce niveau sont à toi.';
   }
 
+  function showSound() {
+    $('pause-sound').classList.toggle('off', sound.muted);
+    $('pause-sound-label').textContent = sound.muted ? 'Muet' : 'Son';
+  }
+
   function openPause() {
     fillGoals();
+    showSound();
     hideMenus();
     show(pauseMenu);
   }
@@ -250,10 +277,18 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
   $('open-menu').addEventListener('click', openPause);
   $('level-medals').addEventListener('click', openPause);
   $('resume').addEventListener('click', () => hide(pauseMenu));
-  $('pause-levels').addEventListener('click', () => openLevels(chapterOf(currentGame.level)));
+  // (un toucher à côté du volet le referme aussi)
+  pauseMenu.addEventListener('click', (e) => {
+    if (e.target === pauseMenu) hide(pauseMenu);
+  });
+  $('pause-levels').addEventListener('click', () => openVoyage());
   $('pause-restart').addEventListener('click', () => {
     reset();
     onRestart();
+  });
+  $('pause-sound').addEventListener('click', () => {
+    sound.setMuted(!sound.muted);
+    showSound();
   });
 
   // ── Les réglages ──
@@ -267,14 +302,14 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     $('set-toasts').checked = settings.toasts;
     $('reset').textContent = 'Effacer';
     $('reset').classList.remove('armed');
-    $('reset-note').textContent = 'film, niveaux terminés et médailles';
+    $('reset-note').textContent = 'histoires vues, niveaux terminés et médailles';
     $('version').textContent = version ? `Equinox · version ${version}` : '';
+    hide(title);
     hideMenus();
     show(settingsMenu);
   }
 
   $('pause-settings').addEventListener('click', () => openSettings(openPause));
-  $('chapters-settings').addEventListener('click', () => openSettings(() => openChapters()));
   $('close-settings').addEventListener('click', () => (settingsBack ? settingsBack() : hide(settingsMenu)));
   $('set-sound').addEventListener('change', (e) => {
     sound.setMuted(!e.target.checked);
@@ -308,18 +343,8 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     onReset();
   });
 
-  $('start').addEventListener('click', () => {
-    hide(title);
-    openChapters();
-  });
-  $('back-chapters').addEventListener('click', () => openChapters());
-  $('close-chapters').addEventListener('click', () => hide(chapterMenu));
-  $('close-levels').addEventListener('click', () => hide(levelMenu));
+  // ── La fin d'un niveau : le souvenir, et le niveau suivant déjà prêt ──
 
-  $('restart').addEventListener('click', () => {
-    reset();
-    onRestart();
-  });
   $('replay').addEventListener('click', () => {
     reset();
     onRestart();
@@ -329,6 +354,35 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     onNext();
   });
   $('contemplate').addEventListener('click', () => hide(memory));
+  $('memory-voyage').addEventListener('click', () => {
+    hide(memory);
+    openVoyage();
+  });
+
+  function showMemory(g, next) {
+    const m = g.level.memory;
+    $('memory-number').textContent = `Souvenir ${m.number}`;
+    $('memory-title').textContent = m.title;
+    $('memory-text').textContent = m.text;
+    $('memory-tech').textContent = m.tech;
+    // Les médailles du niveau, pour donner envie d'y revenir
+    const goals = g.goals || [];
+    const line = $('memory-medals');
+    line.textContent = '';
+    if (goals.length) {
+      const won = goals.filter((q) => q.done).length;
+      line.append(pips(goals), el('span', '', won === goals.length ? 'Toutes les médailles' : `${plural(won, 'médaille')} sur ${goals.length}`));
+    }
+    // Le niveau suivant, avec son image
+    $('next').hidden = !next;
+    $('memory-end').hidden = !!next;
+    $('memory-voyage').hidden = !!next;
+    if (next) {
+      $('next-title').textContent = `${next.number} · ${next.title}`;
+      thumbs.level($('next-thumb'), next);
+    }
+    show(memory);
+  }
 
   /** Les trois pastilles du haut de l'écran (redessinées seulement si elles changent). */
   function showLevelMedals(g) {
@@ -354,8 +408,11 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     toastTimer = setTimeout(() => toast.classList.remove('visible'), 4200);
   }
 
-  /** Appelée à chaque image : met à jour l'indice et affiche le souvenir. */
-  function update(g, hasNext) {
+  /**
+   * Appelée à chaque image : met à jour l'indice et affiche le souvenir.
+   * next : le niveau qui suit celui-ci (rien si c'est le dernier).
+   */
+  function update(g, next) {
     // Nouveau niveau (ou niveau relancé) : on repart d'une interface propre.
     if (g !== currentGame) {
       const first = currentGame === null;
@@ -377,33 +434,16 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
       }, 350);
     }
 
-    // La carte du souvenir attend que l'onde du réveil ait traversé l'écran.
+    // Le souvenir attend que l'onde du réveil ait traversé l'écran.
     if (g.temple.lit && g.win.t > g.wave.end + 1.2 && !memoryShown) {
       memoryShown = true;
-      const m = g.level.memory;
-      $('memory-number').textContent = `Souvenir ${m.number}`;
-      $('memory-title').textContent = m.title;
-      $('memory-text').textContent = m.text;
-      $('memory-tech').textContent = m.tech;
-      $('next').hidden = !hasNext;
-      $('replay').hidden = hasNext;
-      $('memory-end').hidden = hasNext;
-      // Les médailles du niveau, pour donner envie d'y revenir
-      const goals = g.goals || [];
-      const line = $('memory-medals');
-      line.textContent = '';
-      if (goals.length) {
-        const won = goals.filter((q) => q.done).length;
-        const label = document.createElement('span');
-        label.textContent = won === goals.length ? 'Toutes les médailles' : `${won} médaille${won > 1 ? 's' : ''} sur ${goals.length}`;
-        line.append(pips(goals), label);
-      }
-      show(memory);
+      showMemory(g, next);
     }
   }
 
   /**
-   * Appelée à chaque appui sur le jeu. L'indice est écrit par-dessus les
+   * Le joueur vient de poser le doigt en (x, y), en pixels de la page. L'indice
+   * du bas de l'écran recouvre parfois ce qu'il veut attraper, à commencer par les
    * bulles du bas de l'écran : si le doigt se pose dessus, il s'efface (il
    * reviendra quand il aura autre chose à dire).
    */
@@ -413,5 +453,7 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 12 && y <= r.bottom + 12) hint.classList.remove('visible');
   }
 
-  return { update, touch, medal, film, filmEnded };
+  showHome();
+
+  return { update, touch, medal, film, storyEnded, showHome };
 }

@@ -253,7 +253,7 @@ export function createAudio() {
       if (!fresh('step', 0.15)) return;
       puff({ freq: 900, dur: 0.05, gain: 0.02, q: 0.7 });
     },
-    // ── le film du chapitre 0 (voir src/film/film.js) ──
+    // ── le film « Il y a mille ans » (voir src/film/film.js) ──
     'film-open'() {
       // L'âge d'or : l'arpège du sanctuaire rallumé, doux et lent.
       [440, 554.37, 659.25, 880, 1108.73].forEach((f, i) => bell(f, 0.045, i * 0.42, 3.2));
@@ -388,7 +388,7 @@ export function createAudio() {
   }
 
   /**
-   * Les nappes pendant le film du chapitre 0. `p` est l'état du film
+   * Les nappes pendant le film. `p` est l'état du film
    * (filmState) : l'accord chaud de l'âge d'or, puis le vent des mille ans.
    */
   function film(p) {

@@ -19,20 +19,21 @@
     <div id="stage">
       <!-- Le jeu est dessiné ici -->
       <canvas id="game"></canvas>
-      <!-- Pendant le film du chapitre 0 : un voile pour qu'aucun toucher ne passe,
+      <!-- Pendant le film d'une histoire : un voile pour qu'aucun toucher ne passe,
            un petit encart de texte posé sur l'image, et la barre d'avancement en bas -->
       <div id="film-veil" class="hidden">
         <p id="film-text"></p>
         <div id="film-bar"><i id="film-progress"></i></div>
       </div>
 
-      <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
+      <!-- Pendant la partie : nom du niveau, médailles, bouton pause, indice -->
       <div id="hud" class="hidden">
         <div id="level-name"></div>
-        <!-- Les trois médailles du niveau (un toucher ouvre le menu) -->
+        <!-- Les trois médailles du niveau (un toucher ouvre le volet de pause) -->
         <button id="level-medals" class="pips" aria-label="Voir les objectifs du niveau"></button>
-        <button id="open-menu" aria-label="Ouvrir le menu">☰</button>
-        <button id="restart" aria-label="Recommencer le niveau">↺</button>
+        <button id="open-menu" aria-label="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z" fill="currentColor" /></svg>
+        </button>
         <!-- Annonce d'une médaille gagnée -->
         <div id="toast">
           <span id="toast-pip" class="pip"></span>
@@ -41,70 +42,96 @@
         <div id="hint"></div>
       </div>
 
-      <!-- Écran titre -->
+      <!-- L'accueil : le titre, et la prochaine chose à faire en un seul grand bouton -->
       <div id="title" class="overlay">
         <div class="sigil"></div>
         <h1>EQUINOX</h1>
-        <p class="tagline">Rallume les temples du soleil</p>
-        <button id="start">Toucher pour commencer</button>
+        <div id="home">
+          <div id="home-chapter" class="eyebrow"></div>
+          <h2 id="home-title"></h2>
+          <div id="home-line" class="home-line"></div>
+          <button id="start" class="primary"></button>
+          <div class="row">
+            <button id="home-voyage" class="ghost">Le voyage</button>
+            <button id="home-settings" class="ghost">Réglages</button>
+          </div>
+        </div>
       </div>
 
-      <!-- Souvenir retrouvé à la fin d'un niveau -->
-      <div id="memory" class="overlay hidden">
+      <!-- Le voyage : les chapitres en haut, puis l'histoire du chapitre et ses dix niveaux -->
+      <div id="voyage" class="overlay menu hidden">
+        <div class="eyebrow">Le voyage</div>
+        <div id="chapter-tabs" class="tabs"></div>
+        <h2 id="voyage-title"></h2>
+        <div id="voyage-sub" class="place"></div>
+        <div class="voyage-body">
+          <!-- L'histoire du chapitre : à regarder pour ouvrir ses niveaux -->
+          <button id="story" class="story">
+            <span class="story-text">
+              <small>L’histoire</small>
+              <b id="story-title"></b>
+              <span id="story-note"></span>
+            </span>
+            <span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19z" fill="currentColor" /></svg></span>
+          </button>
+          <div id="level-grid" class="grid"></div>
+        </div>
+        <div class="actions">
+          <button id="close-voyage" class="ghost">Retour</button>
+        </div>
+      </div>
+
+      <!-- La pause : un volet qui monte du bas (objectifs du niveau, puis cinq actions) -->
+      <div id="pause" class="overlay sheet hidden">
         <div class="card">
+          <div class="grip"></div>
+          <div id="pause-level" class="eyebrow"></div>
+          <div id="goal-list" class="goals"></div>
+          <p id="goal-note" class="note"></p>
+          <div class="rounds">
+            <button id="resume" class="round main">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19z" fill="currentColor" /></svg></i>
+              <span>Reprendre</span>
+            </button>
+            <button id="pause-restart" class="round">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12a7 7 0 1 1-2.2-5.1" /><path d="M19 4v4h-4" /></svg></i>
+              <span>Recommencer</span>
+            </button>
+            <button id="pause-levels" class="round">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19 L9 8 L13 14 L16 10 L21 19z" /></svg></i>
+              <span>Voyage</span>
+            </button>
+            <button id="pause-sound" class="round">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l5 4V6L7 10z" /><path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" /><path class="mute" d="M16 9.5l5 5M21 9.5l-5 5" /></svg></i>
+              <span id="pause-sound-label">Son</span>
+            </button>
+            <button id="pause-settings" class="round">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /></svg></i>
+              <span>Réglages</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- La fin d'un niveau : le souvenir retrouvé, et le niveau suivant déjà prêt -->
+      <div id="memory" class="overlay sheet hidden">
+        <div class="card">
+          <div class="grip"></div>
           <div id="memory-number" class="eyebrow"></div>
           <h2 id="memory-title"></h2>
           <p id="memory-text"></p>
           <p id="memory-tech" class="tech"></p>
-          <p id="memory-end" class="end" hidden>La suite du voyage arrive bientôt.</p>
           <div id="memory-medals" class="medal-line"></div>
-          <div class="actions">
-            <button id="next">Niveau suivant</button>
-            <button id="contemplate" class="ghost">Contempler</button>
-            <button id="replay" class="ghost" hidden>Rejouer</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Choix du chapitre : le chapitre 0 (un film), puis six chapitres, un par milieu -->
-      <div id="chapters" class="overlay menu hidden">
-        <div class="card">
-          <div class="eyebrow">Le voyage</div>
-          <div id="chapter-list" class="list"></div>
-          <div id="chapters-note" class="medal-total"></div>
-          <div id="chapters-medals" class="medal-total"></div>
-          <div class="actions">
-            <button id="chapters-settings" class="ghost">Réglages</button>
-            <button id="close-chapters" class="ghost">Fermer</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Choix du niveau, dans un chapitre -->
-      <div id="levels" class="overlay menu hidden">
-        <div class="card">
-          <div id="levels-chapter" class="eyebrow"></div>
-          <div id="levels-place" class="place"></div>
-          <div id="level-list" class="list"></div>
-          <div class="actions">
-            <button id="back-chapters" class="ghost">Chapitres</button>
-            <button id="close-levels" class="ghost">Fermer</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Le menu, pendant la partie : objectifs du niveau, puis les autres écrans -->
-      <div id="pause" class="overlay menu hidden">
-        <div class="card">
-          <div id="pause-level" class="eyebrow"></div>
-          <h2 class="small">Objectifs</h2>
-          <div id="goal-list" class="goals"></div>
-          <p id="goal-note" class="note"></p>
-          <div class="stack">
-            <button id="resume">Reprendre</button>
-            <button id="pause-levels" class="ghost">Choisir un niveau</button>
-            <button id="pause-settings" class="ghost">Réglages</button>
-            <button id="pause-restart" class="ghost">Recommencer le niveau</button>
+          <button id="next" class="next">
+            <span id="next-thumb" class="thumb"></span>
+            <span class="next-text"><small>Ensuite</small><b id="next-title"></b></span>
+            <span class="disc gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19z" fill="currentColor" /></svg></span>
+          </button>
+          <p id="memory-end" class="end" hidden>La suite du voyage arrive bientôt.</p>
+          <div class="links">
+            <button id="contemplate">Contempler</button>
+            <button id="replay">Rejouer</button>
+            <button id="memory-voyage">Le voyage</button>
           </div>
         </div>
       </div>
@@ -131,7 +158,7 @@
               <input id="set-toasts" type="checkbox" class="switch" />
             </label>
             <div class="setting">
-              <span>Progression<small id="reset-note">niveaux terminés et médailles</small></span>
+              <span>Progression<small id="reset-note">histoires vues, niveaux terminés et médailles</small></span>
               <button id="reset" class="danger">Effacer</button>
             </div>
           </div>

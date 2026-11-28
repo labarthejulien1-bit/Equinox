@@ -58,12 +58,17 @@ Au dernier temple, on découvre que tout avait été prévu pour ce retour : le
 culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
 était une étape du plan des anciens.
 
-### Le chapitre 0 : le film ✅
+### L'histoire d'un chapitre : le film ✅
 
-Le jeu s'ouvre sur un film de 30 secondes, en un seul cadrage. Il est le
-chapitre 0 du voyage, « Il y a mille ans » : il faut l'avoir regardé en
-entier pour ouvrir le chapitre I. On ne peut pas le passer ; pour le revoir,
-on relance le chapitre 0. Une barre d'avancement court en bas de l'écran.
+Chaque chapitre s'ouvre par une **histoire** : un court film, à regarder
+en entier pour ouvrir ses niveaux. On ne peut pas le passer ; on le revoit
+depuis sa bannière, en haut des niveaux du chapitre. Une barre d'avancement
+court en bas de l'écran. Les histoires des chapitres II à VI restent à
+écrire ; elles lèveront le voile peu à peu.
+
+Celle du chapitre I, « Il y a mille ans », ouvre le jeu : 30 secondes, en
+un seul cadrage. (Elle a d'abord été un « chapitre 0 » à part, avant de
+devenir l'histoire du chapitre I.)
 
 Le lieu est la **capitale des anciens**, une tour solaire : deux grands
 miroirs renvoient le soleil sur le cristal de l'aiguille, la lumière
@@ -214,6 +219,35 @@ Tactile uniquement, un seul doigt, uniquement des « glisser ».
 
 Règle d'ergonomie : zone tactile d'au moins 48 px, jamais deux objets
 manipulables à moins de 60 px l'un de l'autre, jamais de geste à deux doigts.
+
+## 4 bis. Les menus ✅
+
+Le principe : **on joue en un toucher**, et tout reste à portée de pouce.
+Choisis parmi trois maquettes (« Continuer », retenue ; « Le sentier », une
+carte qu'on descend en suivant l'eau ; « Les tableaux », des images qu'on
+feuillette).
+
+- **L'accueil.** Le titre, et un seul grand bouton qui mène toujours à la
+  prochaine chose à faire : « Regarder l'histoire » au premier lancement ou
+  au début d'un chapitre, « Commencer », puis « Continuer ». Derrière, le
+  niveau où l'on en est ; pour un nouveau joueur, la cité des anciens,
+  vivante. Deux boutons discrets : « Le voyage », « Réglages ».
+- **Le voyage.** Un seul écran : les six chapitres en ronds (I à VI), puis
+  l'**histoire** du chapitre dans une bannière illustrée, large comme deux
+  niveaux, puis ses dix niveaux en vignettes sur deux colonnes (numéro,
+  titre, médailles, coche). Tant que l'histoire n'est pas vue, la bannière
+  brille et les niveaux portent un cadenas. Le prochain niveau à jouer est
+  cerclé d'or.
+- **En jeu.** Un seul bouton, en haut à droite : pause. « Recommencer »
+  n'est plus sous le doigt.
+- **La pause.** Un volet qui monte du bas et laisse voir le niveau : les
+  trois objectifs, puis cinq actions rondes (reprendre, recommencer, voyage,
+  son, réglages).
+- **La fin d'un niveau.** Un volet : le souvenir, les médailles, et le
+  niveau suivant déjà prêt avec son image, en un toucher.
+
+Les images des menus (vignettes des niveaux, affiche de l'histoire) sont
+dessinées par le jeu lui-même : elles suivent toute retouche d'un niveau.
 
 ## 5. Direction artistique
 
@@ -1446,7 +1480,7 @@ dans la glace.
    niveaux. Choisie parmi trois maquettes (l'onde ; le réseau de sillons
    gravés qui relie les machines ; la première journée, où le soleil
    repart seul). Les deux autres restent possibles par-dessus.
-11. ✅ **v0.10** — le chapitre 0 : un film de 30 secondes qui ouvre le jeu
+11. ✅ **v0.10** — le film « Il y a mille ans », 30 secondes, qui ouvre le jeu
    (§ 3), la capitale des anciens de l'âge d'or à aujourd'hui. Il faut
    l'avoir vu pour ouvrir le chapitre I. v0.10.1 : des phrases, une barre
    d'avancement, et plus de vie dans l'âge d'or. v0.10.2 : l'image reprend
@@ -1454,7 +1488,12 @@ dans la glace.
    le texte retenu (le soleil et les sciences apprivoisés, l'été qui ne
    revient pas, la cité éternelle qui s'éteint, le suspense gardé pour la
    suite).
-12. **À venir, dans un ordre à décider** :
+12. ✅ **v0.11** — les menus refaits pour jouer en un toucher (§ 4 bis) :
+   l'accueil et son grand bouton, « Le voyage » en vignettes avec la
+   bannière de l'histoire, les volets de pause et de fin de niveau. Le film
+   devient l'histoire du chapitre I.
+13. **À venir, dans un ordre à décider** :
+   - l'histoire (un court film) des chapitres II à VI ;
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
      palettes et décors des milieux) ;

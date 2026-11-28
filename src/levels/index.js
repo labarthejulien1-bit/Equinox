@@ -1,4 +1,6 @@
-// Le voyage : six chapitres, un par milieu, de dix niveaux chacun.
+// Le voyage : six chapitres, un par milieu, de dix niveaux chacun. Chaque
+// chapitre s'ouvre par une histoire (`story`) ; seule celle du chapitre I
+// existe pour l'instant.
 //
 // Pour ajouter un niveau : créer son fichier, puis l'ajouter à la liste
 // `levels` de son chapitre (et retirer son titre de `soon`).
@@ -14,17 +16,15 @@ import level8 from './level8.js';
 import level9 from './level9.js';
 import level10 from './level10.js';
 
-/**
- * Le chapitre 0 n'a pas de niveau : c'est un film (voir src/film/). Il faut
- * l'avoir regardé en entier pour ouvrir le chapitre I.
- */
-export const prologue = { number: '0', title: 'Il y a mille ans', place: 'La capitale des anciens' };
-
 export const chapters = [
   {
     number: 'I',
     title: 'La source',
     place: 'Haute montagne, glaciers',
+    // L'histoire du chapitre : un court film (voir src/film/), à regarder en
+    // entier pour ouvrir ses niveaux. `id` retient sur l'appareil qu'elle a
+    // été vue : ne jamais le changer une fois publié.
+    story: { id: 'mille-ans', title: 'Il y a mille ans', seconds: 30 },
     levels: [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10],
     // Niveaux écrits mais pas encore construits : ils apparaissent grisés.
     soon: [],

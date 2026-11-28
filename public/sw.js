@@ -4,7 +4,7 @@
 // toujours la dernière version du jeu (et on la garde en réserve) ; sinon on
 // sert la version gardée en réserve.
 
-const CACHE = 'equinox-v20';
+const CACHE = 'equinox-v21';
 
 self.addEventListener('install', () => self.skipWaiting());
 

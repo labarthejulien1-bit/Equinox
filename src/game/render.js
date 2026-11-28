@@ -66,8 +66,9 @@ export function createRenderer(canvas) {
   // La « vue » : comment passer des unités monde aux pixels de l'écran.
   const view = { scale: 1, ox: 0, oy: 0, dpr: 1, left: 0, top: 0, right: 360, bottom: 720, w: 360, h: 720 };
 
-  function resize(level) {
-    const rect = canvas.getBoundingClientRect();
+  /** size : { width, height } en pixels CSS, pour un canvas qui n'est pas à l'écran (vignettes). */
+  function resize(level, size = null) {
+    const rect = size || canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.max(1, Math.round(rect.width * dpr));
     const h = Math.max(1, Math.round(rect.height * dpr));

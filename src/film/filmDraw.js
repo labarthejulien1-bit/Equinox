@@ -1,4 +1,4 @@
-// Le dessin du film du chapitre 0 (voir film.js pour son déroulé).
+// Le dessin du film « Il y a mille ans » (voir film.js pour son déroulé).
 //
 // Un seul décor, la capitale des anciens, dessiné dans le style du jeu : des
 // aplats, une face au soleil et une face à l'ombre. Chaque chose se dessine
@@ -199,8 +199,14 @@ export function createFilmRenderer(canvas) {
 
   // ───────────────────────────── L'image ─────────────────────────────
 
-  function draw(film) {
-    const p = filmState(film.t);
+  /**
+   * clock : pour l'affiche de l'accueil. L'image garde l'état de l'instant
+   * film.t, mais tout ce qui bouge suit `clock` (le cœur tourne, les
+   * promeneurs marchent) : la cité vit sans que l'histoire avance.
+   */
+  function draw(film, clock = null) {
+    let p = filmState(film.t);
+    if (clock !== null) p = { ...p, t: clock, spin: clock };
     const t = p.t;
     // La scène est calée en bas de l'écran et centrée.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);

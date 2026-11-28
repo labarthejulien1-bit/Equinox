@@ -82,20 +82,21 @@ vienne pas faire fondre une glace utile (c'est arrivé au niveau 3).
 
 ## Architecture en une phrase
 
-(Le film du chapitre 0 est à part : voir plus bas.)
+(Le film et les menus sont à part : voir plus bas.)
 
 `main.js` fait tourner la boucle → `game.update()` calcule la lumière
 (`engine/light.js`) puis applique les règles → `render.js` dessine la scène en
 palette d'ombre, puis en palette de lumière dans les zones éclairées.
 
-## Le chapitre 0 : le film
+## L'histoire d'un chapitre : le film
 
-Le jeu s'ouvre sur un film de 30 secondes : « Il y a mille ans », la
-capitale des anciens à son âge d'or, puis éteinte, puis mille ans de neige,
-et le petit peuple qui s'installe dans ses ruines. Il est dessiné par le jeu
-(aucun fichier vidéo) et vit dans `src/film/`. Huit phrases courtes
-l'accompagnent, chacune dans un petit encart posé sur l'image ; une barre
-d'avancement court en bas de l'écran.
+Chaque chapitre s'ouvre par une **histoire** : un court film à regarder en
+entier pour ouvrir ses niveaux. Seule celle du chapitre I existe : « Il y a
+mille ans », 30 secondes, la capitale des anciens à son âge d'or, puis
+éteinte, puis mille ans de neige, et le petit peuple qui s'installe dans ses
+ruines. Elle est dessinée par le jeu (aucun fichier vidéo) et vit dans
+`src/film/`. Huit phrases courtes l'accompagnent, chacune dans un petit
+encart posé sur l'image ; une barre d'avancement court en bas de l'écran.
 
 - `film.js` — le **déroulé** : `filmState(t)` dit où en est chaque chose à
   l'instant t (entre 0 et 1), `CAPTIONS` liste ses phrases et `CUES` ses sons
@@ -103,22 +104,43 @@ d'avancement court en bas de l'écran.
   (`npm run check -- film`).
 - Les phrases ont le ton d'une légende : une cité éternelle qui s'est
   éteinte. Elles gardent le suspense : ni ce que sont devenus les anciens,
-  ni pourquoi ils ont tout éteint (c'est la révélation du dernier temple ; un
-  court texte entre les chapitres est prévu pour plus tard). Les garder courtes (le test refuse plus de
-  56 caractères, ou trop peu de temps pour lire).
+  ni pourquoi ils ont tout éteint (c'est la révélation du dernier temple).
+  Les garder courtes (le test refuse plus de 56 caractères, ou trop peu de
+  temps pour lire).
 - Chaque phrase a sa place sur l'image (`[x, y]` dans `CAPTIONS`, en
   centièmes de l'écran), choisie pour ne pas cacher ce qui se passe à ce
   moment. L'encart et la barre sont en HTML (`#film-text`, `#film-bar`, mis
   à jour par `ui.film()`) ; l'image du film occupe tout l'écran.
 - `filmDraw.js` — le **dessin**, d'après cet état. Il ne connaît aucune
   date : pour changer le moment d'une chose, c'est dans `film.js`.
-- Le film est le chapitre 0 de la liste des chapitres (`prologue` dans
-  `levels/index.js`). Il faut l'avoir vu en entier pour ouvrir le chapitre I
-  (`filmSeen` dans `progress.js`). Décision du propriétaire : on ne peut ni
-  le passer ni le revoir autrement qu'en relançant le chapitre 0.
-- Sa ville est celle du dernier chapitre (VI) : le dernier temple devra
-  retrouver ce cadrage.
+- Une histoire se déclare dans son chapitre (`story` dans
+  `levels/index.js`) ; `progress.js` retient celles qui ont été vues
+  (`storySeen`). Ne jamais changer l'`id` d'une histoire publiée. Décision du
+  propriétaire : on ne peut pas passer une histoire ; on la revoit depuis sa
+  bannière, dans « Le voyage ».
+- Pour l'histoire d'un autre chapitre : il faudra un deuxième film. Le code
+  n'en connaît qu'un (`playFilm` dans `main.js` joue toujours celui-ci).
+- La ville du film est celle du dernier chapitre (VI) : le dernier temple
+  devra retrouver ce cadrage.
 - Pour le regarder à un instant donné : `__equinox.playFilm(20)`.
+
+## Les menus
+
+Le principe : **jouer en un toucher**, et tout garder à portée de pouce.
+Tout est dans `src/ui/ui.js`, `index.html` et `style.css`.
+
+- **L'accueil** (`#title`) : un seul grand bouton, qui mène toujours à la
+  prochaine chose à faire (« Regarder l'histoire », « Commencer »,
+  « Continuer »). Derrière lui, le niveau où l'on en est ; pour un nouveau
+  joueur, l'affiche du film, vivante (`posterOn` dans `main.js`).
+- **Le voyage** (`#voyage`) : les six chapitres en ronds, puis la bannière
+  de l'histoire, large comme deux niveaux, puis les dix niveaux en
+  vignettes. Tant que l'histoire n'est pas vue, les niveaux sont fermés.
+- **Les volets** (`.sheet`) montent du bas de l'écran : la pause
+  (objectifs, puis cinq actions) et la fin d'un niveau (le souvenir, puis
+  le niveau suivant déjà prêt). En jeu, il n'y a qu'un bouton : pause.
+- **Les vignettes** (`src/ui/thumbs.js`) sont dessinées par le jeu lui-même,
+  hors de l'écran, une fois : il n'y a aucun fichier image à tenir à jour.
 
 ## L'onde du réveil
 
@@ -188,8 +210,8 @@ fin (médailles de cuivre, d'argent, d'or). Ils sont **à côté de l'énigme** 
 - Choisir des objectifs visibles à l'écran, et vérifier qu'ils ne sont pas
   déjà remplis au début du niveau (marmottes déjà au soleil, etc.).
 
-L'interface (menu ☰, réglages, pastilles, annonce) est dans `src/ui/ui.js` ;
-les réglages sont gardés par `src/ui/settings.js`.
+L'interface (volet de pause, réglages, pastilles, annonce) est dans
+`src/ui/ui.js` ; les réglages sont gardés par `src/ui/settings.js`.
 
 ## Ajouter un décor
 
@@ -203,7 +225,7 @@ il va dans `game.js`. Les décors retenus pour chaque milieu sont listés dans
 ## Vérifier un changement visuel
 
 Chromium et Playwright sont disponibles dans les sessions cloud. Lancer
-`npm run dev`, ouvrir la page en 412 × 892, cliquer `#start`, choisir le
+`npm run dev`, ouvrir la page en 412 × 892, choisir le
 niveau avec `window.__equinox.play(i)` (i compté à partir de 0), puis piloter
 l'état via `window.__equinox.game` (par ex. `sunAngle`, `cloudX`,
 `mirrors[0].angle`) et faire des captures d'écran.
