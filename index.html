@@ -19,8 +19,14 @@
     <div id="stage">
       <!-- Le jeu est dessiné ici -->
       <canvas id="game"></canvas>
-      <!-- Pendant le film du chapitre 0 : un voile invisible, pour qu'aucun toucher ne passe -->
-      <div id="film-veil" class="hidden"></div>
+      <!-- Pendant le film du chapitre 0 : un voile pour qu'aucun toucher ne passe,
+           et en bas le bandeau de texte avec sa barre d'avancement -->
+      <div id="film-veil" class="hidden">
+        <div id="film-band">
+          <p id="film-text"></p>
+          <div id="film-bar"><i id="film-progress"></i></div>
+        </div>
+      </div>
 
       <!-- Pendant la partie : nom du niveau, bouton recommencer, indice -->
       <div id="hud" class="hidden">

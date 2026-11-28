@@ -1,6 +1,8 @@
 // Interface : écran titre, choix du chapitre et du niveau, menu de la partie
-// (objectifs et médailles), réglages, indice en bas d'écran, carte « souvenir ».
-// Tout est en HTML/CSS par-dessus le canvas (voir index.html et style.css).
+// (objectifs et médailles), réglages, indice en bas d'écran, carte « souvenir »,
+// bandeau du film. Tout est en HTML/CSS par-dessus le canvas (voir index.html et style.css).
+
+import { FILM_BAND } from '../film/filmDraw.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -79,6 +81,8 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
   const pauseMenu = $('pause');
   const settingsMenu = $('settings');
   const veil = $('film-veil'); // posé sur le dessin pendant le film : aucun toucher ne passe
+  $('film-band').style.height = `${FILM_BAND * 100}%`;
+  let filmCaption = null;
   let currentHint = null;
   let memoryShown = false;
   let currentGame = null;
@@ -153,6 +157,14 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     $('close-chapters').hidden = !playing; // au tout début, il faut choisir
     hideMenus();
     show(chapterMenu);
+  }
+
+  /** À chaque image du film : la phrase du bandeau et la barre d'avancement (p : filmState). */
+  function film(p) {
+    if (p.caption !== filmCaption && p.caption) $('film-text').textContent = p.caption; // (on garde l'ancienne phrase pendant qu'elle s'efface)
+    filmCaption = p.caption;
+    $('film-text').style.opacity = p.captionAlpha.toFixed(2);
+    $('film-progress').style.width = `${(p.progress * 100).toFixed(2)}%`;
   }
 
   /** Le film vient de finir : on revient aux chapitres, le chapitre I est ouvert. */
@@ -398,5 +410,5 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, settings, soun
     if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 12 && y <= r.bottom + 12) hint.classList.remove('visible');
   }
 
-  return { update, touch, medal, filmEnded };
+  return { update, touch, medal, film, filmEnded };
 }

@@ -41,6 +41,50 @@ body {
   inset: 0;
 }
 
+/* Le bandeau du film : une phrase à la fois, et la barre d'avancement tout en bas.
+   (sa hauteur est réglée par le jeu : voir FILM_BAND dans film/filmDraw.js) */
+#film-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 22px calc(10px + env(safe-area-inset-bottom));
+  background: #080c1f;
+  border-top: 1px solid rgba(255, 226, 160, 0.28);
+}
+
+#film-text {
+  margin: 0;
+  max-width: 24em;
+  text-align: center;
+  font-size: clamp(15px, 4.5vw, 19px);
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  text-wrap: balance; /* pas de mot tout seul sur la dernière ligne */
+  opacity: 0;
+}
+
+#film-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(244, 241, 230, 0.12);
+}
+
+#film-progress {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--gold);
+  box-shadow: 0 0 10px rgba(255, 226, 160, 0.7);
+}
+
 #game {
   position: absolute;
   inset: 0;

@@ -13,7 +13,7 @@ import { rad, pointInPolygon, distToPolygon } from '../src/engine/vec.js';
 import { createLife, updateLife, tapLife, beamAt } from '../src/game/life.js';
 import { updateGoals, GOAL_TYPES } from '../src/game/goals.js';
 import { RECIPES } from './goal-recipes.mjs';
-import { createFilm, updateFilm, filmState, FILM_LENGTH, T as FILM } from '../src/film/film.js';
+import { createFilm, updateFilm, filmState, FILM_LENGTH, CAPTIONS, T as FILM } from '../src/film/film.js';
 
 let failed = 0;
 const check = (ok, label) => {
@@ -1126,7 +1126,8 @@ function checkFilm() {
     updateFilm(film, 1 / 30);
     heard.push(...film.events.splice(0));
     const p = filmState(film.t);
-    for (const [key, v] of Object.entries(p)) if (typeof v === 'number' && key !== 't' && key !== 'spin' && !(v >= 0 && v <= 1)) wrong++;
+    for (const [key, v] of Object.entries(p)) if (typeof v === 'number' && !['t', 'spin', 'cloudDrift'].includes(key) && // (ces trois-là sont des durées ou des angles)
+       !(v >= 0 && v <= 1)) wrong++;
     for (let k = 0; k < 4; k++) if (!(p.folk(k) >= 0 && p.folk(k) <= 1 && p.bridge(k) >= 0 && p.bridge(k) <= 1)) wrong++;
   }
   check(film.done && Math.abs(film.t - FILM_LENGTH) < 0.05, `le film se termine (${FILM_LENGTH} secondes)`);
@@ -1138,6 +1139,11 @@ function checkFilm() {
   check(end.warm === 0 && end.power === 0 && end.ground === 1 && end.ruin.rightTall === 1 && end.ice(4) === 1, 'à la fin : la cité éteinte, en ruine, sous la neige et la glace');
   check([0, 1, 2].every((i) => end.hut(i) === 1) && [0, 1, 2, 3].every((i) => end.folk(i) === 1), 'à la fin : le village est installé au pied des ruines');
   check(end.turn === 1 && end.beam === 1 && end.glint > 0.9, 'le vieux miroir est tourné, son reflet touche le cristal');
+  // Les bandeaux : des phrases courtes, une à la fois, qui restent assez longtemps pour être lues.
+  const short = CAPTIONS.every(([, , text]) => text.length <= 56);
+  const readable = CAPTIONS.every(([from, to, text]) => to - from >= Math.max(2.8, text.length / 17));
+  const apart = CAPTIONS.every(([from, to], i) => from >= 0 && to <= FILM_LENGTH && (i === 0 || from > CAPTIONS[i - 1][1]));
+  check(short && readable && apart, `ses ${CAPTIONS.length} phrases sont courtes, lisibles, et ne se chevauchent pas`);
   const order = ['film-open', 'film-fold', 'film-dark', 'film-crack', 'film-hut', 'film-turn', 'film-glint'].map((name) => heard.indexOf(name));
   check(order.every((at, i) => at >= 0 && (i === 0 || at > order[i - 1])), 'ses sons arrivent dans l’ordre du récit');
 }

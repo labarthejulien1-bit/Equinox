@@ -258,6 +258,10 @@ export function createAudio() {
       // L'âge d'or : l'arpège du sanctuaire rallumé, doux et lent.
       [440, 554.37, 659.25, 880, 1108.73].forEach((f, i) => bell(f, 0.045, i * 0.42, 3.2));
     },
+    'film-birds'() {
+      // Des oiseaux passent : trois petits cris qui montent.
+      [0, 0.16, 0.37].forEach((at, i) => tone({ f0: 2300 + i * 180, f1: 2900 + i * 160, dur: 0.09, gain: 0.018, at, attack: 0.01 }));
+    },
     'film-fold'() {
       // Un grand miroir se replie : le bronze qui tourne, puis qui se pose.
       tone({ f0: 240, f1: 150, dur: 0.7, gain: 0.05, type: 'triangle', attack: 0.05 });

@@ -100,7 +100,9 @@ function frame(now) {
     updateFilm(film, dt);
     for (const e of film.events) audio.event(e);
     film.events.length = 0;
-    audio.film(filmState(film.t));
+    const state = filmState(film.t);
+    audio.film(state);
+    ui.film(state); // la phrase du bandeau, la barre d'avancement
     filmRenderer.draw(film);
     if (film.done) {
       // Vu en entier : le chapitre I s'ouvre.

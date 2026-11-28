@@ -60,10 +60,10 @@ culte du soleil était un mode d'emploi déguisé, et chaque niveau franchi
 
 ### Le chapitre 0 : le film ✅
 
-Le jeu s'ouvre sur un film de 29 secondes, **sans un mot**, en un seul
-cadrage. Il est le chapitre 0 du voyage, « Il y a mille ans » : il faut
-l'avoir regardé en entier pour ouvrir le chapitre I. On ne peut pas le
-passer ; pour le revoir, on relance le chapitre 0.
+Le jeu s'ouvre sur un film de 30 secondes, en un seul cadrage. Il est le
+chapitre 0 du voyage, « Il y a mille ans » : il faut l'avoir regardé en
+entier pour ouvrir le chapitre I. On ne peut pas le passer ; pour le revoir,
+on relance le chapitre 0. Une barre d'avancement court en bas de l'écran.
 
 Le lieu est la **capitale des anciens**, une tour solaire : deux grands
 miroirs renvoient le soleil sur le cristal de l'aiguille, la lumière
@@ -72,13 +72,16 @@ tournent, et de là court dans toute la ville par les passerelles. Les
 anciens portent de longues robes blanches à capuchon, une ceinture d'or et
 un masque d'or.
 
-| Temps | Ce qu'on voit |
-| --- | --- |
-| 0 à 6 s | L'âge d'or : la cité en pleine lumière, les anciens sur leur terrasse. |
-| 6 à 11 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. |
-| 11 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. |
-| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint, qui répond d'une lueur. |
-| 26 à 29,5 s | L'image reste, puis s'efface : le chapitre I s'ouvre. |
+Le film a d'abord été pensé sans un mot ; on ne le comprenait pas. Sept
+phrases courtes l'accompagnent donc, une à la fois, dans un bandeau :
+
+| Temps | Ce qu'on voit | La phrase |
+| --- | --- | --- |
+| 0 à 8 s | L'âge d'or : la cité en pleine lumière, pleine de vie (oiseaux, promeneurs, cabines qui montent le long des tours, le cœur qui bat). | « Il y a mille ans, les anciens guidaient le soleil. » puis « Sa lumière faisait battre le cœur de leur cité. » |
+| 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Un soir, ils ont tout éteint. » |
+| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Mille hivers ont passé. » puis « Un petit peuple s'est installé dans les ruines. » |
+| 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Il lui reste un geste. Personne ne sait plus pourquoi. » |
+| 26 à 30 s | Le cristal répond d'une lueur. L'image reste, puis s'efface : le chapitre I s'ouvre. | « Ce matin, le cristal a répondu. » |
 
 Ce que le film montre et ce qu'il tait : on voit **ce que** les anciens ont
 fait (ils ont replié leurs miroirs avant la neige), jamais **pourquoi**. Le
@@ -1430,9 +1433,10 @@ dans la glace.
    niveaux. Choisie parmi trois maquettes (l'onde ; le réseau de sillons
    gravés qui relie les machines ; la première journée, où le soleil
    repart seul). Les deux autres restent possibles par-dessus.
-11. ✅ **v0.10** — le chapitre 0 : un film de 29 secondes qui ouvre le jeu
+11. ✅ **v0.10** — le chapitre 0 : un film de 30 secondes qui ouvre le jeu
    (§ 3), la capitale des anciens de l'âge d'or à aujourd'hui. Il faut
-   l'avoir vu pour ouvrir le chapitre I.
+   l'avoir vu pour ouvrir le chapitre I. v0.10.1 : sept phrases en bandeau,
+   une barre d'avancement, et plus de vie dans l'âge d'or.
 12. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,

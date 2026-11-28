@@ -4,12 +4,16 @@
 // aplats, une face au soleil et une face à l'ombre. Chaque chose se dessine
 // d'après l'état du film (filmState) : rien ici ne connaît l'heure.
 //
-// La scène fait 360 × 780 unités. Elle est calée en bas de l'écran ; sur un
-// écran plus large ou plus haut, le ciel, les lointains et le sol débordent.
+// La scène fait 360 × 780 unités. Elle est calée au-dessus du bandeau de
+// texte (FILM_BAND, le bas de l'écran) ; sur un écran plus large ou plus
+// haut, le ciel, les lointains et le sol débordent.
 
 import { TAU, clamp, lerp, smooth } from '../engine/vec.js';
 import { mix } from '../game/palette.js';
 import { filmState } from './film.js';
+
+/** La part de l'écran, en bas, réservée au bandeau de texte et à la barre d'avancement. */
+export const FILM_BAND = 0.13;
 
 const W = 360;
 const H = 780;
@@ -178,6 +182,11 @@ export function createFilmRenderer(canvas) {
     c.beginPath(); c.ellipse(X(1.5), Y(88), 5.6 * u, 7 * u, 0, 0, TAU); c.fillStyle = MASK; c.fill();
     path(`M${X(4)} ${Y(100)} Q${X(12)} ${Y(98)} ${X(10)} ${Y(78)} L${X(6)} ${Y(80)}z`, ROBE_S);
   }
+  /** Un oiseau blanc, qui bat des ailes. */
+  function bird(x, y, k, flap) { const w = 5 * k, lift = Math.sin(flap) * 2.6 * k; path(`M${x - w} ${y - lift} Q${x - w * 0.5} ${y - 1.6 * k - lift * 0.4} ${x} ${y} Q${x + w * 0.5} ${y - 1.6 * k - lift * 0.4} ${x + w} ${y - lift}`, null, '#ffffff', 1.3 * k); }
+  /** Un point à la fraction u d'un trajet en plusieurs segments. */
+  function along(pts, u) { let len = 0; for (let k = 1; k < pts.length; k++) len += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); let d = len * clamp(u, 0, 1);
+    for (let k = 1; k < pts.length; k++) { const l = Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); if (d <= l) return [lerp(pts[k - 1][0], pts[k][0], d / l), lerp(pts[k - 1][1], pts[k][1], d / l)]; d -= l; } return pts[pts.length - 1]; }
   /** Un ancien, vu de loin. */
   function small(x, y, h = 13) { poly([[x - h * 0.2, y - h * 0.72], [x - h * 0.3, y], [x + h * 0.3, y], [x + h * 0.2, y - h * 0.72]], ROBE); poly([[x + h * 0.05, y - h * 0.72], [x + h * 0.08, y], [x + h * 0.3, y], [x + h * 0.2, y - h * 0.72]], ROBE_S); circle(x, y - h * 0.84, h * 0.16, MASK); line([[x - h * 0.2, y - h * 0.4], [x + h * 0.2, y - h * 0.4]], C.gold, 1); }
   /** Un villageois d'aujourd'hui : cape sombre, visage pâle, comme dans le jeu. */
@@ -197,9 +206,9 @@ export function createFilmRenderer(canvas) {
   function draw(film) {
     const p = filmState(film.t);
     const t = p.t;
-    // La scène est calée en bas de l'écran et centrée.
+    // La scène est centrée, et calée juste au-dessus du bandeau de texte.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const cw = canvas.width / dpr, ch = canvas.height / dpr;
+    const cw = canvas.width / dpr, ch = (canvas.height / dpr) * (1 - FILM_BAND);
     const s = Math.min(cw / W, ch / H);
     c.setTransform(dpr * s, 0, 0, dpr * s, (dpr * (cw - W * s)) / 2, dpr * (ch - H * s));
     c.globalAlpha = 1;
@@ -218,6 +227,9 @@ export function createFilmRenderer(canvas) {
     // le soleil d'aujourd'hui, qui se lève derrière les crêtes
     const dawnSun = [220, lerp(548, 446, p.sunrise)];
     alpha(p.dawn, () => { glow(dawnSun[0], dawnSun[1], 82, 0.95); circle(dawnSun[0], dawnSun[1], 15, '#ffe6c4'); });
+    // des oiseaux blancs traversent le ciel de l'âge d'or
+    alpha(p.sun, () => { for (let i = 0; i < 7; i++) { const row = Math.ceil(i / 2), side = i % 2 ? 1 : -1; bird(-30 + t * 52 - row * 13, 236 + side * row * 8 + Math.sin(t * 0.8) * 6, 1, t * 9 + i); }
+      for (let i = 0; i < 4; i++) bird(430 - (t - 2.4) * 64 + i * 15, 118 + (i % 2) * 9 + Math.sin(t * 0.7 + 2) * 5, 0.8, t * 10 + i * 2); });
     // deux petits nuages blancs, au temps de l'âge d'or
     alpha(p.warm * 0.85, () => { cloud(300 + t * 1.2, 250, 60, 14, '#ffffff', '#e4eef6'); cloud(34 + t * 0.8, 318, 50, 12, '#ffffff', '#e4eef6'); });
     // les longs nuages de l'aube
@@ -247,6 +259,9 @@ export function createFilmRenderer(canvas) {
       // la coiffe de bronze du biseau (elle part avec le sommet)
       const f0 = name === 'leftTall' ? 0.36 * k : 0;
       alpha(name === 'leftTall' ? 1 : 1 - k * 3, () => { const a = [d.x + d.w * f0, profileAt(d.whole, f0)], b = [d.x + d.w, profileAt(d.whole, 1)]; poly([[a[0] - 1, a[1] + 4], [a[0] - 1, a[1] - 1], [b[0] + 1, b[1] - 1], [b[0] + 1, b[1] + 4]], C.bronze); }); }
+    // des cabines de bronze montent et descendent le long des lames, tant que le cœur bat
+    alpha(1 - p.ground, () => { Object.values(TOWERS).forEach((d, i) => { const x = d.x + d.w * 0.2, top = Math.max(...d.whole.map((q) => q[1])) + 34, y = lerp(top, 612, 0.5 + 0.5 * Math.sin(p.spin * 0.75 + i * 1.9));
+      poly([[x - 3.2, y - 5], [x + 3.2, y - 5], [x + 3.2, y + 5], [x - 3.2, y + 5]], C.bronze); poly([[x - 1.8, y - 3], [x + 1.8, y - 3], [x + 1.8, y + 1], [x - 1.8, y + 1]], mix(C.win, '#fffdf0', p.power)); glow(x, y - 1, 7, 0.8 * p.power); }); });
     alpha(p.cracks, () => { line([[30, 360], [38, 384], [34, 410], [42, 436]], C.deep, 1.1); line([[58, 300], [52, 330], [56, 352]], C.deep, 1.1); line([[304, 380], [312, 408], [306, 436]], C.deep, 1.1); line([[330, 340], [326, 366], [331, 390]], C.deep, 1.1); });
     // le socle et le grand miroir de gauche (il se replie, et il tiendra mille ans)
     const pedestal = (x0, x1, y0, y1, flat) => { poly([[x0, y0], [x0, flat], [x1, flat], [x1, y1]], C.stone); const mx = x0 + (x1 - x0) * 0.58; poly([[mx, y0 + (y1 - y0) * 0.58], [mx, flat], [x1, flat], [x1, y1]], C.shade); poly([[x0 - 1.5, flat], [x1 + 1.5, flat], [x1 + 1.5, flat + 2.6], [x0 - 1.5, flat + 2.6]], C.bronze); };
@@ -277,9 +292,11 @@ export function createFilmRenderer(canvas) {
     alpha(1, () => { const aL = p.sun * (1 - p.foldLeft), aR = p.sun * (1 - p.foldRight) * rightUp;
       if (aL > 0.01) { fromSun(SUN, sunR, mL, aL); toTarget(mL, TOP, 5, 0.62 * aL, 0.42 * aL); }
       if (mR && aR > 0.01) { fromSun(SUN, sunR, mR, aR); toTarget(mR, TOP, 5, 0.62 * aR, 0.42 * aR); } });
+    // des poussières d'or voyagent dans les faisceaux, des miroirs vers le cristal
+    for (const [m, a] of [[mL, p.sun * (1 - p.foldLeft)], [mR, p.sun * (1 - p.foldRight) * rightUp]]) if (m && a > 0.02) alpha(a, () => { const d = norm(sub(TOP, m.c)), q = [-d[1], d[0]]; for (let i = 0; i < 7; i++) { const u = (t * 0.32 + i / 7) % 1, o = add([lerp(m.c[0], TOP[0], u), lerp(m.c[1], TOP[1], u)], q, Math.sin(t * 1.7 + i * 2.1) * 6 * (1 - u)); circle(o[0], o[1], 0.9 + (i % 3) * 0.3, 'rgba(255,250,225,.9)'); } });
     alpha(p.sun, () => { glow(SUN[0], SUN[1], 92); circle(SUN[0], SUN[1], sunR + 5, 'rgba(255,246,214,.55)'); circle(SUN[0], SUN[1], sunR, '#fff6d6'); });
     // le ciel se ferme : de grands nuages arrivent des deux côtés et couvrent le soleil ; ils resteront mille ans
-    alpha(p.clouds * (1 - p.dawn), () => { const k = smooth(p.clouds), drift = Math.max(0, t - 9.4) * 2.2, body = mix('#6f7a9c', '#f2f5f9', p.warm), rim = mix('#4f5a80', '#cfd9e6', p.warm);
+    alpha(p.clouds * (1 - p.dawn), () => { const k = smooth(p.clouds), drift = p.cloudDrift * 2.2, body = mix('#6f7a9c', '#f2f5f9', p.warm), rim = mix('#4f5a80', '#cfd9e6', p.warm);
       cloud(lerp(-150, 62, k) + drift, 52, 190, 50, body, rim); cloud(lerp(520, 262, k) - drift, 72, 200, 46, body, rim); cloud(lerp(-170, 160, k) + drift * 0.6, 20, 150, 36, body, rim); });
     // l'anneau du cristal : entier, puis ébréché
     glow(TOP[0], TOP[1], 50, p.sun);
@@ -295,17 +312,18 @@ export function createFilmRenderer(canvas) {
     // ── l'esplanade, son champ de miroirs : chacun vise le cristal, puis se couche ──
     poly([[LEFT, 650], [RIGHT, 650], [RIGHT, 800], [LEFT, 800]], C.stone); for (const y of [664, 676]) line([[LEFT, y], [RIGHT, y]], C.shade, 1);
     alpha(1 - p.ground, () => { [[670, 7, 20, 5.5, 0.62], [687, 6, 27, 6.5, 0.74]].forEach(([y, n, gap, len, k], r) => { for (let i = 0; i < n; i++) for (const side of [-1, 1]) { const x = 180 + side * (58 + i * gap); if (x < 8 || x > 352) continue;
-      const f = p.foldField(i + r * 3), m = helio(x, y - 9 * k, y, turnTo(aim(SUN, [x, y - 9 * k], TOP), [1, 0.04 * side], f), len, k, p.sun * (1 - f));
+      const f = p.foldField(i + r * 3), m = helio(x, y - 9 * k, y, turnTo(aim(SUN, [x, y - 9 * k], TOP), [1, 0.04 * side], f), len, k, p.sun * (1 - f) * (0.55 + 0.45 * Math.sin(t * 2.6 - x * 0.045)));
       if (i % 2 === r && p.sun * (1 - f) > 0.02) toTarget(m, TOP, 0.8, 0.3 * p.sun * (1 - f), 0.05 * p.sun * (1 - f)); plate(m); } }); });
 
     // ── le cœur : la sphère dans sa cage, les passerelles, les sillons de lumière ──
-    glow(180, 346, 78, p.power);
+    const beat = Math.pow(Math.max(0, Math.sin(p.spin * 3.4)), 6); // le cœur bat
+    glow(180, 346, 78 + 16 * beat, p.power);
     line([[170, 300], [154, 346], [170, 392]], C.bronze, 4);
     if (p.cage < 0.5) line([[190, 300], [206, 346], [190, 392]], C.bronze, 4); else line([[190, 300], [199, 326]], C.bronze, 4); // un montant cède
     RUNS.slice(0, 4).forEach((r, i) => { const b = p.bridge(i), full = r.slice(0, 3), stub = i === 0 ? [[150, 346], [124, 346]] : i === 3 ? [[210, 356], [224, 370]] : null;
       const way = b < 0.5 ? full : stub; if (!way) return; line(way, C.shade, 10); line(way, C.stone, 7); });
     alpha(p.ground * (p.bridge(0) > 0.5 ? 1 : 0.6), () => { cap(122, 342, 150, 342, 4); icicles(124, 150, 351, 4, 1.4); });
-    circle(180, 346, 30, mix('#3d4b86', '#fff3c4', p.power)); circle(180, 346, 20, mix('#4a5a98', '#fffdf0', p.power));
+    circle(180, 346, 30, mix('#3d4b86', '#fff3c4', p.power)); circle(180, 346, 20 + 3 * beat * p.power, mix('#4a5a98', '#fffdf0', p.power));
     ring(180, 346, 30, C.gold, 2); oval(180, 346, 30, 9, 0, C.bronze, 1.6); oval(180, 346, 9, 30, 0, C.bronze, 1.6);
     alpha(p.cracks, () => line([[166, 330], [176, 346], [170, 362]], '#1c2450', 1.1));
     alpha(p.ice(2), () => { poly([[148, 352], [154, 372], [164, 384], [180, 390], [198, 384], [208, 370], [213, 352], [200, 364], [180, 370], [160, 364]], ICE); line([[148, 352], [160, 364], [180, 370], [200, 364], [213, 352]], 'rgba(235,246,255,.7)', 1); icicles(156, 206, 384, 7, 2.4 * p.ice(2)); });
@@ -320,17 +338,22 @@ export function createFilmRenderer(canvas) {
       for (const d of Object.values(TOWERS)) for (let y = Math.max(...d.whole.map((q) => q[1])) + 60; y < 630; y += 30) glow(d.x + d.w * 0.4, y + 4, 9, 0.9); });
     // les lampes de l'esplanade, les anciens qui s'y promènent
     alpha(1 - p.ground, () => { for (const x of [20, 60, 108, 252, 300, 340]) { line([[x, 650], [x, 634]], C.bronzeD, 1.6); glow(x, 632, 10, p.power); circle(x, 632, 2.6, mix(C.glass, '#fffdf0', p.power)); } });
-    // (quand la cité s'éteint, ils s'en vont : ceux de gauche par la gauche, ceux de droite par la droite)
+    // l'esplanade est pleine de monde : chacun va son chemin, d'autres passent sur les passerelles
     const leave = smooth(1 - p.elders), going = p.elders < 1 && p.elders > 0;
-    alpha(clamp(p.elders * 4, 0, 1), () => { [[136, -1], [226, 1], [40, -1], [324, 1]].forEach(([x, d], i) => small(x + Math.sin(t * 0.5 + i * 1.7) * 7 * (1 - leave) + leave * 190 * d, 650 - (going ? Math.abs(Math.sin(t * 8 + i)) * 0.8 : 0))); });
+    alpha(clamp(p.elders * 4, 0, 1), () => {
+      for (let i = 0; i < 11; i++) { const speed = (7 + rnd(i) * 9) * (i % 2 ? 1 : -1) * (1 + leave * 6), x = ((((rnd(i + 40) * 400 + speed * t) % 440) + 440) % 440) - 40; small(x, 650 - Math.abs(Math.sin(t * 7 + i * 1.3)) * 0.9, 11 + rnd(i + 9) * 3); }
+      [[RUNS[2].slice(0, 3), 0.42, 0], [RUNS[3].slice(0, 3), 0.36, 2.1], [RUNS[0].slice(0, 3), 0.5, 4]].forEach(([way, speed, phase]) => { const q = along(way, 0.12 + 0.76 * (0.5 + 0.5 * Math.sin(t * speed + phase))); small(q[0], q[1] - 4, 9); });
+    });
     // la glace au pied de l'aiguille
     ice(180, 30, 546, 668, 5, p.ice(4));
 
     // ── la terrasse des anciens ──
     poly([[LEFT, 706], [RIGHT, 706], [RIGHT, 800], [LEFT, 800]], C.shade); poly([[LEFT, 706], [RIGHT, 706], [RIGHT, 712], [LEFT, 712]], C.stone); poly([[LEFT, 756], [RIGHT, 756], [RIGHT, 800], [LEFT, 800]], C.deep);
     alpha(1 - p.ground, () => { for (let x = -70; x < RIGHT; x += 20) line([[x, 712], [x, 724]], C.stone, 2.4); line([[LEFT, 724], [RIGHT, 724]], C.stone, 3); });
-    alpha(p.warm, () => { tree(22, 690, 12, C.tree); tree(338, 688, 13, C.tree2); });
-    if (p.elders > 0) { const out = leave * 240, bob = (i) => (going ? Math.abs(Math.sin(t * 6 + i * 1.3)) * 1.6 : 0); // ils marchent jusqu'à sortir de l'image
+    alpha(p.warm, () => { tree(22 + Math.sin(t * 1.1) * 0.8, 690, 12, C.tree); tree(338 + Math.sin(t * 0.9 + 1) * 0.9, 688, 13, C.tree2); });
+    // au second plan, un ancien et un enfant traversent la terrasse
+    if (p.elders > 0) { const x = -40 + t * 21 + leave * 260, step = Math.abs(Math.sin(t * 5.2)) * 1.2; elder(x, 752 - step, 46, { dir: 1, arm: true }); elder(x - 26, 752 - Math.abs(Math.sin(t * 6.4 + 1)) * 1.4, 30, { dir: 1 }); }
+    if (p.elders > 0) { const out = leave * 240, bob = (i) => (going ? Math.abs(Math.sin(t * 6 + i * 1.3)) * 1.6 : Math.sin(t * 1.5 + i * 1.7) * 0.5); // ils respirent, puis ils marchent jusqu'à sortir de l'image
       elder(54 - out, 779 - bob(0), 72, { dir: going ? -1 : 1, halo: true }); elder(102 - out * 1.15, 779 - bob(1), 60, { dir: -1 }); elder(304 + out, 779 - bob(2), 74, { dir: going ? 1 : -1, staff: true }); elder(246 + out * 1.15, 779 - bob(3), 58, { dir: 1, arm: true }); }
 
     // ── mille ans : la neige monte, et ce qui tombe y reste ──

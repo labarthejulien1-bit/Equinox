@@ -96,7 +96,7 @@ src/
     input.js            gestes tactiles (soleil, nuage, miroirs, bulles, simple toucher)
     audio.js            le son, fabriqué par le navigateur (aucun fichier)
     vec.js              petites fonctions mathématiques
-  film/                 le chapitre 0 : un film de 29 secondes, dessiné par le jeu
+  film/                 le chapitre 0 : un film de 30 secondes, dessiné par le jeu
     film.js             son déroulé : où en est chaque chose à chaque instant
     filmDraw.js         son dessin : la capitale des anciens, de l'âge d'or aux ruines
   game/
