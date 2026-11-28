@@ -45,9 +45,9 @@ export const T = {
 export const CAPTIONS = [
   [0.9, 4.2, 'Ils avaient apprivoisé le soleil et les sciences.', [50, 86]],
   [4.5, 7.5, 'Leur cité devait être éternelle.', [64, 7]],
-  [7.7, 10.6, 'Puis le soleil a pâli.', [50, 61]],
+  [7.7, 10.6, 'Puis l’été n’est jamais revenu.', [50, 61]],
   [10.9, 14.2, 'En une nuit, la cité éternelle s’est éteinte.', [50, 86]],
-  [14.5, 17.6, 'Un été, la neige n’a plus fondu. Mille ans de glace.', [50, 8]],
+  [14.5, 17.6, 'Le grand hiver a tout englouti. Mille ans de glace.', [50, 8]],
   [17.8, 21, 'Un petit peuple vit dans ses ruines. Il ne sait rien.', [50, 8]],
   [21.5, 25.3, 'Il lui reste un geste, dont nul ne sait le sens.', [50, 8]],
   [26.5, 29.4, 'Ce matin, quelque chose a répondu.', [34, 62]],

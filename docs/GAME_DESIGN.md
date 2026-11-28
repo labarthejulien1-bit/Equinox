@@ -80,8 +80,8 @@ d'une légende : une catastrophe dont plus personne ne connaît la cause.
 | Temps | Ce qu'on voit | La phrase |
 | --- | --- | --- |
 | 0 à 8 s | L'âge d'or : la cité en pleine lumière, pleine de vie (oiseaux, promeneurs, cabines qui montent le long des tours, le cœur qui bat). | « Ils avaient apprivoisé le soleil et les sciences. » puis « Leur cité devait être éternelle. » |
-| 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Puis le soleil a pâli. » puis « En une nuit, la cité éternelle s'est éteinte. » |
-| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Un été, la neige n'a plus fondu. Mille ans de glace. » puis « Un petit peuple vit dans ses ruines. Il ne sait rien. » |
+| 8 à 12 s | Le ciel se ferme. Les miroirs se replient un à un, le cœur s'éteint, les anciens s'en vont. | « Puis l'été n'est jamais revenu. » puis « En une nuit, la cité éternelle s'est éteinte. » |
+| 12 à 21 s | Mille ans : les jours et les nuits défilent, la neige monte, la glace prend chaque tour, les tours se brisent. Puis le petit peuple arrive et bâtit ses huttes au pied des ruines. | « Le grand hiver a tout englouti. Mille ans de glace. » puis « Un petit peuple vit dans ses ruines. Il ne sait rien. » |
 | 21 à 26 s | L'aube d'aujourd'hui. Un villageois tourne un vieux miroir : son reflet monte jusqu'au cristal éteint. | « Il lui reste un geste, dont nul ne sait le sens. » |
 | 26 à 30 s | Le cristal répond d'une lueur. L'image reste, puis s'efface : le chapitre I s'ouvre. | « Ce matin, quelque chose a répondu. » |
 
@@ -90,11 +90,11 @@ ni pourquoi leur cité s'est éteinte. L'image, elle, montre les anciens
 replier calmement leurs miroirs. **À venir** (décidé, pas encore écrit) : un
 court texte entre chaque chapitre, qui lèvera le voile peu à peu.
 
-Pourquoi « le soleil a pâli » et « la neige n'a plus fondu » : une ère
-glaciaire ne tombe pas du ciel. Elle commence quand les étés deviennent trop
-faibles pour faire fondre la neige de l'hiver, qui s'accumule d'année en
-année. (« Le ciel s'est refermé », essayé d'abord, évoquait plutôt un hiver
-volcanique.)
+Pourquoi « l'été n'est jamais revenu » : une ère glaciaire ne tombe pas du
+ciel, et le soleil lui-même ne change pas. Elle commence quand les étés
+deviennent trop faibles pour faire fondre la neige de l'hiver, qui
+s'accumule d'année en année. (Écartées pour cette raison : « le ciel s'est
+refermé », qui évoque un hiver volcanique, et « le soleil a pâli ».)
 
 Ce que le film montre et ce qu'il tait : on voit **ce que** les anciens ont
 fait (ils ont replié leurs miroirs avant la neige), jamais **pourquoi**. Le
@@ -1450,9 +1450,10 @@ dans la glace.
    (§ 3), la capitale des anciens de l'âge d'or à aujourd'hui. Il faut
    l'avoir vu pour ouvrir le chapitre I. v0.10.1 : des phrases, une barre
    d'avancement, et plus de vie dans l'âge d'or. v0.10.2 : l'image reprend
-   tout l'écran, les phrases passent dans de petits encarts. v0.10.3 : le
-   texte retenu (le soleil et les sciences apprivoisés, la cité éternelle
-   qui s'éteint, le suspense gardé pour la suite).
+   tout l'écran, les phrases passent dans de petits encarts. v0.10.3 et v0.10.4 :
+   le texte retenu (le soleil et les sciences apprivoisés, l'été qui ne
+   revient pas, la cité éternelle qui s'éteint, le suspense gardé pour la
+   suite).
 12. **À venir, dans un ordre à décider** :
    - les palettes des milieux dans le jeu (Altitude, Minéral, Aurore…) ;
    - mettre le nouveau design dans le jeu (personnages, temples, habitations,
