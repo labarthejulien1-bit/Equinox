@@ -11,8 +11,9 @@ const $ = (id) => document.getElementById(id);
 
 const MEDAL_NAMES = { cuivre: 'Médaille de cuivre', argent: 'Médaille d’argent', or: 'Médaille d’or' };
 
-// Deux petits dessins pour les vignettes des niveaux
+// Trois petits dessins pour les vignettes et les bannières
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 L10 17.5 L19 7"/></svg>';
+const ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5 L19 12 L8 19z" fill="currentColor"/></svg>';
 const ICON_LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
 /** Fabrique un élément : el('span', 'num', '4'). */
@@ -155,64 +156,154 @@ export function createUI({ chapters, perChapter, isDone, goalsOf, storySeen, thu
   $('home-voyage').addEventListener('click', () => openVoyage());
   $('home-settings').addEventListener('click', () => openSettings(showHome));
 
-  // ── Le voyage : les chapitres en haut, puis l'histoire et les niveaux du chapitre choisi ──
+  // ── Le voyage : les chapitres en haut, puis une page par chapitre (son
+  // histoire, ses dix niveaux). On passe d'une page à l'autre en glissant le
+  // doigt, ou en touchant le rond d'un chapitre. ──
+
+  const pages = $('voyage-pages');
+  const isBuilt = (chapter) => chapter.levels.length > 0; // (les autres chapitres restent à construire)
+
+  /** La bannière de l'histoire d'un chapitre. */
+  function storyBanner(chapter) {
+    const b = el('button', 'story');
+    const text = el('span', 'story-text');
+    const disc = el('span', 'disc');
+    disc.innerHTML = ICON_PLAY;
+    b.append(text, disc);
+    text.append(el('small', '', 'L’histoire'));
+    if (!chapter.story) {
+      // Pas encore écrite : la bannière garde sa place, grisée
+      b.classList.add('soon');
+      b.disabled = true;
+      text.append(el('b', '', 'Bientôt'), el('span', '', 'Cette histoire reste à écrire'));
+      return b;
+    }
+    const todo = locked(chapter);
+    b.classList.toggle('todo', todo);
+    text.append(el('b', '', chapter.story.title), el('span', '', todo ? 'À regarder pour ouvrir le chapitre' : 'Vue · toucher pour la revoir'));
+    b.addEventListener('click', () => watch(chapter));
+    thumbs.story(b, chapter.story);
+    return b;
+  }
+
+  /** La vignette d'un niveau. fresh : il vient de s'ouvrir, il se fait remarquer. */
+  function levelTile(chapter, level, fresh) {
+    const isLocked = locked(chapter);
+    const finished = isDone(level.id);
+    const next = !isLocked && level === nextLevel(chapter);
+    const b = el('button', `tile${finished ? ' done' : ''}${next ? ' next' : ''}${next && fresh ? ' fresh' : ''}`);
+    b.disabled = isLocked;
+    const foot = el('span', 'foot');
+    foot.append(el('span', 'name', level.title), pips(isLocked ? goalsOf(level).map((g) => ({ ...g, done: false })) : goalsOf(level)));
+    b.append(el('span', 'num', level.number), foot);
+    if (finished || isLocked) {
+      const badge = el('span', 'badge');
+      badge.innerHTML = isLocked ? ICON_LOCK : ICON_CHECK;
+      b.append(badge);
+    }
+    b.addEventListener('click', () => start(level));
+    thumbs.level(b, level);
+    return b;
+  }
+
+  /** Une vignette grisée, pour un niveau qui reste à construire. */
+  function soonTile(number) {
+    const b = el('button', 'tile soon');
+    b.disabled = true;
+    const foot = el('span', 'foot');
+    foot.append(el('span', 'name', 'Bientôt'), pips(['cuivre', 'argent', 'or'].map((medal) => ({ medal, done: false }))));
+    b.append(el('span', 'num', String(number)), foot);
+    return b;
+  }
+
+  /** Le titre et la ligne du chapitre montré, et son rond allumé. */
+  function showChapter(chapter) {
+    tab = chapter;
+    [...$('chapter-tabs').children].forEach((b, i) => b.classList.toggle('on', chapters[i] === chapter));
+    $('voyage-title').textContent = chapter.title;
+    const done = chapter.levels.filter((l) => isDone(l.id)).length;
+    $('voyage-sub').textContent = !isBuilt(chapter)
+      ? `${chapter.place} · bientôt`
+      : locked(chapter)
+        ? `${chapter.place} · ${plural(chapter.levels.length, 'niveau')}`
+        : `${chapter.place} · ${done}/${perChapter} · ${plural(medalsWon(chapter), 'médaille')} sur ${chapter.levels.flatMap(goalsOf).length}`;
+  }
+
+  /** Amène la page d'un chapitre à l'écran (smooth : en glissant, sinon d'un coup). */
+  function goToChapter(chapter, smooth) {
+    pages.scrollTo({ left: chapters.indexOf(chapter) * pages.clientWidth, behavior: smooth ? 'smooth' : 'instant' });
+    if (!smooth) showChapter(chapter);
+  }
+
+  // Le doigt fait glisser les pages : le titre et les ronds suivent celle qui est à l'écran.
+  pages.addEventListener('scroll', () => {
+    const chapter = chapters[Math.round(pages.scrollLeft / Math.max(1, pages.clientWidth))];
+    if (chapter && chapter !== tab) showChapter(chapter);
+  });
+
+  // Le navigateur ne change de page que si le doigt a traversé la moitié de
+  // l'écran. C'est trop demander : un geste court et franc doit suffire. On
+  // regarde donc où le doigt se pose et où il se relève.
+  const SWIPE = 36; // pixels : en dessous, ce n'est pas un glissement
+  let swipeFrom = null;
+  pages.addEventListener(
+    'touchstart',
+    (e) => {
+      const t = e.touches[0];
+      swipeFrom = e.touches.length === 1 ? { x: t.clientX, y: t.clientY, page: Math.round(pages.scrollLeft / Math.max(1, pages.clientWidth)) } : null;
+    },
+    { passive: true },
+  );
+  pages.addEventListener(
+    'touchend',
+    (e) => {
+      if (!swipeFrom) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - swipeFrom.x;
+      const dy = t.clientY - swipeFrom.y;
+      const from = swipeFrom.page;
+      swipeFrom = null;
+      // (un geste surtout vertical fait défiler la page : on ne s'en mêle pas)
+      if (Math.abs(dx) < SWIPE || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      const target = chapters[from + (dx < 0 ? 1 : -1)];
+      if (target) goToChapter(target, true);
+    },
+    { passive: true },
+  );
 
   /** fresh : l'histoire vient d'être vue, le premier niveau à jouer se fait remarquer. */
   function openVoyage(chapter = null, fresh = false) {
-    tab = chapter || (currentGame && playing ? chapterOf(currentGame.level) : currentChapter());
-    const isLocked = locked(tab);
-    const next = nextLevel(tab);
-    const done = tab.levels.filter((l) => isDone(l.id)).length;
-    const goals = tab.levels.flatMap(goalsOf);
+    const first = chapter || (currentGame && playing ? chapterOf(currentGame.level) : currentChapter());
 
-    // Les ronds des chapitres
+    // Les ronds des chapitres (en pointillés : ceux qui restent à construire)
     const tabs = $('chapter-tabs');
     tabs.textContent = '';
     for (const c of chapters) {
-      const b = el('button', c === tab ? 'on' : '', c.number);
-      b.disabled = !c.levels.length;
+      const b = el('button', isBuilt(c) ? '' : 'soon', c.number);
       b.setAttribute('aria-label', `Chapitre ${c.number} : ${c.title}`);
-      b.addEventListener('click', () => openVoyage(c));
+      b.addEventListener('click', () => goToChapter(c, true));
       tabs.append(b);
     }
-    $('voyage-title').textContent = tab.title;
-    $('voyage-sub').textContent = isLocked ? `${tab.place} · ${plural(tab.levels.length, 'niveau')}` : `${tab.place} · ${done}/${perChapter} · ${plural(medalsWon(tab), 'médaille')} sur ${goals.length}`;
 
-    // La bannière de l'histoire
-    const story = $('story');
-    story.hidden = !tab.story;
-    if (tab.story) {
-      story.classList.toggle('todo', isLocked);
-      $('story-title').textContent = tab.story.title;
-      $('story-note').textContent = isLocked ? 'À regarder pour ouvrir le chapitre' : 'Vue · toucher pour la revoir';
-      thumbs.story(story, tab.story);
+    // Une page par chapitre
+    pages.textContent = '';
+    for (const c of chapters) {
+      const body = el('div', 'page-body');
+      const grid = el('div', 'grid');
+      if (isBuilt(c)) for (const level of c.levels) grid.append(levelTile(c, level, fresh && c === first));
+      else for (let n = 1; n <= perChapter; n++) grid.append(soonTile(n));
+      body.append(storyBanner(c), grid);
+      const page = el('section', 'page');
+      page.append(body);
+      pages.append(page);
     }
 
-    // Les niveaux, en vignettes
-    const grid = $('level-grid');
-    grid.textContent = '';
-    for (const level of tab.levels) {
-      const finished = isDone(level.id);
-      const b = el('button', `tile${finished ? ' done' : ''}${!isLocked && level === next ? ' next' : ''}${fresh && level === next ? ' fresh' : ''}`);
-      b.disabled = isLocked;
-      const foot = el('span', 'foot');
-      foot.append(el('span', 'name', level.title), pips(isLocked ? goalsOf(level).map((g) => ({ ...g, done: false })) : goalsOf(level)));
-      b.append(el('span', 'num', level.number), foot);
-      if (finished || isLocked) {
-        const badge = el('span', 'badge');
-        badge.innerHTML = isLocked ? ICON_LOCK : ICON_CHECK;
-        b.append(badge);
-      }
-      b.addEventListener('click', () => start(level));
-      thumbs.level(b, level);
-      grid.append(b);
-    }
     hide(title);
     hideMenus();
     show(voyage);
+    goToChapter(first, false);
   }
 
-  $('story').addEventListener('click', () => watch(tab));
   // « Retour » : au jeu si une partie est en cours, sinon à l'accueil
   $('close-voyage').addEventListener('click', () => (playing ? hide(voyage) : showHome()));
 

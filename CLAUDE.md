@@ -137,9 +137,12 @@ Tout est dans `src/ui/ui.js`, `index.html` et `style.css`.
   prochaine chose à faire (« Regarder l'histoire », « Commencer »,
   « Continuer »). Derrière lui, le niveau où l'on en est ; pour un nouveau
   joueur, l'affiche du film, vivante (`posterOn` dans `main.js`).
-- **Le voyage** (`#voyage`) : les six chapitres en ronds, puis la bannière
-  de l'histoire, large comme deux niveaux, puis les dix niveaux en
-  vignettes. Tant que l'histoire n'est pas vue, les niveaux sont fermés.
+- **Le voyage** (`#voyage`) : les six chapitres en ronds, puis une page par
+  chapitre : la bannière de son histoire, large comme deux niveaux, et ses
+  dix niveaux en vignettes. Tant que l'histoire n'est pas vue, les niveaux
+  sont fermés. On passe d'un chapitre à l'autre en glissant le doigt (ou en
+  touchant son rond) ; un chapitre qui reste à construire montre sa bannière
+  et ses dix vignettes grisées.
 - **Les volets** (`.sheet`) montent du bas de l'écran : la pause
   (objectifs, puis cinq actions) et la fin d'un niveau (le souvenir, puis
   le niveau suivant déjà prêt). En jeu, il n'y a qu'un bouton : pause.
@@ -234,7 +237,15 @@ niveau avec `window.__equinox.play(i)` (i compté à partir de 0), puis piloter
 l'état via `window.__equinox.game` (par ex. `sunAngle`, `cloudX`,
 `mirrors[0].angle`) et faire des captures d'écran.
 
-## Branches
+## Branches et publication
 
 Le travail se fait sur la branche de la session. `main` est la branche
 publiée : chaque mise à jour de `main` redéploie la démo sur GitHub Pages.
+
+Règle du propriétaire : il essaie tout **sur l'APK**, sur son téléphone. Il
+ne se sert plus de la version web ni de l'artefact de démonstration.
+
+- Ne recompiler l'APK **que lorsqu'il le demande**, et le lui envoyer.
+- Ne plus mettre à jour l'artefact ; ne pousser `main` que s'il le demande.
+- Entre-temps : enregistrer sur la branche de la session, et dire clairement
+  que l'APK n'a pas été refait.

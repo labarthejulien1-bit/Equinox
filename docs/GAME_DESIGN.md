@@ -233,9 +233,11 @@ feuillette).
   niveau où l'on en est ; pour un nouveau joueur, la cité des anciens,
   vivante. Deux boutons discrets : « Le voyage », « Réglages ».
 - **Le voyage.** Un seul écran : les six chapitres en ronds (I à VI), puis
-  l'**histoire** du chapitre dans une bannière illustrée, large comme deux
-  niveaux, puis ses dix niveaux en vignettes sur deux colonnes (numéro,
-  titre, médailles, coche). Tant que l'histoire n'est pas vue, la bannière
+  une page par chapitre, qu'on change en glissant le doigt : l'**histoire**
+  du chapitre dans une bannière illustrée, large comme deux niveaux, puis
+  ses dix niveaux en vignettes sur deux colonnes (numéro, titre, médailles,
+  coche). Les chapitres qui restent à construire montrent déjà leur page,
+  grisée. Tant que l'histoire n'est pas vue, la bannière
   brille et les niveaux portent un cadenas. Le prochain niveau à jouer est
   cerclé d'or.
 - **En jeu.** Un seul bouton, en haut à droite : pause. « Recommencer »

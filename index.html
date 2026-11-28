@@ -58,24 +58,15 @@
         </div>
       </div>
 
-      <!-- Le voyage : les chapitres en haut, puis l'histoire du chapitre et ses dix niveaux -->
+      <!-- Le voyage : les chapitres en haut, puis l'histoire et les dix niveaux de chacun -->
       <div id="voyage" class="overlay menu hidden">
         <div class="eyebrow">Le voyage</div>
         <div id="chapter-tabs" class="tabs"></div>
         <h2 id="voyage-title"></h2>
         <div id="voyage-sub" class="place"></div>
-        <div class="voyage-body">
-          <!-- L'histoire du chapitre : à regarder pour ouvrir ses niveaux -->
-          <button id="story" class="story">
-            <span class="story-text">
-              <small>L’histoire</small>
-              <b id="story-title"></b>
-              <span id="story-note"></span>
-            </span>
-            <span class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19z" fill="currentColor" /></svg></span>
-          </button>
-          <div id="level-grid" class="grid"></div>
-        </div>
+        <!-- Une page par chapitre (son histoire, puis ses dix niveaux) : on passe
+             de l'une à l'autre en glissant le doigt. Remplies par ui.js. -->
+        <div id="voyage-pages" class="pages"></div>
         <div class="actions">
           <button id="close-voyage" class="ghost">Retour</button>
         </div>

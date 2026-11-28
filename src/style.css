@@ -527,22 +527,50 @@ button.ghost {
 }
 
 /* (chapitre pas encore construit) */
-.tabs button:disabled {
-  border: 1px dashed rgba(244, 241, 230, 0.28);
+.tabs button.soon {
+  border: 1px dashed rgba(244, 241, 230, 0.4);
   color: var(--ink);
-  opacity: 0.5;
-  cursor: default;
+  opacity: 0.55;
 }
 
-/* L'histoire et les niveaux défilent ensemble si l'écran est petit */
-.voyage-body {
-  width: 100%;
-  max-width: 400px;
+.tabs button.soon.on {
+  border-style: solid;
+  background: rgba(244, 241, 230, 0.16);
+  opacity: 1;
+}
+
+/* Les pages des chapitres, côte à côte : on glisse le doigt de l'une à
+   l'autre, et chacune s'arrête bien en face (scroll-snap). */
+.pages {
   flex: 1;
   min-height: 0;
-  margin-top: 14px;
-  padding: 4px 2px;
+  display: flex;
+  align-self: stretch;
+  margin: 12px -20px 0; /* (d'un bord de l'écran à l'autre) */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.pages::-webkit-scrollbar {
+  display: none;
+}
+
+/* Une page : l'histoire et les niveaux d'un chapitre (elle défile de haut en
+   bas si l'écran est petit) */
+.page {
+  flex: 0 0 100%;
+  padding: 6px 22px;
   overflow-y: auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* un geste = un chapitre */
+}
+
+.page-body {
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 /* L'histoire du chapitre : une bannière illustrée, large comme deux niveaux */
@@ -560,10 +588,6 @@ button.ghost {
   background: #1a2350 var(--thumb, none) center 27% / 100% no-repeat;
   text-align: left;
   cursor: pointer;
-}
-
-.story[hidden] {
-  display: none;
 }
 
 .story::before {
@@ -624,15 +648,15 @@ button.ghost {
 /* Les dix niveaux : deux colonnes de vignettes */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* (deux colonnes égales, quoi qu'elles contiennent) */
   gap: 10px;
   margin-top: 12px;
 }
 
 .tile {
   position: relative;
-  aspect-ratio: 9 / 4;
-  min-height: 78px; /* (sur un petit écran, le numéro et le titre doivent tenir l'un sous l'autre) */
+  height: 80px;
+  min-width: 0;
   padding: 0;
   overflow: hidden;
   border: 1px solid rgba(244, 241, 230, 0.22);
@@ -721,6 +745,38 @@ button.ghost {
 /* (au moment où l'histoire vient de l'ouvrir, il se fait remarquer) */
 .tile.fresh {
   animation: breathe 1.6s ease-in-out 3;
+}
+
+/* Ce qui reste à construire : la bannière et les vignettes gardent leur
+   place, grisées */
+.story.soon,
+.tile.soon {
+  border: 1px dashed rgba(244, 241, 230, 0.3);
+  background: rgba(244, 241, 230, 0.03);
+  cursor: default;
+}
+
+.story.soon {
+  opacity: 0.6;
+}
+
+.story.soon::before,
+.tile.soon::before {
+  display: none;
+}
+
+.story.soon .disc {
+  border-color: rgba(244, 241, 230, 0.3);
+  color: var(--ink);
+  opacity: 0.6;
+}
+
+.tile.soon:disabled {
+  opacity: 0.45;
+}
+
+.tile.soon .num {
+  color: var(--ink);
 }
 
 /* Fermé tant que l'histoire du chapitre n'a pas été vue */
